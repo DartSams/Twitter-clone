@@ -8,7 +8,7 @@
 .container .navbar{
     position: fixed;
     left:0;
-    /* display: inline-flex; */
+    margin-top: 5%;
 }
 
 .container .navbar a{
@@ -24,30 +24,14 @@
     padding: 10px;
 }
 
-.navbar .flex-item:hover{
+.navbar a:hover{
     background-color: rgb(29, 161, 242);
     border-radius: 30px;
     padding: 10px;
-    /* width:50%; */
     display: inline-flex;
 }
 
-/* .navbar .profile-bar{
-    display:flex;
-    flex-direction: row;
-    background-color: blue;
-    border-radius: 30px;
-} */
 
-.to-profile{
-    display: flex;
-    flex-direction: row;
-}
-
-.flex-item{
-    display: flex;
-    flex-direction: row;
-}
 
 /* .title{
     margin-left:40%;
@@ -58,25 +42,10 @@ body{
     background-color: black;
 }
 
-.all-post{
-    width:500px;
-    border-style: solid;
-    border-color: white;
-    padding: 20px;
-    margin-bottom: 10px;
-}
 
 form {
     display: flex;
     flex-direction: column;
-    margin-bottom: 10px;
-    /* width: 100%; */
-
-    /* width:500px;
-    border-style: solid;
-    border-color: white;
-    padding: 20px;
-    margin-bottom: 10px; */
 }
 
 .form-buttons{
@@ -98,11 +67,9 @@ button,button a{
 .post-board{
     display: flex;
     flex-direction: column-reverse;
-
-
-    /* border-style: solid;
+    border-style: solid;
     border-color: white;
-    padding: 20px; */
+    padding: 20px;
 }
 
 .post-board p{
@@ -110,32 +77,40 @@ button,button a{
     text-decoration: none;
 }
 
-.post-detail{
-    /* width:500px; */
+.post{
+    width: 100%;
+}
+
+
+.container-middle{
+    display: flex;
+    flex-direction: column;
+}
+
+#profile-banner{
+    width:100%;
+    height:60%;
+    position: relative;
+    top: 0px;
+    left: 0;
+    bottom:100px
+}
+
+#profile-img{
+    width:25%;
+    /* height:35%; */
+    border-radius: 9999px;
+    margin-bottom: 200px;
+    position: absolute;
+    top: 90px;
+    left: 20px;
+    margin-bottom:1000px
+
+}
+
+.container-middle-top{
     border-style: solid;
     border-color: white;
     padding: 20px;
     margin-bottom: 10px;
-    cursor: pointer;
 }
-
-
-
-
-/* h2,h3,h5,pre{
-    color:white;
-} */
-
-
-
-
-
-/* .login_create {
-    display: flex;
-    flex-direction: row;
-
-}
-
-.try{
-    margin-right: 100px;
-} */

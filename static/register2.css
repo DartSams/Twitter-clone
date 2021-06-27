@@ -1,0 +1,51 @@
+.flex-container-header{
+    display: flex;
+    /* background-color: rgb(26,41,51); */
+
+}
+
+
+.flex-container-header a{
+    text-decoration: none;
+    margin:10px;
+    color: white;
+    font-size: 20px;
+    justify-content: flex-end;    
+}
+
+.flex-container-header a:hover{
+    border-radius: 5px;
+    border: 2px solid white;
+}
+
+.flex-container-header a:nth-child(2){
+    margin-left:67%
+}
+
+h1,h2,h3,h5,pre,label{
+    color:white;
+}
+
+body{
+    background-color: rgb(36,51,61);
+
+}
+
+body .flex-container-body{
+    display: flex;
+    margin-left:40%;
+    margin-top: 5%;
+    background-color: rgb(26,41,51);
+    width:25%;
+}
+
+body .flex-item-body{
+    /* width: 20%; */
+    margin:10%;
+    /* margin-left:15%; */
+    /* padding:10% */
+}
+
+form,.entry,.submit{
+    width: 100%;
+}

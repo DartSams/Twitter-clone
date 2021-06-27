@@ -23,6 +23,26 @@ mycursor=conn.cursor()
 
 lst=[]
 
+def calculate_post_time(post_date):
+    post_date=time.ctime()
+    print(post_date)
+
+    ## return correct posted hours
+    split_date=post_date.split(" ")
+    split_hours=split_date[3].split(":")
+    current_hour=int(split_hours[0])
+    if current_hour >12:
+        finished_post_time=current_hour-12
+        # print(current_hour)
+        # print(split_hours)
+        if finished_post_time >0:
+            if current_hour >12:
+                # print(str(finished_post_time) + ":" + str(split_hours[1]) + " pm")
+                return "Posted " + str(finished_post_time) + ":" + str(split_hours[1]) + " pm"
+            else:
+                # print(str(finished_post_time) + ":" + str(split_hours[1]) + " am")
+                return str(finished_post_time) + ":" + str(split_hours[1]) + " am"
+
 @app.route("/",methods=["GET","POST"])
 def index():
     if request.method=="GET":
@@ -30,16 +50,28 @@ def index():
         all_post=mycursor.execute(f"SELECT * FROM Post_Table")
 
         for post_data in mycursor:
+            # print()
             lst.append(post_data)
+
+        print("\nUsers in Twitter_Users:")
+        mycursor.execute(f"SELECT * FROM Twitter_Users")
+        for i in mycursor:
+            print(i)
+
+        print("\nUsers in Post_Table:")
+        mycursor.execute(f"SELECT * FROM Post_Table")
+        for i in mycursor:
+            print(i)
 
         return render_template("index.html",messages=lst[::-1])
 
     elif request.method=="POST":
         # print(request.form)
         post=request.form.get("post-field")
-    
         post_date=time.ctime()
-        mycursor.execute("INSERT INTO Post_Table (author,post_date,post) VALUES (%s,%s,%s)", (session["username"],post_date,post))
+
+
+        mycursor.execute("INSERT INTO Post_Table (author,post_date,post) VALUES (%s,%s,%s)", (session["username"],calculate_post_time(post_date),post))
         conn.commit()
         # file=request.files["file"]
         # if "file" not in request.files or file.filename == "":
@@ -58,6 +90,11 @@ def login():
         for i in mycursor:
             print(i)
 
+        print("\nUsers in Post_Table:")
+        mycursor.execute(f"SELECT * FROM Post_Table")
+        for i in mycursor:
+            print(i)
+
         return render_template("login.html")
 
     elif request.method=="POST":
@@ -70,7 +107,7 @@ def login():
             result=mycursor.fetchall()
 
             for i in result:
-                passwd_check=bcrypt.check_password_hash(i[1], password)
+                passwd_check=bcrypt.check_password_hash(i[2], password)
 
             if passwd_check == True:
                 session["username"]=username
@@ -92,11 +129,13 @@ def create_account(page_id):
             return render_template("register.html")
         
         elif request.method=="POST":
+            name=request.form["name"]
             username=request.form['username']
             session["username"]=username
             email=request.form['email']
             password=request.form['password']
             compare_password=request.form['compare-password']
+            post_date=time.ctime()
                 
             hash_passwd = bcrypt.generate_password_hash(password).decode('utf-8')
 
@@ -105,8 +144,9 @@ def create_account(page_id):
                 myresult = mycursor.fetchone()
 
                 if myresult == None:
-                    mycursor.execute("INSERT INTO Twitter_Users (name,password,email,privilege) VALUES (%s,%s,%s,%s)", (username,hash_passwd,email,'user'))
-                    conn.commit()
+# name,username,password, email,privilege,birthday,join_date
+                    mycursor.execute("INSERT INTO Twitter_Users (name,username,password, email,privilege) VALUES (%s,%s,%s,%s,%s)", (name,username,hash_passwd,email,'user'))
+                    # conn.commit()
                     return redirect("/register/page=2")
 
                 elif myresult != None:
@@ -123,14 +163,18 @@ def create_account(page_id):
             return render_template("register2.html")
 
         elif request.method=="POST":
+            # name=request.form["name"]
             username=session["username"]
             gender=request.form['gender']
             age=request.form['age']
-            job_role=request.form['job']
-            location=request.form['location']
+            # job_role=request.form['job']
+            # location=request.form['location']
+            birthday=request.form['birthday']
+            join_date=time.ctime()
 
             if 'terms-of-service' in request.form:
-                mycursor.execute("INSERT INTO Flask_Profile_Info (author,gender,age,job,location) VALUES (%s,%s,%s,%s,%s)", (username,gender,age,job_role,location))
+                mycursor.execute("UPDATE Twitter_Users SET gender = %s,age = %s,birthday = %s, join_date = %s WHERE username = %s" ,(gender,age,birthday,join_date,session["username"]))
+                # mycursor.execute("INSERT INTO Twitter_Users (name,username,password,email,privilege,gender,age,location,birthday,join_date) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)", (name,username,password,email,privilege,gender,age,location,birthday,join_date))
                 conn.commit()
                 print(f"User created: {username}")
                 return redirect('/')
@@ -138,8 +182,21 @@ def create_account(page_id):
 
 @app.route("/profile")
 def profile():
-    if request.method=="GET":
-        return render_template("profile.html")
+    user_post=[]
+    if "username" in session:
+        if request.method=="GET":
+            mycursor.execute(f'SELECT * FROM Post_Table WHERE author=%s',(session["username"]))
+            for i in mycursor:
+                print(i)
+                user_post.append(i)
+            
+            if not user_post:
+                flash("No Post Yet")
+                
+            return render_template("profile.html",user_post=user_post[::-1])
+
+    else:
+        return redirect("/")
 
 
 @app.route('/logout')
@@ -154,7 +211,7 @@ def logout():
 @app.route("/clear")
 def clear():
     lst.clear()
-    mycursor.execute(f"DELETE FROM Post_Table WHERE author='dartsams'")
+    mycursor.execute(f"DELETE FROM Post_Table WHERE author=%s",(session["username"]))
     conn.commit()
     return redirect("/")
 

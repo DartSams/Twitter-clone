@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+
+    <!-- <link rel="stylesheet" type= "text/css" href="\twitter clone\static\index.css"> -->
+    <link rel="stylesheet" href="{{url_for('static',filename='profile.css')}}">
+</head>
+
+<!-- <header class="flex-container-header">
+    <a href="/" class="flex-item">Website Name</a>
+    <a href="/" class="flex-item">Home</a>
+    <a href="/" class="flex-item">Shop</a>
+    <a href="" class="flex-item">About Us</a>
+    <a href="" class="flex-item">Contact</a>
+    {% if "username" in session %}
+    <a href="/profile" class="flex-item">{{session["username"]}}</a>
+    {% elif "username" not in session %}
+    <a href="">Login</a>
+    {% endif %}
+</header> -->
+
+<body>
+
+    <main>
+        <!-- <h2 class="title" style="color: white;display: flex; justify-content: center;">Website Users</h2> -->
+        <div class="container">
+            <div class="navbar">
+                <a href="/" class="flex-item">Website Name</a>
+                <a href="/" class="flex-item">Home</a>
+                <a href="/" class="flex-item">Shop</a>
+                <a href="" class="flex-item">About Us</a>
+                <a href="" class="flex-item">Contact</a>
+                {% if "username" in session %}
+                <a href="/profile" class="flex-item">{{session["username"]}}</a>
+                {% elif "username" not in session %}
+                <a href="/login">Login</a>
+                {% endif %}
+            </div>
+    
+                <div class="container-middle">
+                    <div class="container-middle-top" >
+                        <div style="display:block;position: relative; left: 0px; top: 0px;margin-bottom:50px ">
+                            <img src="{{url_for('static',filename='preview_img/banner_profile2.jpg')}}" alt="profile-banner" id="profile-banner">
+                            <img src="{{url_for('static',filename='preview_img/user_img.jpg')}}" alt="profile-banner" id="profile-img">
+                            <p style="float: right;color:white">Delete account</p>
+                            <!-- <p style="color: white;">csdvsv</p>
+                            <p style="color: white;">csdvsv</p>
+                            <p style="color: white;">csdvsv</p>
+                            <p style="color: white;">csdvsv</p> -->
+                        </div>
+
+                        <div class="profile-description">
+                           <p style="color: white;">Name</p>
+                            <p style="color: white;">Username</p>
+                            <p style="color: white;">description</p>
+                            <p style="color: white;">join date</p> 
+                            <p style="color: white;">...</p> 
+                        </div>
+                        
+                    </div>
+                    
+                
+                    {% if user_post%}
+                    <div class="post-board">
+                        <div class="post">
+                            {%for i in user_post%}
+                            <!-- {{session["username"]}} -->
+                            <div style="border-style: solid;border-color: white;padding: 20px; margin-bottom: 10px;cursor: pointer;">
+                               <p class="post-name">By {{i[0]}}
+                                    {% if session["username"] == i[0] %}
+                                   <a href="/clear" style="float: right; text-decoration: none; color:white">delete all post</a>
+                                   {% endif %}
+                                </p>
+                                <p class="post-body">{{i[2]}}</p>
+                                <p class="post-date">{{i[1]}}</p> 
+                            </div>
+                            {%endfor%}
+                        </div>
+                    </div>
+                    {% elif not user_post%}
+                    <p style="color:white">
+                        {% with messages = get_flashed_messages()%}
+                            {% if messages %}
+                                {% for message in messages%}
+                                    {{message}}
+                                    <br>
+                                    <br>
+                                {%endfor%}
+                            {%endif%}
+                        {%endwith%}
+                    </p>
+                    {%endif%}
+
+                    
+
+                </div>
+                    
+        
+                <!-- <div >
+                    <h3>New Customer?</h3>
+                    <pre>
+Lorem Ipsum is simply dummy text  
+of the printing and typesetting industry.
+Lorem Ipsum has been the industry's 
+standard dummy text ever since the
+1500s, when an unknown printer took 
+a galley of type and scrambled 
+it to make a type specimen book. 
+It has survived not only five centuries,
+                    </pre>
+                    <button><a href="/register/page=1">Create An Account</a></button>
+                </div> -->
+            </div>
+        </div>
+
+    </main>
+    
+</body>
+
+</html>
