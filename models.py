@@ -29,9 +29,22 @@ mycursor=db.cursor(buffered=True)
 
 # print(lst)
 
+# mycursor.execute("select * from Post_Table ORDER BY personID DESC LIMIT 1")
+mycursor.execute("select * from Post_Table ORDER BY personID DESC LIMIT 1")
+# mycursor.execute("UPDATE Post_Table SET post_img=%s WHERE ")
+
+for i in mycursor:
+    print(i)
+    id=i[4]
+    print(id)
+
+    mycursor.execute("UPDATE Post_Table SET post_img=%s WHERE personID=%s",('boobs',id))
+    db.commit()
+
+
 def create_db(table_name):
     # mycursor.execute(f"CREATE TABLE {table_name} (name VARCHAR(100),username VARCHAR(100),password VARCHAR(100), email VARCHAR(100),privilege VARCHAR(100),gender VARCHAR(100),age INT,birthday VARCHAR(100),join_date VARCHAR(100), personID INT PRIMARY KEY AUTO_INCREMENT)")
-    mycursor.execute(f"CREATE TABLE {table_name} (author VARCHAR(100),post_date VARCHAR(100),post VARCHAR(100))")
+    mycursor.execute(f"CREATE TABLE {table_name} (author VARCHAR(100),post_date VARCHAR(100),post VARCHAR(100),post_img VARCHAR(100),personID INT PRIMARY KEY AUTO_INCREMENT)")
 
 # create_db('Twitter_Users')
 # create_db('Post_Table')
@@ -57,17 +70,14 @@ def show_entries(table_name):
 
 # show_entries('Discord_db')
 
-def delete_user(name,password):
+def delete_user(something):
     # mycursor.execute(f"DELETE FROM Discord_DB WHERE name='{name}' AND password='{password}'")
     # mycursor.execute(f"DELETE FROM Flask_Login WHERE name='{name}'")
-    mycursor.execute(f"DELETE FROM Post_Table WHERE author='{name}'")
+    mycursor.execute(f"DELETE FROM Post_Table WHERE post_img='{something}'")
 
     db.commit()
 
-# mycursor.execute(f"DELETE FROM Flask_Login")
-# db.commit()
-# delete_user('hello world','3977')
-# delete_user('dartsams','3977')
+# delete_user("None")
 
 def update_data(password,math,new_value):
     mycursor.execute(f"UPDATE Discord_DB SET money = money {math} {new_value} WHERE password = '{password}'")
@@ -88,9 +98,10 @@ def delete_db(table):
 
 
 def add_column(table,column):
-    mycursor.execute(f"ALTER TABLE {table} ADD {column} varchar(255)")
+    mycursor.execute(f"ALTER TABLE {table} ADD {column} varchar(300)")
 
-# add_column("Twitter_Users","name")
+# add_column("Twitter_Users","profile_banner")
+# add_column("Post_Table","post_img")
 
 
 def get_columns(table):

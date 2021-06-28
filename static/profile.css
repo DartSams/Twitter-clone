@@ -1,3 +1,7 @@
+#active{
+    color:rgb(29, 161, 242)
+}
+
 .container{
     display:flex;
     flex-direction: row;
@@ -100,11 +104,11 @@ button,button a{
     width:25%;
     /* height:35%; */
     border-radius: 9999px;
-    margin-bottom: 200px;
+    /* margin-bottom: 200px; */
     position: absolute;
-    top: 90px;
+    top: 150px;
     left: 20px;
-    margin-bottom:1000px
+    /* margin-bottom:1000px */
 
 }
 
@@ -113,4 +117,33 @@ button,button a{
     border-color: white;
     padding: 20px;
     margin-bottom: 10px;
+    display:flex;
+    flex-direction: column;
+    position: relative;
+    left: 0px;
+    top: 0px;
+    margin-bottom:50px;
+}
+
+
+.profile-description{
+    margin-top: 80px;
+    display: flex;
+    flex-direction: column;
+    /* justify-content: space-between; */
+}
+
+/* .profile-description p{
+    margin-top:100px
+} */
+
+.profile-edit{
+    float: right;
+    text-decoration: none;
+    border-radius: 50px;
+    padding: 10px;
+    border-style: solid;
+    border-color: rgb(29, 161, 242);
+    border-width: 1px;
+    color:rgb(29, 161, 242)
 }

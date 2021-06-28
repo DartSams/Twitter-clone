@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings</title>
+</head>
+<body>
+    <main>
+        <!-- {% for i in profile_stuff%}
+        <form action="" method="POST" enctype=multipart/form-data>
+            <input type="file" name="profile_banner"><br>
+            <input type="file" name="profile_img"><br>
+            <label for="profile_description">Biography:</label>
+            <input type="text" placeholder="{{i[10]}}" name="profile_description">
+            <input type="submit">
+        </form>
+        {%endfor%} -->
+        {% for i in profile_stuff%}
+        <form method=post enctype=multipart/form-data>
+            <input type=file name="profile_banner" value="{{i[11]}}">
+            <input type="file" name="profile_img" placeholder="{{i[12]}}">
+            <!-- <input type="text" name="profile_description" value="{{i[10]}}"> -->
+            <textarea name="profile_description" id="" cols="50" rows="5" style="resize: none;">{{i[10]}}</textarea>
+            <input type=submit value=Save>
+        </form>
+        {%endfor%}
+    </main>
+</body>
+</html>

@@ -1,0 +1,6 @@
+add columns-name,username,email,password,user-level,follow_list,followers,user-post,birthday,profile-description,join-date
+
+add columns to Twitter_Users-name,follow_list,followers,birthday,join_date
+in profile settings page add columns-profile description
+
+to get individual  post-assign post id inn db

@@ -24,6 +24,15 @@
         <!-- <legend>Create Account</legend> -->
         <div class="flex-item-body">
             <h1 class="flex-item-body">Create Account</h1>
+            {% with messages = get_flashed_messages()%}
+                {% if messages %}
+                    {% for message in messages%}
+                        <h3 style="color: red;">{{message}}</h3>
+                        <!-- <br>
+                        <br> -->
+                    {%endfor%}
+                {%endif%}
+            {%endwith%}
                 <form action=""method="POST" autocomplete="on">
                     <label for="name">Full Name:</label><br>
                     <input type="text" placeholder="Name" name="name" class="entry">
