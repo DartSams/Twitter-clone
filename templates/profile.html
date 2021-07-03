@@ -75,6 +75,9 @@
                                    {% endif %}
                                 </p>
                                 <p class="post-body">{{i[2]}}</p>
+                                {% if i[3] != None %}
+                                    <img src='/static/preview_img/{{i[3]}}' alt="{{i[3]}}" >
+                                {%endif%}
                                 <p class="post-date">{{i[1]}}</p> 
                             </div>
                             {%endfor%}

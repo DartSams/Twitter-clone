@@ -68,6 +68,10 @@
 
                     <div class="post-board">
                         <div class="post">
+                            <!-- <audio controls width="320" height="240">
+                                <source src="/static/test_mp3.mp3" type="audio/mp3">
+                              Your browser does not support the audio element.
+                            </audio> -->
                             {%for i in messages%}
                             <!-- {{session["username"]}} -->
                             <div class="post-detail">
@@ -76,11 +80,34 @@
                                     <a href="/clear" style="float: right; text-decoration: none; color:white">delete all post</a>
                                     {% endif %}
                                 </p>
-                                <p class="post-body">{{i[2]}}</p>
-                                <p class="post-date">{{i[1]}}</p>
+                                <p class="post-body">{{i[2].capitalize()}}</p>
+                                
                                 {% if i[3] != None %}
-                                    <img src='/static/preview_img/{{i[3]}}' alt="{{i[3]}}" id="profile-img">
+                                    <!-- <img src='/static/preview_img/{{i[3]}}' alt="{{i[3]}}"> -->
+                                    
+                                    <!-- {{i[3].split(".")}}
+                                    <br>
+                                    {{i[3].split(".")[0].replace("_"," ")}}
+                                    <br>
+                                    {{i[3].split(".")[1]}} -->
+
+                                    {% if 'mp4' == i[3].split(".")[1] or 'mp3' == i[3].split(".")[1]%}
+                                        <video controls width="320" height="240">
+                                            <source src="/static/preview_img/{{i[3].split('.')[0]}}.{{i[3].split('.')[1]}}" type="video/{{i[3].split('.')[1]}}">
+                                        Your browser does not support the audio element.
+                                        </video>
+
+                                    {%elif 'mp4' != i[3].split(".")[1]%}
+                                        <img src="/static/preview_img/{{i[3]}}" alt="">
+                                        {{i[3]}}
+                                    {%endif%}
+                                    
                                 {%endif%}
+
+                                <p class="post-date">{{i[1]}}</p>
+                                <!-- <iframe src="https://youtu.be/klvEE6MdV3k" frameborder="0"></iframe> -->
+                                <!-- <iframe width="560" height="315" src="https://www.youtube.com/embed/klvEE6MdV3k" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe> -->
+                                
                             </div>
                             {%endfor%}
                         </div>

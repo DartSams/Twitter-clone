@@ -30,16 +30,16 @@ mycursor=db.cursor(buffered=True)
 # print(lst)
 
 # mycursor.execute("select * from Post_Table ORDER BY personID DESC LIMIT 1")
-mycursor.execute("select * from Post_Table ORDER BY personID DESC LIMIT 1")
-# mycursor.execute("UPDATE Post_Table SET post_img=%s WHERE ")
+# mycursor.execute("select * from Post_Table ORDER BY personID DESC LIMIT 1")
+# # mycursor.execute("UPDATE Post_Table SET post_img=%s WHERE ")
 
-for i in mycursor:
-    print(i)
-    id=i[4]
-    print(id)
+# for i in mycursor:
+#     print(i)
+#     id=i[4]
+#     print(id)
 
-    mycursor.execute("UPDATE Post_Table SET post_img=%s WHERE personID=%s",('boobs',id))
-    db.commit()
+#     mycursor.execute("UPDATE Post_Table SET post_img=%s WHERE personID=%s",('boobs',id))
+#     db.commit()
 
 
 def create_db(table_name):
@@ -126,8 +126,8 @@ def show_entries(table_name):
     all=mycursor.execute(f"SELECT * FROM {table_name}")
 
     # for i in mycursor:
-    #     split_date=i[1].split(" ")
-    #     print(split_date)
+        # split_date=i[1].split(" ")
+        # print(i)
     #     lst.append(split_date[1])
     #     # current_date=split_date
     #     for index,item in enumerate(split_date[:]):
@@ -150,12 +150,15 @@ def show_entries(table_name):
         # lst.append(i)
         # print(i[1].split(" ")[3].split(":")[0].replace(i[1].split(" ")[3].split(":")[0],finished_post_time))
     split_date=post_date.split(" ")
-    split_hours=split_date[3].split(":")
+    # print(split_date)
+    split_hours=split_date[4].split(":")
+    # print(split_hours)
     current_hour=int(split_hours[0])
+    # print(current_hour)
     if current_hour >12:
         finished_post_time=current_hour-12
-        print(current_hour)
-        print(split_hours)
+        # print(current_hour)
+        # print(split_hours)
         if finished_post_time >0:
             # pass
 
@@ -172,12 +175,13 @@ def show_entries(table_name):
 
 
     elif current_hour <12:
-        pass
+        return str(current_hour) + ":" + str(split_hours[1]) + " am"
+        # return str(finished_post_time) + ":" + str(split_hours[1]) + " am"
     
 
 
-# print(show_entries("Post_Table"))
-
+print(show_entries("Post_Table"))
+# show_entries("Post_Table")
 
 def replace( x, y): 
    mycursor.execute(f"SELECT * FROM Post_Table")

@@ -4,3 +4,6 @@ add columns to Twitter_Users-name,follow_list,followers,birthday,join_date
 in profile settings page add columns-profile description
 
 to get individual  post-assign post id inn db
+
+Try mp4 with audio
+

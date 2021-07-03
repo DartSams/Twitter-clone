@@ -12,7 +12,7 @@ load_dotenv()
 dirname=os.path.dirname(__file__) + "\static\preview_img"
 # print(dirname)
 UPLOAD_FOLDER = dirname
-ALLOWED_EXTENSIONS = ['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'jfif']
+ALLOWED_EXTENSIONS = ['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'jfif', 'mp3', 'mp4']
 
 
 app=Flask(__name__)
@@ -39,7 +39,7 @@ def calculate_post_time(post_date):
 
     ## return correct posted hours
     split_date=post_date.split(" ")
-    split_hours=split_date[3].split(":")
+    split_hours=split_date[4].split(":")
     current_hour=int(split_hours[0])
     if current_hour >12:
         finished_post_time=current_hour-12
@@ -52,6 +52,12 @@ def calculate_post_time(post_date):
             else:
                 # print(str(finished_post_time) + ":" + str(split_hours[1]) + " am")
                 return str(finished_post_time) + ":" + str(split_hours[1]) + " am"
+
+    elif current_hour == 12:
+        return str(current_hour) + ":" + str(split_hours[1]) + " am"
+
+    elif current_hour <12:
+        return str(current_hour) + ":" + str(split_hours[1]) + " am"
 
 def allowed_file(filename):
     # print(filename)
@@ -87,7 +93,6 @@ def index():
 
     elif request.method=="POST":
         # print(request.form)
-        print("start")
         post=request.form.get("post-field")
         file = request.files['file']
         post_date=time.ctime()
@@ -96,10 +101,14 @@ def index():
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
 
-            im = Image.open(fr"{dirname}\{filename}")
-            newsize = (300,300)
-            im1 = im.resize(newsize)
-            im1.save(fr"{dirname}\{filename}")
+            try:
+                im = Image.open(fr"{dirname}\{filename}")
+                newsize = (100,100)
+                im1 = im.resize(newsize)
+                im1.save(fr"{dirname}\{filename}")
+
+            except:
+                pass
 
             mycursor.execute("select * from Post_Table ORDER BY personID DESC LIMIT 1")
             for i in mycursor:
