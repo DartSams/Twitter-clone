@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="{{url_for('static',filename='post.css')}}">
+</head>
+<body>
+    <main>
+        <h2 class="title" style="color: white;display: flex; justify-content: center;">Website Users</h2>
+        <div class="container">
+            <div class="navbar">
+                <a href="/" class="flex-item"><span>Website Name</span></a>
+                <a href="/" class="flex-item" id="active"><span>Home</span></a>
+                <a href="/" class="flex-item">Shop</a>
+                <a href="" class="flex-item">About Us</a>
+                <a href="" class="flex-item">Contact</a>
+                {% if "username" in session %}
+                <!-- <div class="flex-item">
+                    <img src="\static\w3lynx_200.png" alt="" style="width: 10%; height:10%;">
+                    <a href="/profile" >{{session["username"]}}</a>
+                    <a href="/logout">Logout</a>  
+                </div> -->
+                <a href="/{{session['username']}}" class="flex-item">{{session["username"]}}</a>
+                {% elif "username" not in session %}
+                <a href="/login" class="flex-item">Login</a>
+                {% endif %}
+
+                <!-- <div class="profile-bar">
+                    <img src="\static\w3lynx_200.png" alt="" style="width: 10%; height:10%;" >
+                    <a href="/profile" >{{session["username"]}}</a>
+                    <a href="/logout" >Logout</a>  
+                </div> -->
+            </div>
+
+            <!-- {{user_post}} -->
+
+            <div class="post">
+                {{user_post}}
+                {%for i in user_post%}
+                <!-- {{session["username"]}} -->
+                <div class="post-detail">
+                    <p class="post-name">By {{i[0]}} - {{i[1]}}
+                        {% if session["username"] == i[0] %}
+                        <a href="/clear/{{i[4]}}" style="float: right; text-decoration: none; color:white">delete post</a>
+                        {% endif %}
+                    </p>
+                    <p class="post-body">{{i[2].capitalize()}}</p>
+                    
+                    <!-- {% if i[3] != None %} -->
+                        <!-- <img src='/static/preview_img/{{i[3]}}' alt="{{i[3]}}"> -->
+                        
+                    <!-- {{i[3].split(".")}}
+                    <br>
+                    {{i[3].split(".")[0].replace("_"," ")}}
+                    <br>
+                    {{i[3].split(".")[1]}} -->
+
+                    {% if 'mp4' == i[3].split(".")[1] %}
+                        <video controls width="320" height="240">
+                            <source src="/static/preview_img/{{i[3].split('.')[0]}}.{{i[3].split('.')[1]}}" type="video/{{i[3].split('.')[1]}}">
+                        Your browser does not support the audio element.
+                        </video>
+
+                    {%elif 'mp3' == i[3].split(".")[1]%}
+                        <audio controls width="320" height="240">
+                            <source src="/static/preview_img/{{i[3].split('.')[0]}}.{{i[3].split('.')[1]}}" type="audio/{{i[3].split('.')[1]}}">
+                        Your browser does not support the audio element.
+                        </audio>
+
+                    {%endif%}
+
+                    {% for pic_type in ALLOWED_EXTENSIONS%}
+                        {% if pic_type == i[3].split(".")[1] %}
+                            <img src="/static/preview_img/{{i[3]}}" alt="">
+                            <!-- {{i[3]}} -->
+                        {%endif%}
+                        <!-- {{pic_type}} -->
+                    {%endfor%}
+
+                    <!-- {%endif%} -->
+
+                    <!-- <p class="post-date">Posted {{i[1]}}</p> -->
+                    <!-- <p>post ID = {{i[4]}}</p> -->
+                </div>
+                {%endfor%} 
+            </div>
+            
+    </main>
+
+</body>
+</html>

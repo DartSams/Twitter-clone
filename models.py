@@ -41,6 +41,10 @@ mycursor=db.cursor(buffered=True)
 #     mycursor.execute("UPDATE Post_Table SET post_img=%s WHERE personID=%s",('boobs',id))
 #     db.commit()
 
+mycursor.execute(f'SELECT * FROM Post_Table WHERE author="dartsams" AND personID=86',)
+for i in mycursor:
+    print(i)
+
 
 def create_db(table_name):
     # mycursor.execute(f"CREATE TABLE {table_name} (name VARCHAR(100),username VARCHAR(100),password VARCHAR(100), email VARCHAR(100),privilege VARCHAR(100),gender VARCHAR(100),age INT,birthday VARCHAR(100),join_date VARCHAR(100), personID INT PRIMARY KEY AUTO_INCREMENT)")
@@ -180,7 +184,7 @@ def show_entries(table_name):
     
 
 
-print(show_entries("Post_Table"))
+# print(show_entries("Post_Table"))
 # show_entries("Post_Table")
 
 def replace( x, y): 

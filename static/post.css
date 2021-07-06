@@ -65,88 +65,20 @@ body{
     /* background-color: rgb(36,51,61); */
     background-color: black;
 }
-
 a{
-    text-decoration: none;
+   text-decoration: none;
+   color:white 
 }
 
-.all-post{
-    width:500px;
-    border-style: solid;
-    border-color: white;
-    padding: 20px;
-    margin-bottom: 10px;
+p{
+    color:white
 }
 
-form {
-    display: flex;
+.post{
+    display:flex;
     flex-direction: column;
-    margin-bottom: 10px;
-    /* width: 100%; */
-
-    /* width:500px;
     border-style: solid;
     border-color: white;
     padding: 20px;
-    margin-bottom: 10px; */
+    width:500px
 }
-
-.form-buttons{
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-}
-
-button,button a{
-    color: black;
-    text-decoration: none;
-}
-
-/* form input,button a{
-    color:black;
-    text-decoration: none;
-} */
-
-.post-board{
-    display: flex;
-    flex-direction: column-reverse;
-
-
-    /* border-style: solid;
-    border-color: white;
-    padding: 20px; */
-}
-
-.post-board p{
-    color: white;
-    text-decoration: none;
-}
-
-.post-detail{
-    /* width:500px; */
-    border-style: solid;
-    border-color: white;
-    padding: 20px;
-    margin-bottom: 10px;
-}
-
-
-
-
-/* h2,h3,h5,pre{
-    color:white;
-} */
-
-
-
-
-
-/* .login_create {
-    display: flex;
-    flex-direction: row;
-
-}
-
-.try{
-    margin-right: 100px;
-} */

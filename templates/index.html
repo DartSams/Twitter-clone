@@ -27,6 +27,10 @@
 
     <main>
         <h2 class="title" style="color: white;display: flex; justify-content: center;">Website Users</h2>
+        <form action="" method="POST" style="color: white;display: flex; justify-content: center;width:100px">
+            <input type="text" placeholder="Search.." name="search">
+            <button type="submit"><i class="fa fa-search"></i></button>
+        </form>
         <div class="container">
             <div class="navbar">
                 <a href="/" class="flex-item"><span>Website Name</span></a>
@@ -40,7 +44,7 @@
                     <a href="/profile" >{{session["username"]}}</a>
                     <a href="/logout">Logout</a>  
                 </div> -->
-                <a href="/profile" class="flex-item">{{session["username"]}}</a>
+                <a href="/{{session['username']}}" class="flex-item">{{session["username"]}}</a>
                 {% elif "username" not in session %}
                 <a href="/login" class="flex-item">Login</a>
                 {% endif %}
@@ -51,10 +55,11 @@
                     <a href="/logout" >Logout</a>  
                 </div> -->
             </div>
-    
+            
             <!-- <div class="login_create"> -->
                 <div class="all-post">
                     <!-- <h3>Post bar</h3> -->
+                    
                     {% if "username" in session%}
                     <form action="" method="POST" enctype=multipart/form-data>
                         <textarea name="post-field" id="" cols="50" rows="5" style="resize: none;"></textarea>
@@ -68,67 +73,62 @@
 
                     <div class="post-board">
                         <div class="post">
-                            <!-- <audio controls width="320" height="240">
-                                <source src="/static/test_mp3.mp3" type="audio/mp3">
-                              Your browser does not support the audio element.
-                            </audio> -->
+
                             {%for i in messages%}
                             <!-- {{session["username"]}} -->
+                            <a href="/{{i[4]}}">
                             <div class="post-detail">
-                                <p class="post-name">By {{i[0]}}
-                                    {% if session["username"] == i[0] %}
+                                <p class="post-name">By {{i[0]}} - {{i[1]}}
+                                    <!-- {% if session["username"] == i[0] %}
                                     <a href="/clear" style="float: right; text-decoration: none; color:white">delete all post</a>
-                                    {% endif %}
+                                    {% endif %} -->
                                 </p>
                                 <p class="post-body">{{i[2].capitalize()}}</p>
                                 
-                                {% if i[3] != None %}
+                                <!-- {% if i[3] != None %} -->
                                     <!-- <img src='/static/preview_img/{{i[3]}}' alt="{{i[3]}}"> -->
                                     
-                                    <!-- {{i[3].split(".")}}
-                                    <br>
-                                    {{i[3].split(".")[0].replace("_"," ")}}
-                                    <br>
-                                    {{i[3].split(".")[1]}} -->
+                                <!-- {{i[3].split(".")}}
+                                <br>
+                                {{i[3].split(".")[0].replace("_"," ")}}
+                                <br>
+                                {{i[3].split(".")[1]}} -->
 
-                                    {% if 'mp4' == i[3].split(".")[1] or 'mp3' == i[3].split(".")[1]%}
-                                        <video controls width="320" height="240">
-                                            <source src="/static/preview_img/{{i[3].split('.')[0]}}.{{i[3].split('.')[1]}}" type="video/{{i[3].split('.')[1]}}">
-                                        Your browser does not support the audio element.
-                                        </video>
+                                {% if 'mp4' == i[3].split(".")[1] %}
+                                    <video controls width="320" height="240">
+                                        <source src="/static/preview_img/{{i[3].split('.')[0]}}.{{i[3].split('.')[1]}}" type="video/{{i[3].split('.')[1]}}">
+                                    Your browser does not support the audio element.
+                                    </video>
 
-                                    {%elif 'mp4' != i[3].split(".")[1]%}
-                                        <img src="/static/preview_img/{{i[3]}}" alt="">
-                                        {{i[3]}}
-                                    {%endif%}
-                                    
+                                {%elif 'mp3' == i[3].split(".")[1]%}
+                                    <audio controls width="320" height="240">
+                                        <source src="/static/preview_img/{{i[3].split('.')[0]}}.{{i[3].split('.')[1]}}" type="audio/{{i[3].split('.')[1]}}">
+                                    Your browser does not support the audio element.
+                                    </audio>
+
                                 {%endif%}
 
-                                <p class="post-date">{{i[1]}}</p>
-                                <!-- <iframe src="https://youtu.be/klvEE6MdV3k" frameborder="0"></iframe> -->
-                                <!-- <iframe width="560" height="315" src="https://www.youtube.com/embed/klvEE6MdV3k" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe> -->
-                                
+                                {% for pic_type in ALLOWED_EXTENSIONS%}
+                                    {% if pic_type == i[3].split(".")[1] %}
+                                        <img src="/static/preview_img/{{i[3]}}" alt="">
+                                        <!-- {{i[3]}} -->
+                                    {%endif%}
+                                    <!-- {{pic_type}} -->
+                                {%endfor%}
+
+                                <!-- {%endif%} -->
+
+                                <!-- <p class="post-date">Posted {{i[1]}}</p> -->
+                                <!-- <p>post ID = {{i[4]}}</p> -->
+                            </a> 
                             </div>
                             {%endfor%}
+                            
                         </div>
                     </div>
                 </div>
                     
         
-                <!-- <div >
-                    <h3>New Customer?</h3>
-                    <pre>
-Lorem Ipsum is simply dummy text  
-of the printing and typesetting industry.
-Lorem Ipsum has been the industry's 
-standard dummy text ever since the
-1500s, when an unknown printer took 
-a galley of type and scrambled 
-it to make a type specimen book. 
-It has survived not only five centuries,
-                    </pre>
-                    <button><a href="/register/page=1">Create An Account</a></button>
-                </div> -->
             </div>
         </div>
 

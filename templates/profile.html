@@ -21,7 +21,7 @@
                 <a href="" class="flex-item">About Us</a>
                 <a href="" class="flex-item">Contact</a>
                 {% if "username" in session %}
-                <a href="/profile" class="flex-item" id="active">{{session["username"]}}</a>
+                <a href="/profile/{{session['username']}}" class="flex-item" id="active">{{session["username"]}}</a>
                 {% elif "username" not in session %}
                 <a href="/login">Login</a>
                 {% endif %}
@@ -45,7 +45,9 @@
                                 {% for i in profile_stuff%}
                                 <div>
                                     <!-- <button style="float: right;">Edit Account</button> -->
-                                    <a href="/profile/settings" class="profile-edit">Edit Account</a>
+                                    {% if username == session['username']%}
+                                    <a href="/profile/{{session['username']}}/settings" class="profile-edit">Edit Account</a>
+                                    {%endif%}
                                     <h3 style="color: white;">{{i[0]}}</h3>
                                 </div>
                                 <!-- <h3 style="color: white;">Name:{{i[0]}}</h3> -->
@@ -65,23 +67,61 @@
                 
                     {% if user_post%}
                     <div class="post-board">
+                        
                         <div class="post">
                             {%for i in user_post%}
                             <!-- {{session["username"]}} -->
-                            <div style="border-style: solid;border-color: white;padding: 20px; margin-bottom: 10px;cursor: pointer;">
-                               <p class="post-name">By {{i[0]}}
-                                    {% if session["username"] == i[0] %}
-                                   <a href="/clear" style="float: right; text-decoration: none; color:white">delete all post</a>
-                                   {% endif %}
+                            <a href="/{{i[4]}}">
+                            <div class="post-detail">
+                                <p class="post-name">By {{i[0]}} - {{i[1]}}
+                                    <!-- {% if session["username"] == i[0] %}
+                                    <a href="/clear" style="float: right; text-decoration: none; color:white">delete all post</a>
+                                    {% endif %} -->
                                 </p>
-                                <p class="post-body">{{i[2]}}</p>
-                                {% if i[3] != None %}
-                                    <img src='/static/preview_img/{{i[3]}}' alt="{{i[3]}}" >
+                                <p class="post-body">{{i[2].capitalize()}}</p>
+                                
+                                <!-- {% if i[3] != None %} -->
+                                    <!-- <img src='/static/preview_img/{{i[3]}}' alt="{{i[3]}}"> -->
+                                    
+                                <!-- {{i[3].split(".")}}
+                                <br>
+                                {{i[3].split(".")[0].replace("_"," ")}}
+                                <br>
+                                {{i[3].split(".")[1]}} -->
+
+                                {% if 'mp4' == i[3].split(".")[1] %}
+                                    <video controls width="320" height="240">
+                                        <source src="/static/preview_img/{{i[3].split('.')[0]}}.{{i[3].split('.')[1]}}" type="video/{{i[3].split('.')[1]}}">
+                                    Your browser does not support the audio element.
+                                    </video>
+
+                                {%elif 'mp3' == i[3].split(".")[1]%}
+                                    <audio controls width="320" height="240">
+                                        <source src="/static/preview_img/{{i[3].split('.')[0]}}.{{i[3].split('.')[1]}}" type="audio/{{i[3].split('.')[1]}}">
+                                    Your browser does not support the audio element.
+                                    </audio>
+
                                 {%endif%}
-                                <p class="post-date">{{i[1]}}</p> 
+
+                                {% for pic_type in ALLOWED_EXTENSIONS%}
+                                    {% if pic_type == i[3].split(".")[1] %}
+                                        <img src="/static/preview_img/{{i[3]}}" alt="">
+                                        {{i[3]}}
+                                    {%endif%}
+                                    <!-- {{pic_type}} -->
+                                {%endfor%}
+
+                                <!-- {%endif%} -->
+
+                                <!-- <p class="post-date">Posted {{i[1]}}</p> -->
+                                <!-- <p>post ID = {{i[4]}}</p> -->
+                            </a> 
                             </div>
                             {%endfor%}
                         </div>
+
+                    
+
                     </div>
                     {% elif not user_post%}
                     <p style="color:white">

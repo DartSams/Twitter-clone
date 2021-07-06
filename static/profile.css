@@ -63,10 +63,9 @@ button,button a{
     text-decoration: none;
 }
 
-/* form input,button a{
-    color:black;
+a{
     text-decoration: none;
-} */
+}
 
 .post-board{
     display: flex;
@@ -81,8 +80,12 @@ button,button a{
     text-decoration: none;
 }
 
-.post{
-    width: 100%;
+.post-detail{
+    /* width: 100%; */
+    border-style: solid;
+    border-color: white;
+    padding: 20px;
+    margin-bottom: 10px;
 }
 
 

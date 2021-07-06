@@ -1,3 +1,4 @@
+from re import search
 from flask import Flask,render_template,redirect,request,flash,session
 from flask_bcrypt import Bcrypt #encrypt passwords 
 from flaskext.mysql import MySQL #allows flask and mysql connection
@@ -48,7 +49,7 @@ def calculate_post_time(post_date):
         if finished_post_time >0:
             if current_hour >12:
                 # print(str(finished_post_time) + ":" + str(split_hours[1]) + " pm")
-                return "Posted " + str(finished_post_time) + ":" + str(split_hours[1]) + " pm"
+                return str(finished_post_time) + ":" + str(split_hours[1]) + " pm"
             else:
                 # print(str(finished_post_time) + ":" + str(split_hours[1]) + " am")
                 return str(finished_post_time) + ":" + str(split_hours[1]) + " am"
@@ -89,12 +90,15 @@ def index():
         for i in mycursor:
             print(i)
 
-        return render_template("index.html",messages=lst[::-1])
+        return render_template("index.html",messages=lst[::-1],ALLOWED_EXTENSIONS=ALLOWED_EXTENSIONS)
 
     elif request.method=="POST":
         # print(request.form)
         post=request.form.get("post-field")
+        search_bar=request.form.get("search")
+        print(search_bar)
         file = request.files['file']
+        print(file)
         post_date=time.ctime()
 
         if file and allowed_file(file.filename):
@@ -118,6 +122,9 @@ def index():
 
                 mycursor.execute("INSERT INTO Post_Table (author,post_date,post,post_img) VALUES (%s,%s,%s,%s)", (session["username"],calculate_post_time(post_date),post,filename))
                 conn.commit()
+            return redirect("/")
+
+        elif "file" not in request.files :
             return redirect("/")
 
         mycursor.execute("INSERT INTO Post_Table (author,post_date,post) VALUES (%s,%s,%s)", (session["username"],calculate_post_time(post_date),post))
@@ -222,18 +229,18 @@ def create_account(page_id):
                 print(f"User created: {username}")
                 return redirect('/')
 
-@app.route("/profile")
-def profile():
+@app.route("/<username>")
+def profile(username):
     user_post=[]
     profile_stuff=[]
     if "username" in session:
         if request.method=="GET":
-            mycursor.execute(f'SELECT * FROM Post_Table WHERE author=%s',(session["username"]))
+            mycursor.execute(f'SELECT * FROM Post_Table WHERE author=%s',username)
             for i in mycursor:
                 # print(i)
                 user_post.append(i)
 
-            mycursor.execute(f"SELECT * FROM Twitter_Users WHERE username = %s",(session["username"]))
+            mycursor.execute(f"SELECT * FROM Twitter_Users WHERE username = %s",username)
             for i in mycursor:
                 # print(i)
                 profile_stuff.append(i)
@@ -245,7 +252,7 @@ def profile():
             print(files)
             # print(user_post)
             # print(profile_stuff)
-            return render_template("profile.html",user_post=user_post[::-1],profile_stuff=profile_stuff,files=files)
+            return render_template("profile.html",username=username,user_post=user_post[::-1],profile_stuff=profile_stuff,files=files,ALLOWED_EXTENSIONS=ALLOWED_EXTENSIONS)
 
     else:
         return redirect("/")
@@ -259,24 +266,24 @@ def logout():
     else:
         return redirect("/")
 
-@app.route("/clear")
-def clear():
+@app.route("/clear/<int:post_id>")
+def clear(post_id):
     lst.clear()
-    mycursor.execute(f"DELETE FROM Post_Table WHERE author=%s",(session["username"]))
+    mycursor.execute(f"DELETE FROM Post_Table WHERE personID=%s",(post_id))
     conn.commit()
     return redirect("/")
 
-@app.route("/profile/settings",methods=["GET","POST"])
-def profile_settings():
+@app.route("/profile/<username>/settings",methods=["GET","POST"])
+def profile_settings(username):
     user_post=[]
     profile_stuff=[]
     if request.method=="GET":
-        mycursor.execute(f'SELECT * FROM Post_Table WHERE author=%s',(session["username"]))
+        mycursor.execute(f'SELECT * FROM Post_Table WHERE author=%s',username)
         for i in mycursor:
             # print(i)
             user_post.append(i)
 
-        mycursor.execute(f"SELECT * FROM Twitter_Users WHERE username = %s",(session["username"]))
+        mycursor.execute(f"SELECT * FROM Twitter_Users WHERE username = %s",username)
         for i in mycursor:
             # print(i)
             profile_stuff.append(i)
@@ -290,7 +297,7 @@ def profile_settings():
         profile_banner=request.files["profile_banner"]
         profile_img=request.files["profile_img"]
 
-        mycursor.execute("UPDATE Twitter_Users SET profile_description = %s WHERE username = %s" ,(profile_description,session["username"]))
+        mycursor.execute("UPDATE Twitter_Users SET profile_description = %s WHERE username = %s" ,(profile_description,username))
 
         if profile_banner and allowed_file(profile_banner.filename):
             filename1 = secure_filename(profile_banner.filename)
@@ -301,7 +308,7 @@ def profile_settings():
             im1 = im.resize(newsize)
             im1.save(fr"{dirname}\{filename1}")
 
-            mycursor.execute("UPDATE Twitter_Users SET profile_description = %s,profile_banner = %s WHERE username = %s" ,(profile_description,filename1,session["username"]))
+            mycursor.execute("UPDATE Twitter_Users SET profile_description = %s,profile_banner = %s WHERE username = %s" ,(profile_description,filename1,username))
 
 
 
@@ -317,11 +324,21 @@ def profile_settings():
 
         
 
-            mycursor.execute("UPDATE Twitter_Users SET profile_description = %s,profile_img = %s WHERE username = %s" ,(profile_description,filename2,session["username"]))
+            mycursor.execute("UPDATE Twitter_Users SET profile_description = %s,profile_img = %s WHERE username = %s" ,(profile_description,filename2,username))
         conn.commit()
-        return redirect("/profile")
+        return redirect(f"/{session['username']}")
 
+@app.route("/<int:post_id>")
+def post(post_id):
+    user_post=[]
+    mycursor.execute(f'SELECT * FROM Post_Table WHERE personID=%s',post_id)
+    # mycursor.execute(f'SELECT * FROM Post_Table WHERE personID=%s AND author=%s',post_id,username)
+    for i in mycursor:
+        # print(i)
+        user_post.append(i)
 
+    return render_template("post.html",user_post=user_post,ALLOWED_EXTENSIONS=ALLOWED_EXTENSIONS)
+    
 
 if __name__=="__main__":
     app.run(debug=True)

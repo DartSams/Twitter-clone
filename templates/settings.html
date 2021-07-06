@@ -5,27 +5,37 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Settings</title>
+    <link rel="stylesheet" href="{{url_for('static',filename='settings.css')}}">
 </head>
 <body>
     <main>
-        <!-- {% for i in profile_stuff%}
-        <form action="" method="POST" enctype=multipart/form-data>
-            <input type="file" name="profile_banner"><br>
-            <input type="file" name="profile_img"><br>
-            <label for="profile_description">Biography:</label>
-            <input type="text" placeholder="{{i[10]}}" name="profile_description">
-            <input type="submit">
-        </form>
-        {%endfor%} -->
-        {% for i in profile_stuff%}
-        <form method=post enctype=multipart/form-data>
-            <input type=file name="profile_banner" value="{{i[11]}}">
-            <input type="file" name="profile_img" placeholder="{{i[12]}}">
-            <!-- <input type="text" name="profile_description" value="{{i[10]}}"> -->
-            <textarea name="profile_description" id="" cols="50" rows="5" style="resize: none;">{{i[10]}}</textarea>
-            <input type=submit value=Save>
-        </form>
-        {%endfor%}
+        <div class="setting-form">
+            <h2>Settings</h2>
+            {% for i in profile_stuff%}
+            <form method=post enctype=multipart/form-data>
+                <div class="each">
+                    <label for="profile-anner">Profile Banner:</label>
+                    <input type=file name="profile_banner" value="{{i[11]}}">
+                </div>
+                
+                <div class="each">
+                    <label for="profile-image">Profile Image:</label>
+                    <input type="file" name="profile_img" placeholder="{{i[12]}}">
+                </div>
+                
+                <div class="each">
+                    <label for="profile-description">Description:</label>
+                    <textarea name="profile_description" id="" cols="50" rows="7" style="resize: none;">{{i[10]}}</textarea>
+                </div>
+
+                <div style="float: right;">
+                   <input type=submit value=Save class="submit"> 
+                </div>
+                
+            </form>
+            {%endfor%}
+        </div>
+        
     </main>
 </body>
 </html>

@@ -5,5 +5,9 @@ in profile settings page add columns-profile description
 
 to get individual  post-assign post id inn db
 
-Try mp4 with audio
+when  user creates account also create folder to hold their images
+
+when user post text assign id to it and save it to a text file to be read later
+
+
 
