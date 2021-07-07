@@ -76,21 +76,21 @@
                             <!-- {{messages}} -->
                             {%for i in messages%}
                             <!-- {{session["username"]}} -->
-                            <div style="color: blue;">Author:{{i[0]}}</div>
-                            <div style="color: blue;">Post Date:{{i[1]}}</div>
-                            <div style="color: blue;">Post Time:{{i[2]}}</div>
-                            <div style="color: blue;">Post:{{i[3]}}</div>
-                            <div style="color: blue;">Post File:{{i[4]}}</div>
-                            <div style="color: blue;">Placeholder Date:{{i[5]}}</div>
-                            <div style="color: blue;">Post ID:{{i[6]}}</div>
-                            {{post_date}}
+                            <!-- <div style="color: blue;">Author:{{i[0]}}</div> -->
+                            <!-- <div style="color: blue;">Post Date:{{i[1]}}</div> -->
+                            <!-- <div style="color: blue;">Post Time:{{i[2]}}</div> -->
+                            <!-- <div style="color: blue;">Post:{{i[3]}}</div> -->
+                            <!-- <div style="color: blue;">Post File:{{i[4]}}</div> -->
+                            <!-- <div style="color: blue;">Placeholder Date:{{i[5]}}</div> -->
+                            <!-- <div style="color: blue;">Post ID:{{i[6]}}</div> -->
+
                             <a href="/{{i[6]}}">
                             <div class="post-detail">
                                 {% if i[1] == post_date %}
-                                <p class="post-name">By {{i[0]}} - {{i[1]}}</p>
+                                <p class="post-name">By {{i[0]}} - {{i[2]}}</p>
 
                                 {% else %}
-                                <p class="post-name">By {{i[0]}} - {{i[2]}}</p>
+                                <p class="post-name">By {{i[0]}} - {{i[5]}}</p>
 
                                 {%endif%}
 

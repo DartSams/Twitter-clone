@@ -42,12 +42,22 @@
                 {%for i in user_post%}
                     <!-- {{session["username"]}} -->
                     <div class="post-detail">
-                        <p class="post-name">By {{i[0]}} - {{i[1]}}
+
+                        {% if i[1] == post_date %}
+                        <p class="post-name">By {{i[0]}} - {{i[2]}}
                             {% if session["username"] == i[0] %}
-                            <!-- {{i[6]}} -->
                             <a href="/clear/{{i[6]}}" style="float: right; text-decoration: none; color:white">delete post</a>
                             {% endif %}
                         </p>
+                        {% else %}
+                            <p class="post-name">By {{i[0]}} - {{i[5]}}
+                                {% if session["username"] == i[0] %}
+                                <a href="/clear/{{i[6]}}" style="float: right; text-decoration: none; color:white">delete post</a>
+                                {% endif %}
+                            </p>
+
+                        {%endif%}
+
                         <p class="post-body">{{i[3].capitalize()}}</p>
                         
                         {% if i[4] != None %}

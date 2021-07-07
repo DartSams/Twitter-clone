@@ -86,10 +86,6 @@ def split_compare_date(full_date):
     print(compare_date)
     return compare_date
 
-# full_date="Tue Jan 6 12:11:51 2019"
-# print(split_compare_date(full_date))
-
-
 def split_current_date(current_post_date):
     current_post_date=current_post_date.split(" ")
     if "" in current_post_date:
@@ -103,9 +99,6 @@ def split_current_date(current_post_date):
     current_post_date=date.join(split_date)
     # print(current_post_date)
     return current_post_date.split(" ")
-
-# current_post_date=time.ctime()
-# print(split_current_date(current_post_date))
 
 def get_time_ago(date1):
     full_date="Tue Jul 1 12:11:51 2021"
@@ -127,21 +120,20 @@ def get_time_ago(date1):
             elif compare_date[1] != current_post_date[1]:
                 # print(f"{get_post_date_or_time()[1]} days ago")
                 day_difference=int(current_post_date[1])-int(compare_date[1])
-                print(f"{day_difference} days ago")
+                # print(f"{day_difference} days ago")
                 return f"{day_difference} days ago"
 
         elif compare_date[0] != current_post_date[0]:
             # print(f"{get_post_date_or_time()[0]} months ago")
             month_difference=month_dict[current_post_date[0]] - month_dict[compare_date[0]]
-            print(f"{month_difference} months ago")
+            # print(f"{month_difference} months ago")
             return f"{month_difference} months ago"
 
     elif compare_date[2] != current_post_date[2]:
         # print(f"{get_post_date_or_time()[2]} years ago")
         year_difference=int(current_post_date[2])-int(compare_date[2])
-        print(f"{year_difference} years ago")
+        # print(f"{year_difference} years ago")
         return f"{year_difference} years ago"
-
 
 
 def allowed_file(filename):
@@ -189,13 +181,9 @@ def index():
             # print(date,post_time)
 
 
-            # get_time_ago(i[1])
-            mycursor.execute("UPDATE Post_Table SET placeholder_date = %s WHERE AND post_date = %s" ,(get_time_ago(i[1]),date))
+            mycursor.execute("UPDATE Post_Table SET placeholder_date = %s WHERE post_date = %s" ,(get_time_ago(i[1]),date))
+            conn.commit()
         
-        # mycursor.executemany("Update Post_Table SET placeholder_date = %s where postID = %s",[(get_time_ago(i[1]), id)])
-        conn.commit()
-
-
         return render_template("index.html",messages=lst[::-1],ALLOWED_EXTENSIONS=ALLOWED_EXTENSIONS,post_date=split_compare_date(post_date))
 
     elif request.method=="POST":
@@ -232,12 +220,10 @@ def index():
         elif "file" not in request.files :
             return redirect("/")
 
-        mycursor.execute("INSERT INTO Post_Table (author,post_date,post_time,post) VALUES (%s,%s,%s,%s)", (session["username"],"Jul 4 2021",calculate_post_time(post_date),post))
+        mycursor.execute("INSERT INTO Post_Table (author,post_date,post_time,post) VALUES (%s,%s,%s,%s)", (session["username"],split_compare_date(post_date),calculate_post_time(post_date),post))
         conn.commit()
 
-
-
-        mycursor.execute("select * from Post_Table ORDER BY postID DESC LIMIT 1")
+        mycursor.execute("select * from Post_Table")
         for i in mycursor:
             # print(i)
             author=i[0]
@@ -250,12 +236,8 @@ def index():
             # print(date,post_time)
 
 
-            # get_time_ago(i[1])
-            # mycursor.execute("UPDATE Post_Table SET placeholder_date = %s WHERE author = %s AND postID = %s" ,(get_time_ago(i[1]),author,id))
-            # conn.commit()
-
-        # mycursor.executemany("Update Post_Table SET placeholder_date = %s where postID = %s",[(get_time_ago(i[1]), i[6] for i in mycursor)])
-        # conn.commit()
+            mycursor.execute("UPDATE Post_Table SET placeholder_date = %s WHERE post_date = %s" ,(get_time_ago(i[1]),date))
+            conn.commit()
 
         return redirect("/")
             
@@ -361,6 +343,7 @@ def create_account(page_id):
 def profile(username):
     user_post=[]
     profile_stuff=[]
+    post_date=time.ctime()
     if "username" in session:
         if request.method=="GET":
             mycursor.execute(f'SELECT * FROM Post_Table WHERE author=%s',username)
@@ -380,7 +363,7 @@ def profile(username):
             print(files)
             # print(user_post)
             # print(profile_stuff)
-            return render_template("profile.html",username=username,user_post=user_post[::-1],profile_stuff=profile_stuff,files=files,ALLOWED_EXTENSIONS=ALLOWED_EXTENSIONS)
+            return render_template("profile.html",username=username,user_post=user_post[::-1],profile_stuff=profile_stuff,files=files,ALLOWED_EXTENSIONS=ALLOWED_EXTENSIONS,post_date=split_compare_date(post_date))
 
     else:
         return redirect("/")
@@ -420,8 +403,8 @@ def profile_settings(username):
 
     elif request.method=="POST":
         profile_description=request.form['profile_description']
-        print(request.form)
-        print(request.files)
+        # print(request.form)
+        # print(request.files)
         profile_banner=request.files["profile_banner"]
         profile_img=request.files["profile_img"]
 
@@ -459,15 +442,15 @@ def profile_settings(username):
 @app.route("/<int:post_id>")
 def post(post_id):
     user_post=[]
+    post_date=time.ctime()
     mycursor.execute(f'SELECT * FROM Post_Table WHERE postID=%s',post_id)
     # mycursor.execute(f'SELECT * FROM Post_Table WHERE personID=%s AND author=%s',post_id,username)
     for i in mycursor:
         # print(i)
         user_post.append(i)
 
-    return render_template("post.html",user_post=user_post,ALLOWED_EXTENSIONS=ALLOWED_EXTENSIONS)
+    return render_template("post.html",user_post=user_post,ALLOWED_EXTENSIONS=ALLOWED_EXTENSIONS,post_date=split_compare_date(post_date))
     
-
 @app.route("/test")
 def test():
     post_date=time.ctime()
