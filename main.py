@@ -41,16 +41,17 @@ month_dict={
     "Apr":4,
     "May":5,
     "Jun":6,
-    "Jul":7
+    "Jul":7,
+    "Aug":8
 }
 
 def calculate_post_time(post_date):
-    post_date=time.ctime()
-    print(post_date)
-
+    # post_date=time.ctime()
     ## return correct posted hours
     split_date=post_date.split(" ")
-    split_hours=split_date[4].split(":")
+    if "" in split_date:
+        split_date.remove("")
+    split_hours=split_date[3].split(":")
     current_hour=int(split_hours[0])
     if current_hour >12:
         finished_post_time=current_hour-12
@@ -68,6 +69,7 @@ def calculate_post_time(post_date):
         return str(current_hour) + ":" + str(split_hours[1]) + " am"
 
     elif current_hour <12:
+        # print(str(current_hour) + ":" + str(split_hours[1]) + " am")
         return str(current_hour) + ":" + str(split_hours[1]) + " am"
 
 def split_compare_date(full_date):
@@ -83,7 +85,7 @@ def split_compare_date(full_date):
     split_date=[month,day,year]
     date=" "
     compare_date=date.join(split_date)
-    print(compare_date)
+    # print(compare_date)
     return compare_date
 
 def split_current_date(current_post_date):
@@ -109,14 +111,17 @@ def get_time_ago(date1):
 
 
     if compare_date[2] == current_post_date[2]:
-        print("Same year") 
+        # print("Same year") 
+        pass
 
         if compare_date[0] == current_post_date[0]:
-            print("same month")
+            # print("same month")
+            pass
 
             if compare_date[1] == current_post_date[1]:
-                print("same day")
-            
+                # print("same day")
+                pass
+    
             elif compare_date[1] != current_post_date[1]:
                 # print(f"{get_post_date_or_time()[1]} days ago")
                 day_difference=int(current_post_date[1])-int(compare_date[1])
@@ -135,6 +140,23 @@ def get_time_ago(date1):
         # print(f"{year_difference} years ago")
         return f"{year_difference} years ago"
 
+def change_dates(date_lst):
+    mycursor.execute("select * from Post_Table")
+    for i in mycursor:
+        # print(i)
+        author=i[0]
+        date=i[1]
+        post_time=i[2]
+        post=i[3]
+        post_file=i[4]
+        placeholder_date=i[5]
+        id=i[6]
+        date_lst.append(date)
+        # print(date,post_time)
+
+    for date in date_lst:
+        mycursor.execute("UPDATE Post_Table SET placeholder_date = %s WHERE post_date = %s" ,(get_time_ago(date),date))
+        conn.commit()
 
 def allowed_file(filename):
     # print(filename)
@@ -148,6 +170,9 @@ def allowed_file(filename):
 
 @app.route("/",methods=["GET","POST"])
 def index():
+    date_lst=[]
+    change_dates(date_lst)
+    date_lst.clear()
     if request.method=="GET":
         lst.clear()
         post_date=time.ctime()
@@ -167,22 +192,6 @@ def index():
         # mycursor.execute(f"SELECT * FROM Post_Table")
         # for i in mycursor:
         #     print(i)
-
-        mycursor.execute("select * from Post_Table")
-        for i in mycursor:
-            # print(i)
-            author=i[0]
-            date=i[1]
-            post_time=i[2]
-            post=i[3]
-            post_file=i[4]
-            placeholder_date=i[5]
-            id=i[6]
-            # print(date,post_time)
-
-
-            mycursor.execute("UPDATE Post_Table SET placeholder_date = %s WHERE post_date = %s" ,(get_time_ago(i[1]),date))
-            conn.commit()
         
         return render_template("index.html",messages=lst[::-1],ALLOWED_EXTENSIONS=ALLOWED_EXTENSIONS,post_date=split_compare_date(post_date))
 
@@ -222,22 +231,6 @@ def index():
 
         mycursor.execute("INSERT INTO Post_Table (author,post_date,post_time,post) VALUES (%s,%s,%s,%s)", (session["username"],split_compare_date(post_date),calculate_post_time(post_date),post))
         conn.commit()
-
-        mycursor.execute("select * from Post_Table")
-        for i in mycursor:
-            # print(i)
-            author=i[0]
-            date=i[1]
-            post_time=i[2]
-            post=i[3]
-            post_file=i[4]
-            placeholder_date=i[5]
-            id=i[6]
-            # print(date,post_time)
-
-
-            mycursor.execute("UPDATE Post_Table SET placeholder_date = %s WHERE post_date = %s" ,(get_time_ago(i[1]),date))
-            conn.commit()
 
         return redirect("/")
             
@@ -360,7 +353,7 @@ def profile(username):
                 flash("No Post Yet")
                 
             files=os.listdir(dirname)
-            print(files)
+            # print(files)
             # print(user_post)
             # print(profile_stuff)
             return render_template("profile.html",username=username,user_post=user_post[::-1],profile_stuff=profile_stuff,files=files,ALLOWED_EXTENSIONS=ALLOWED_EXTENSIONS,post_date=split_compare_date(post_date))
@@ -451,12 +444,5 @@ def post(post_id):
 
     return render_template("post.html",user_post=user_post,ALLOWED_EXTENSIONS=ALLOWED_EXTENSIONS,post_date=split_compare_date(post_date))
     
-@app.route("/test")
-def test():
-    post_date=time.ctime()
-    mycursor.execute("INSERT INTO Post_Table (author,post_date,post) VALUES (%s,%s,%s)", (session["username"],calculate_post_time(post_date),post))
-    conn.commit()
-    return render_template("test.html")
-
 if __name__=="__main__":
     app.run(debug=True)

@@ -109,11 +109,13 @@ def calculate_post_time(table_name):
     mycursor.execute(f"SELECT * FROM {table_name}")
 
     split_date=post_date.split(" ")
-    # print(split_date)
-    split_hours=split_date[4].split(":")
-    # print(split_hours)
+    if "" in split_date:
+        split_date.remove("")
+    print(split_date)
+    split_hours=split_date[3].split(":")
+    print(split_hours)
     current_hour=int(split_hours[0])
-    # print(current_hour)
+    print(current_hour)
     if current_hour >12:
         finished_post_time=current_hour-12
 
@@ -130,9 +132,9 @@ def calculate_post_time(table_name):
     elif current_hour <12:
         return str(current_hour) + ":" + str(split_hours[1]) + " am"
     
+# calculate_post_time("Post_Table")
 
-
-# print(calculate_post_time("Post_Table"))
+print(calculate_post_time("Post_Table"))
 # calculate_post_time("Post_Table")
 
 
@@ -153,6 +155,8 @@ def split_compare_date(full_date):
 
 # full_date="Tue Jan 6 12:11:51 2019"
 # print(split_compare_date(full_date))
+
+
 
 
 def split_current_date(current_post_date):
@@ -180,7 +184,8 @@ month_dict={
     "Apr":4,
     "May":5,
     "Jun":6,
-    "Jul":7
+    "Jul":7,
+    "Aug":8
 }
 
 
@@ -296,6 +301,7 @@ post_date=time.ctime()
 # split_compare_date(post_date)
 
 def get_time_ago(date1):
+    # print(date1)
     # return "hell hole"
     full_date="Tue Jul 1 12:11:51 2021"
     current_post_date=time.ctime()
@@ -331,100 +337,33 @@ def get_time_ago(date1):
         print(f"{year_difference} years ago")
         return f"{year_difference} years ago"
 
-
-# mycursor.execute("select * from Post_Table ORDER BY postID DESC LIMIT 1")
+# lst=[]
+# mycursor.execute("select * from Post_Table")
 # for i in mycursor:
 #     # print(i)
 #     author=i[0]
 #     date=i[1]
+#     # print(date)
 #     post_time=i[2]
 #     post=i[3]
 #     post_file=i[4]
 #     placeholder_date=i[5]
 #     id=i[6]
+#     lst.append(date)
 
 
-#     # get_time_ago(i[1])
-#     a=get_time_ago(i[1])
-#     print(a)
-#     mycursor.execute("UPDATE Post_Table SET placeholder_date = %s WHERE post_date = %s" ,(a,date))
+# for i in lst:
+#     # print(i)
+#     a=get_time_ago(i)
+#     # # print(a)
+#     mycursor.execute("UPDATE Post_Table SET placeholder_date = %s WHERE post_date = %s" ,(a,i))
 #     db.commit()
 
+# print("Winner | "*20)
 # mycursor.execute("select * from Post_Table")
 # for i in mycursor:
 #     print(i)
 
-def split_compare_date(full_date):
-    # print(full_date)
-    full_date=full_date.split(" ")
-    if "" in full_date:
-        full_date.remove("")
-
-    month=full_date[1]
-    day=full_date[2]
-    year=full_date[4]
-    # print(full_date)
-    split_date=[month,day,year]
-    date=" "
-    compare_date=date.join(split_date)
-    print(compare_date)
-    return compare_date
-
-# full_date="Tue Jan 6 12:11:51 2019"
-full_date=time.ctime()
-print(split_compare_date(full_date))
 
 
-def split_current_date(current_post_date):
-    current_post_date=current_post_date.split(" ")
-    if "" in current_post_date:
-        current_post_date.remove("")
-    # print(post_date)
-    month=current_post_date[1]
-    day=current_post_date[2]
-    year=current_post_date[4]
-    split_date=[month,day,year]
-    date=" "
-    current_post_date=date.join(split_date)
-    # print(current_post_date)
-    return current_post_date.split(" ")
-
-# current_post_date=time.ctime()
-# print(split_compare_date(current_post_date))
-# print("--"*20)
-
-def get_time_ago(date1):
-    full_date="Tue Jul 1 12:11:51 2021"
-    current_post_date=time.ctime()
-    # compare_date=split_compare_date(date1)
-    compare_date=date1.split(" ")
-    current_post_date=split_current_date(current_post_date)
-
-
-    if compare_date[2] == current_post_date[2]:
-        print("Same year") 
-
-        if compare_date[0] == current_post_date[0]:
-            print("same month")
-
-            if compare_date[1] == current_post_date[1]:
-                print("same day")
-            
-            elif compare_date[1] != current_post_date[1]:
-                # print(f"{get_post_date_or_time()[1]} days ago")
-                day_difference=int(current_post_date[1])-int(compare_date[1])
-                # print(f"{day_difference} days ago")
-                return f"{day_difference} days ago"
-
-        elif compare_date[0] != current_post_date[0]:
-            # print(f"{get_post_date_or_time()[0]} months ago")
-            month_difference=month_dict[current_post_date[0]] - month_dict[compare_date[0]]
-            # print(f"{month_difference} months ago")
-            return f"{month_difference} months ago"
-
-    elif compare_date[2] != current_post_date[2]:
-        # print(f"{get_post_date_or_time()[2]} years ago")
-        year_difference=int(current_post_date[2])-int(compare_date[2])
-        # print(f"{year_difference} years ago")
-        return f"{year_difference} years ago"
 
