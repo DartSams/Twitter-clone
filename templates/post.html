@@ -40,52 +40,45 @@
             <div class="post">
                 {{user_post}}
                 {%for i in user_post%}
-                <!-- {{session["username"]}} -->
-                <div class="post-detail">
-                    <p class="post-name">By {{i[0]}} - {{i[1]}}
-                        {% if session["username"] == i[0] %}
-                        <a href="/clear/{{i[4]}}" style="float: right; text-decoration: none; color:white">delete post</a>
-                        {% endif %}
-                    </p>
-                    <p class="post-body">{{i[2].capitalize()}}</p>
-                    
-                    <!-- {% if i[3] != None %} -->
-                        <!-- <img src='/static/preview_img/{{i[3]}}' alt="{{i[3]}}"> -->
+                    <!-- {{session["username"]}} -->
+                    <div class="post-detail">
+                        <p class="post-name">By {{i[0]}} - {{i[1]}}
+                            {% if session["username"] == i[0] %}
+                            <!-- {{i[6]}} -->
+                            <a href="/clear/{{i[6]}}" style="float: right; text-decoration: none; color:white">delete post</a>
+                            {% endif %}
+                        </p>
+                        <p class="post-body">{{i[3].capitalize()}}</p>
                         
-                    <!-- {{i[3].split(".")}}
-                    <br>
-                    {{i[3].split(".")[0].replace("_"," ")}}
-                    <br>
-                    {{i[3].split(".")[1]}} -->
+                        {% if i[4] != None %}
+                            {% if 'mp4' == i[4].split(".")[1] %}
+                                <video controls width="320" height="240">
+                                    <source src="/static/preview_img/{{i[4].split('.')[0]}}.{{i[4].split('.')[1]}}" type="video/{{i[4].split('.')[1]}}">
+                                Your browser does not support the audio element.
+                                </video>
 
-                    {% if 'mp4' == i[3].split(".")[1] %}
-                        <video controls width="320" height="240">
-                            <source src="/static/preview_img/{{i[3].split('.')[0]}}.{{i[3].split('.')[1]}}" type="video/{{i[3].split('.')[1]}}">
-                        Your browser does not support the audio element.
-                        </video>
+                            {%elif 'mp3' == i[4].split(".")[1]%}
+                                <audio controls width="320" height="240">
+                                    <source src="/static/preview_img/{{i[4].split('.')[0]}}.{{i[4].split('.')[1]}}" type="audio/{{i[4].split('.')[1]}}">
+                                Your browser does not support the audio element.
+                                </audio>
 
-                    {%elif 'mp3' == i[3].split(".")[1]%}
-                        <audio controls width="320" height="240">
-                            <source src="/static/preview_img/{{i[3].split('.')[0]}}.{{i[3].split('.')[1]}}" type="audio/{{i[3].split('.')[1]}}">
-                        Your browser does not support the audio element.
-                        </audio>
+                            {%endif%}
 
-                    {%endif%}
+                            {% for pic_type in ALLOWED_EXTENSIONS%}
+                                {% if pic_type == i[4].split(".")[1] %}
+                                    <img src="/static/preview_img/{{i[4]}}" alt="">
+                                    <!-- {{i[4]}} -->
+                                {%endif%}
+                                <!-- {{pic_type}} -->
+                            {%endfor%}
 
-                    {% for pic_type in ALLOWED_EXTENSIONS%}
-                        {% if pic_type == i[3].split(".")[1] %}
-                            <img src="/static/preview_img/{{i[3]}}" alt="">
-                            <!-- {{i[3]}} -->
                         {%endif%}
-                        <!-- {{pic_type}} -->
-                    {%endfor%}
 
-                    <!-- {%endif%} -->
-
-                    <!-- <p class="post-date">Posted {{i[1]}}</p> -->
-                    <!-- <p>post ID = {{i[4]}}</p> -->
-                </div>
-                {%endfor%} 
+                        <!-- <p class="post-date">Posted {{i[1]}}</p> -->
+                        <!-- <p>post ID = {{i[4]}}</p> -->
+                    </div>
+                    {%endfor%} 
             </div>
             
     </main>
