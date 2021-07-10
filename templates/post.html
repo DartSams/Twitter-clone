@@ -4,7 +4,13 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    {% for i in user_post %}
+        {% if i[3] != "" %}
+            <title>{{i[0]}} on Twitter:"{{i[3].capitalize()}}"</title>
+        {% else %}
+            <title>{{i[0]}}'s Post</title>
+        {%endif%}
+    {%endfor%}
     <link rel="stylesheet" href="{{url_for('static',filename='post.css')}}">
 </head>
 <body>
@@ -88,7 +94,73 @@
                         <!-- <p class="post-date">Posted {{i[1]}}</p> -->
                         <!-- <p>post ID = {{i[4]}}</p> -->
                     </div>
-                    {%endfor%} 
+                    {%endfor%}
+
+                    <form action="" method="POST" enctype=multipart/form-data>
+                        <textarea name="comment-field" id="" cols="50" rows="5" placeholder="Type Here"></textarea>
+                        <div class="form-buttons">
+                            <input type="file" name="file" style="color: white;">
+                            <!-- <input type="submit" value="Post"> -->
+                            <button type="submit">Post</button>
+                        </div>
+                    </form>
+
+                    <h1>Comments</h1>
+                    {%for i in comments%}
+                        <!-- {{session["username"]}} -->
+                        <!-- <div style="color: blue;">Author:{{i[0]}}</div>
+                        <div style="color: blue;">Post Date:{{i[1]}}</div>
+                        <div style="color: blue;">Post Time:{{i[2]}}</div>
+                        <div style="color: blue;">Post:{{i[3]}}</div>
+                        <div style="color: blue;">Post File:{{i[4]}}</div>
+                        <div style="color: blue;">Placeholder Date:{{i[5]}}</div>
+                        <div style="color: blue;">Post ID:{{i[6]}}</div> -->
+                        <div class="post-detail">
+                            {% if i[1] == post_date %}
+                                <p class="post-name">By <a href="/{{i[0]}}">{{i[0]}}</a> - {{i[2]}}</p>
+                            {% else %}
+                                <p class="post-name">By {{i[0]}} - {{i[5]}}</p>
+                            {%endif%}
+
+                            <p class="post-body">{{i[3].capitalize()}}</p>
+                            
+                            {% if i[4] != None %}
+                                {% if 'mp4' == i[4].split(".")[1] %}
+                                    <video controls width="320" height="240">
+                                        <source src="/static/preview_img/{{i[4].split('.')[0]}}.{{i[4].split('.')[1]}}" type="video/{{i[4].split('.')[1]}}">
+                                    Your browser does not support the audio element.
+                                    </video>
+
+                                {%elif 'mp3' == i[4].split(".")[1]%}
+                                    <audio controls width="320" height="240">
+                                        <source src="/static/preview_img/{{i[4].split('.')[0]}}.{{i[4].split('.')[1]}}" type="audio/{{i[4].split('.')[1]}}">
+                                    Your browser does not support the audio element.
+                                    </audio>
+
+                                {%endif%}
+
+                                {% for pic_type in ALLOWED_EXTENSIONS%}
+                                    {% if pic_type == i[4].split(".")[1] %}
+                                        <img src="/static/preview_img/{{i[4]}}" alt="">
+                                    {%endif%}
+                                {%endfor%}
+                            {%endif%}
+                        </div>
+                    {%endfor%}
+
+                    {% if not comments%}
+                    <p style="color:white">
+                        {% with messages = get_flashed_messages()%}
+                            {% if messages %}
+                                {% for message in messages%}
+                                    {{message}}
+                                    <br>
+                                    <br>
+                                {%endfor%}
+                            {%endif%}
+                        {%endwith%}
+                    </p>
+                    {%endif%}
             </div>
             
     </main>

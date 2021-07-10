@@ -432,17 +432,61 @@ def profile_settings(username):
         conn.commit()
         return redirect(f"/{session['username']}")
 
-@app.route("/<int:post_id>")
+@app.route("/<int:post_id>",methods=["GET","POST"])
 def post(post_id):
     user_post=[]
+    comments=[]
     post_date=time.ctime()
-    mycursor.execute(f'SELECT * FROM Post_Table WHERE postID=%s',post_id)
-    # mycursor.execute(f'SELECT * FROM Post_Table WHERE personID=%s AND author=%s',post_id,username)
-    for i in mycursor:
-        # print(i)
-        user_post.append(i)
+    if request.method=="GET":
+        mycursor.execute(f'SELECT * FROM Post_Table WHERE postID=%s',post_id)
+        # mycursor.execute(f'SELECT * FROM Post_Table WHERE personID=%s AND author=%s',post_id,username)
+        for i in mycursor:
+            # print(i)
+            user_post.append(i)
 
-    return render_template("post.html",user_post=user_post,ALLOWED_EXTENSIONS=ALLOWED_EXTENSIONS,post_date=split_compare_date(post_date))
+        mycursor.execute(f'SELECT * FROM Comments WHERE commentID=%s',post_id)
+        for i in mycursor:
+            comments.append(i)
+
+        if not comments:
+            flash("No comments yet")
+
+        return render_template("post.html",user_post=user_post,ALLOWED_EXTENSIONS=ALLOWED_EXTENSIONS,post_date=split_compare_date(post_date),comments=comments[::-1])
     
+    elif request.method=="POST":
+        comment=request.form.get("comment-field")
+        file = request.files['file']
+        # print(file)
+
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+
+            try:
+                im = Image.open(fr"{dirname}\{filename}")
+                newsize = (100,100)
+                im1 = im.resize(newsize)
+                im1.save(fr"{dirname}\{filename}")
+
+            except:
+                pass
+
+            # mycursor.execute("select * from Comments ORDER BY commentID DESC LIMIT 1")
+            # for i in mycursor:
+            #     print(i)
+            #     id=i[4]
+            #     # print(id)
+
+            mycursor.execute("INSERT INTO Comments (author,post_date,post_time,comment,post_file,commentID) VALUES (%s,%s,%s,%s,%s,%s)", (session["username"],split_compare_date(post_date),calculate_post_time(post_date),comment,filename,post_id))
+            conn.commit()
+            return redirect(f"/{post_id}")
+
+        elif "file" not in request.files :
+            return redirect(f"/{post_id}")
+
+        mycursor.execute("INSERT INTO Comments (author,post_date,post_time,comment,commentID) VALUES (%s,%s,%s,%s,%s)", (session["username"],split_compare_date(post_date),calculate_post_time(post_date),comment,post_id))
+        conn.commit()
+        return redirect(f"/{post_id}")
+
 if __name__=="__main__":
     app.run(debug=True)

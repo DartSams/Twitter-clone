@@ -82,3 +82,57 @@ p{
     padding: 20px;
     width:500px
 }
+
+form {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 10px;
+    /* width: 100%; */
+
+    /* width:500px;
+    border-style: solid;
+    border-color: white;
+    padding: 20px;
+    margin-bottom: 10px; */
+}
+
+textarea{
+    resize: none;
+    background-color: black;
+    border:none;
+    color:white;
+}
+
+.form-buttons{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-top: 10px;
+}
+
+h1,h2,h3{
+    color:white
+}
+
+button,button a{
+    color: black;
+    text-decoration: none;
+}
+
+
+.post-board p{
+    color: white;
+    text-decoration: none;
+}
+
+.post-detail{
+    border-style: solid;
+    border-color: white;
+    padding: 20px;
+    margin-bottom: 10px;
+}
+
+img{
+    width:450px;
+    /* height:200px */
+}
