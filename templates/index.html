@@ -8,6 +8,7 @@
 
     <!-- <link rel="stylesheet" type= "text/css" href="\twitter clone\static\index.css"> -->
     <link rel="stylesheet" href="{{url_for('static',filename='index.css')}}">
+    <script type=text/javascript src="{{url_for('static', filename='javascript/main.js') }}"></script>
 </head>
 
 <!-- <header class="flex-container-header">
@@ -54,6 +55,7 @@
                     <a href="/profile" >{{session["username"]}}</a>
                     <a href="/logout" >Logout</a>  
                 </div> -->
+
             </div>
             
             <!-- <div class="login_create"> -->
@@ -119,8 +121,23 @@
 
                                 {%endif%}
                             </a> 
+                            <div class="post-buttons">
+                                <label for="reply" onclick="myFunction()">Reply</label>
+                                <!-- <input type="image" src="/static/preview_img/6Ty5edK8c.png"> -->
+
+                                <label for="retweet" onclick="myFunction()">Retweet</label>
+                                <!-- <input type="image" src="/static/preview_img/6Ty5edK8c.png"> -->
+
+                                <label for="like" id="like" onclick="myFunction()">Like</label>
+                                <input type="image" src="/static/preview_img/6Ty5edK8c.png" >
+
+                                <label for="share" onclick="myFunction()">Share</label>
+                                <!-- <input type="image" src="/static/preview_img/6Ty5edK8c.png"> -->
+                            </div>
+                            
                             </div>
                             {%endfor%}
+
                             
                         </div>
                     </div>

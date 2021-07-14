@@ -150,3 +150,21 @@ button,button a{
 .try{
     margin-right: 100px;
 } */
+.post-buttons{
+    display:flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.post-buttons label{
+    color:white
+}
+.post-buttons input{
+    width:30px
+}
+.heart:after {
+    content: '\2665';
+    color: red;
+    width:400px;
+    height:auto
+  }

@@ -42,7 +42,11 @@ month_dict={
     "May":5,
     "Jun":6,
     "Jul":7,
-    "Aug":8
+    "Aug":8,
+    "Sep":9,
+    "Oct":10,
+    "Nov":11,
+    "Dec":12
 }
 
 def calculate_post_time(post_date):
@@ -65,7 +69,8 @@ def calculate_post_time(post_date):
                 # print(str(finished_post_time) + ":" + str(split_hours[1]) + " am")
                 return str(finished_post_time) + ":" + str(split_hours[1]) + " am"
 
-    elif current_hour == 12:
+    elif current_hour == 12 or current_hour == 0:
+        current_hour=12
         return str(current_hour) + ":" + str(split_hours[1]) + " am"
 
     elif current_hour <12:
@@ -140,7 +145,7 @@ def get_time_ago(date1):
         # print(f"{year_difference} years ago")
         return f"{year_difference} years ago"
 
-def change_dates(date_lst):
+def change_dates(table_name,date_lst):
     mycursor.execute("select * from Post_Table")
     for i in mycursor:
         # print(i)
@@ -155,7 +160,7 @@ def change_dates(date_lst):
         # print(date,post_time)
 
     for date in date_lst:
-        mycursor.execute("UPDATE Post_Table SET placeholder_date = %s WHERE post_date = %s" ,(get_time_ago(date),date))
+        mycursor.execute(f"UPDATE {table_name} SET placeholder_date = %s WHERE post_date = %s" ,(get_time_ago(date),date))
         conn.commit()
 
 def allowed_file(filename):
@@ -168,10 +173,12 @@ def allowed_file(filename):
     else:
         return False
 
+
+
 @app.route("/",methods=["GET","POST"])
 def index():
     date_lst=[]
-    change_dates(date_lst)
+    change_dates("Post_Table",date_lst)
     date_lst.clear()
     if request.method=="GET":
         lst.clear()
@@ -337,29 +344,38 @@ def profile(username):
     user_post=[]
     profile_stuff=[]
     post_date=time.ctime()
-    if "username" in session:
-        if request.method=="GET":
-            mycursor.execute(f'SELECT * FROM Post_Table WHERE author=%s',username)
-            for i in mycursor:
-                # print(i)
-                user_post.append(i)
+    # if "username" in session:
+    if request.method=="GET":
+        mycursor.execute(f'SELECT * FROM Post_Table WHERE author=%s',username)
+        for i in mycursor:
+            print(i)
+            user_post.append(i)
+        
 
-            mycursor.execute(f"SELECT * FROM Twitter_Users WHERE username = %s",username)
-            for i in mycursor:
-                # print(i)
-                profile_stuff.append(i)
+
+        mycursor.execute(f"SELECT * FROM Twitter_Users WHERE username = %s",username)
+        for i in mycursor:
+            # print(i)
+            profile_stuff.append(i)
+        
+
+        mycursor.execute(f"SELECT * FROM Twitter_Users where username = %s",(username))
+        myresult = mycursor.fetchone()
+
+        if myresult == None:
+            flash("This user does not exist")
+
+        elif not user_post:
+            flash("No post yet")
             
-            if not user_post:
-                flash("No Post Yet")
-                
-            files=os.listdir(dirname)
-            # print(files)
-            # print(user_post)
-            # print(profile_stuff)
-            return render_template("profile.html",username=username,user_post=user_post[::-1],profile_stuff=profile_stuff,files=files,ALLOWED_EXTENSIONS=ALLOWED_EXTENSIONS,post_date=split_compare_date(post_date))
+        files=os.listdir(dirname)
+        # print(files)
+        # print(user_post)
+        # print(profile_stuff)
+        return render_template("profile.html",username=username,user_post=user_post[::-1],profile_stuff=profile_stuff,files=files,ALLOWED_EXTENSIONS=ALLOWED_EXTENSIONS,post_date=split_compare_date(post_date))
 
-    else:
-        return redirect("/")
+    # else:
+    #     return redirect("/")
 
 @app.route('/logout')
 def logout():
@@ -436,6 +452,8 @@ def profile_settings(username):
 def post(post_id):
     user_post=[]
     comments=[]
+    date_lst=[]
+    change_dates("Comments",date_lst)
     post_date=time.ctime()
     if request.method=="GET":
         mycursor.execute(f'SELECT * FROM Post_Table WHERE postID=%s',post_id)

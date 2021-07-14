@@ -96,25 +96,27 @@
                     </div>
                     {%endfor%}
 
-                    <form action="" method="POST" enctype=multipart/form-data>
-                        <textarea name="comment-field" id="" cols="50" rows="5" placeholder="Type Here"></textarea>
-                        <div class="form-buttons">
-                            <input type="file" name="file" style="color: white;">
-                            <!-- <input type="submit" value="Post"> -->
-                            <button type="submit">Post</button>
-                        </div>
-                    </form>
+                    {% if "username" in session %}
+                        <form action="" method="POST" enctype=multipart/form-data>
+                            <textarea name="comment-field" id="" cols="50" rows="5" placeholder="Type Here"></textarea>
+                            <div class="form-buttons">
+                                <input type="file" name="file" style="color: white;">
+                                <!-- <input type="submit" value="Post"> -->
+                                <button type="submit">Post</button>
+                            </div>
+                        </form>
+                    {%endif%}
 
                     <h1>Comments</h1>
                     {%for i in comments%}
                         <!-- {{session["username"]}} -->
-                        <!-- <div style="color: blue;">Author:{{i[0]}}</div>
+                        <div style="color: blue;">Author:{{i[0]}}</div>
                         <div style="color: blue;">Post Date:{{i[1]}}</div>
                         <div style="color: blue;">Post Time:{{i[2]}}</div>
                         <div style="color: blue;">Post:{{i[3]}}</div>
                         <div style="color: blue;">Post File:{{i[4]}}</div>
                         <div style="color: blue;">Placeholder Date:{{i[5]}}</div>
-                        <div style="color: blue;">Post ID:{{i[6]}}</div> -->
+                        <div style="color: blue;">Post ID:{{i[6]}}</div>
                         <div class="post-detail">
                             {% if i[1] == post_date %}
                                 <p class="post-name">By <a href="/{{i[0]}}">{{i[0]}}</a> - {{i[2]}}</p>
