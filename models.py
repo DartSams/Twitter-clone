@@ -366,6 +366,15 @@ def get_time_ago(date1):
 # for i in mycursor:
 #     print(i)
 
+import json
+mycursor=db.cursor(buffered=True,dictionary=True)
 
 
-
+mycursor.execute(f"SELECT* FROM Twitter_Users WHERE username = 'dartsams'")
+# rv = mycursor.fetchall()
+# json_data=[]
+# for result in rv:
+#     json_data.append(result)
+# x= json.dumps(dict(json_data))
+for i in mycursor:
+    print(i)

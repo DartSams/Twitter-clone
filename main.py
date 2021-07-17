@@ -1,5 +1,5 @@
 from re import search
-from flask import Flask,render_template,redirect,request,flash,session
+from flask import Flask,render_template,redirect,request,flash,session,jsonify
 from flask_bcrypt import Bcrypt #encrypt passwords 
 from flaskext.mysql import MySQL #allows flask and mysql connection
 from werkzeug.utils import secure_filename #upload images
@@ -7,6 +7,7 @@ from dotenv import load_dotenv #to get env variables for db connection
 import os
 import time
 from PIL import Image
+import json
 load_dotenv()
 
 
@@ -506,5 +507,31 @@ def post(post_id):
         conn.commit()
         return redirect(f"/{post_id}")
 
+
+@app.route("/test" ,methods=["get","post"])
+def test():
+    user = {'firstname': "Finn", 'lastname': "The Human"}
+    # conn=mysql.connect(dictionary=True)
+
+
+
+
+    # x=mycursor.execute(f"SELECT* FROM Twitter_Users WHERE username = 'dartsams'")
+    # rv = mycursor.fetchall()
+    # json_data=[]
+    # for result in rv:
+    #     json_data.append(dict(result))
+    # x= json.dumps(json_data)
+
+
+    # cur = mysql.connection.cursor()
+    mycursor.execute('''SELECT * FROM Post_Table ''')
+    row_headers=[x[0] for x in mycursor.description] #this will extract row headers
+    rv = mycursor.fetchall()
+    json_data=[]
+    for result in rv:
+        json_data.append(dict(zip(row_headers,result)))
+    # x= json.dumps(json_data)
+    return render_template("test.html",user=user,x=json_data)
 if __name__=="__main__":
     app.run(debug=True)

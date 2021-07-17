@@ -74,7 +74,7 @@
                     {%endif%}
 
                     <div class="post-board">
-                        <div class="post">
+                        <div class="post" >
                             <!-- {{messages}} -->
                             {%for i in messages%}
                             <!-- {{session["username"]}} -->
@@ -87,7 +87,7 @@
                             <div style="color: blue;">Post ID:{{i[6]}}</div> -->
 
                             <a href="/{{i[6]}}">
-                            <div class="post-detail">
+                            <div class="post-detail" >
                                 {% if i[1] == post_date %}
                                 <p class="post-name">By {{i[0]}} - {{i[2]}}</p>
 
@@ -128,8 +128,8 @@
                                 <label for="retweet" onclick="myFunction()">Retweet</label>
                                 <!-- <input type="image" src="/static/preview_img/6Ty5edK8c.png"> -->
 
-                                <label for="like" id="like" onclick="myFunction()">Like</label>
-                                <input type="image" src="/static/preview_img/6Ty5edK8c.png" >
+                                <!-- <label for="like" id="like" onclick="myFunction()">Like</label> -->
+                                <input type="image" src="/static/preview_img/black heart.png" onclick="searchPost()" id="like">
 
                                 <label for="share" onclick="myFunction()">Share</label>
                                 <!-- <input type="image" src="/static/preview_img/6Ty5edK8c.png"> -->

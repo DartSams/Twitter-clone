@@ -5,8 +5,49 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>testing</title>
+    <script type=text/javascript src="{{url_for('static', filename='javascript/main.js') }}"></script>
 </head>
 <body>
-    
+    <main>
+        <button id="4" onclick="myFunction()">Click Me!</button>
+        <h1>
+            THE TITLE OF YOUR WEBPAGE
+        </h1>
+        <button id="like" onclick="searchPost()">Add me</button>
+    </main>
 </body>
+
+<!-- <p>Hello, <span id="username"></span></p> -->
+<script>
+    var user = JSON.parse('{{ user | tojson | safe}}');
+    // document.getElementById('username').innerHTML = user.firstname + " " + user.lastname;
+    let i = JSON.parse('{{ x | tojson | safe }}')
+    document.getElementById('username').innerHTML = `${i[0].author} last post was ${i[0].placeholder_date}`
+    console.log(i)
+    // console.log("{{user.lastname}}")
+
+    // for (const [key, value] of Object.entries(i)) {
+    // // document.getElementById('username').innerHTML = key,value
+    //     console.log( value);
+    // }
+
+    for (let x in i) {
+        // console.log(i[x])
+        console.log("Entry num: " + x)
+        // let tag = document.createElement("p")
+        var tag = document.createElement("p");
+        document.body.appendChild(tag);
+        tag.innerHTML = "hello world"
+        for (let m in i[x]) {
+            // console.log(i[x][m])
+            // document.getElementById('username')
+            document.innerHTML = `${m} : ${i[x][m]}`
+        }
+        console.log("-----------")
+    }
+
+    // for (let x in i) {
+
+    // }
+</script>
 </html>
