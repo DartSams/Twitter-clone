@@ -59,10 +59,28 @@ function myFunction(){
     likeButton.src = "/static/preview_img/red heart.png"
 }
 
-for (let i = 0; i < 20; i++) {
-    var tag = document.createElement("p").innerHTML = "Num is " + i;
-    console.log(tag)
-    // document.body.appendChild(tag);
-    // var tag2 = document.getElementsByTagName("p");
-    // tag2.innerHTML = "hello " + i
-}
+// for (let i = 0; i < 20; i++) {
+//     var tag = document.createElement("p").innerHTML = "Num is " + i;
+//     console.log(tag)
+//     // document.body.appendChild(tag);
+//     // var tag2 = document.getElementsByTagName("p");
+//     // tag2.innerHTML = "hello " + i
+// }
+
+var mysql = require('mysql');
+
+var con = mysql.createConnection({
+  host: "localhost",
+  user: "myusername",
+  password: "mypassword",
+  database: "mydb"
+});
+
+con.connect(function(err) {
+  if (err) throw err;
+  //Select all customers and return the result object:
+  con.query("SELECT * FROM customers", function (err, result, fields) {
+    if (err) throw err;
+    console.log(result);
+  });
+});

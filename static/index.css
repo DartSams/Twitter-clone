@@ -159,12 +159,13 @@ button,button a{
 .post-buttons label{
     color:white
 }
-.post-buttons input{
-    width:30px
+.post-buttons button,.post-buttons button img,.post-buttons input{
+    width:30px;
+    border: none;
+    background: none;
+    cursor: pointer;
 }
-.heart:after {
-    content: '\2665';
-    color: red;
-    width:400px;
-    height:auto
-  }
+
+/* .Reply:hover{
+    background-color: rgb(29, 161, 242);
+} */

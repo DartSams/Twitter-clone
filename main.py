@@ -1,5 +1,5 @@
 from re import search
-from flask import Flask,render_template,redirect,request,flash,session,jsonify
+from flask import Flask,render_template,redirect,request,flash,session,url_for
 from flask_bcrypt import Bcrypt #encrypt passwords 
 from flaskext.mysql import MySQL #allows flask and mysql connection
 from werkzeug.utils import secure_filename #upload images
@@ -206,41 +206,51 @@ def index():
     elif request.method=="POST":
         # print(request.form)
         post=request.form.get("post-field")
-        file = request.files['file']
+        
         # print(file)
         post_date=time.ctime()
         # print(post_date)
 
-        if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        if 'file' in request.files:
+            file = request.files['file']
+            if file and allowed_file(file.filename):
+                filename = secure_filename(file.filename)
+                file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
 
-            try:
-                im = Image.open(fr"{dirname}\{filename}")
-                newsize = (100,100)
-                im1 = im.resize(newsize)
-                im1.save(fr"{dirname}\{filename}")
+                try:
+                    im = Image.open(fr"{dirname}\{filename}")
+                    newsize = (100,100)
+                    im1 = im.resize(newsize)
+                    im1.save(fr"{dirname}\{filename}")
 
-            except:
-                pass
+                except:
+                    pass
 
-            mycursor.execute("select * from Post_Table ORDER BY postID DESC LIMIT 1")
-            for i in mycursor:
-                # print(i)
-                id=i[4]
-                # print(id)
+                mycursor.execute("select * from Post_Table ORDER BY postID DESC LIMIT 1")
+                for i in mycursor:
+                    # print(i)
+                    id=i[4]
+                    # print(id)
 
-                mycursor.execute("INSERT INTO Post_Table (author,post_date,post_time,post,post_file) VALUES (%s,%s,%s,%s,%s)", (session["username"],split_compare_date(post_date),calculate_post_time(post_date),post,filename))
-                conn.commit()
+                    mycursor.execute("INSERT INTO Post_Table (author,post_date,post_time,post,post_file) VALUES (%s,%s,%s,%s,%s)", (session["username"],split_compare_date(post_date),calculate_post_time(post_date),post,filename))
+                    conn.commit()
+                return redirect("/")
+
+            elif "file" not in request.files :
+                return redirect("/")
+
+            mycursor.execute("INSERT INTO Post_Table (author,post_date,post_time,post) VALUES (%s,%s,%s,%s)", (session["username"],split_compare_date(post_date),calculate_post_time(post_date),post))
+            conn.commit()
+            return redirect("/")
+        # elif 'like' in request.form:
+        #     print("cum")
+        #     return redirect("/")
+
+        else:
+            print(request.form)
             return redirect("/")
 
-        elif "file" not in request.files :
-            return redirect("/")
 
-        mycursor.execute("INSERT INTO Post_Table (author,post_date,post_time,post) VALUES (%s,%s,%s,%s)", (session["username"],split_compare_date(post_date),calculate_post_time(post_date),post))
-        conn.commit()
-
-        return redirect("/")
             
 @app.route("/login",methods=["GET","POST"])
 def login():
@@ -525,13 +535,24 @@ def test():
 
 
     # cur = mysql.connection.cursor()
-    mycursor.execute('''SELECT * FROM Post_Table ''')
-    row_headers=[x[0] for x in mycursor.description] #this will extract row headers
-    rv = mycursor.fetchall()
-    json_data=[]
-    for result in rv:
-        json_data.append(dict(zip(row_headers,result)))
-    # x= json.dumps(json_data)
-    return render_template("test.html",user=user,x=json_data)
+#     mycursor.execute('''SELECT * FROM Post_Table ''')
+#     row_headers=[x[0] for x in mycursor.description] #this will extract row headers
+#     rv = mycursor.fetchall()
+#     json_data=[]
+#     for result in rv:
+#         json_data.append(dict(zip(row_headers,result)))
+#     # x= json.dumps(json_data)
+    if request.method == "GET":
+        return render_template("test.html",user=user)
+
+    elif request.method == "POST":
+        print(request.form)
+        if 'download' in request.form:
+            print("cum")
+        elif 'watch' in request.form:
+            print("puhh")   
+        return redirect(url_for('test'))
+
+
 if __name__=="__main__":
     app.run(debug=True)

@@ -121,18 +121,30 @@
 
                                 {%endif%}
                             </a> 
-                            <div class="post-buttons">
-                                <label for="reply" onclick="myFunction()">Reply</label>
-                                <!-- <input type="image" src="/static/preview_img/6Ty5edK8c.png"> -->
+                            <div >
+                                <!-- <form action="" method="post" class="post-buttons"> -->
+                                    <!-- <label for="reply" onclick="myFunction()" name="Reply">Reply</label> -->
+                                    <!-- <input type="image" src="/static/preview_img/6Ty5edK8c.png"> -->
 
-                                <label for="retweet" onclick="myFunction()">Retweet</label>
-                                <!-- <input type="image" src="/static/preview_img/6Ty5edK8c.png"> -->
+                                    <!-- <label for="retweet" onclick="myFunction()" name="Retweet">Retweet</label> -->
+                                    <!-- <input type="image" src="/static/preview_img/6Ty5edK8c.png"> -->
 
-                                <!-- <label for="like" id="like" onclick="myFunction()">Like</label> -->
-                                <input type="image" src="/static/preview_img/black heart.png" onclick="searchPost()" id="like">
+                                    <!-- <label for="like" id="like" onclick="myFunction()">Like</label> -->
+                                    <!-- <input type="image" src="/static/preview_img/black heart.png" name="Reply" value="1"> -->
+                                    <!-- <input type="image" src="/static/preview_img/black heart.png" name="Retweet">
+                                    <input type="image" src="/static/preview_img/black heart.png" name="like">
+                                    <input type="image" src="/static/preview_img/black heart.png" name="Share"> -->
 
-                                <label for="share" onclick="myFunction()">Share</label>
-                                <!-- <input type="image" src="/static/preview_img/6Ty5edK8c.png"> -->
+                                    <!-- <label for="share" onclick="myFunction()" name="Share">Share</label> -->
+                                    <!-- <input type="image" src="/static/preview_img/6Ty5edK8c.png"> -->
+                                <!-- </form> -->
+                                <form action="" method="post" class="post-buttons">
+                                    <!-- <input type="image" src="/static/preview_img/black heart.png" name="watch" method="post"> -->
+                                    <button id="4" name="Reply" class="Reply" value="{{i[6]}}"><img src="/static/preview_img/black heart.png" alt=""></button>  
+                                    <button id="4" name="Retweet" class="Retweet" value="{{i[6]}}"><img src="/static/preview_img/black heart.png" alt=""></button>  
+                                    <button id="4" name="Like" class="Like" value="{{i[6]}}"><img src="/static/preview_img/black heart.png" alt=""></button>  
+                                    <button id="4" name="Share" class="Share" value="{{i[6]}}"><img src="/static/preview_img/black heart.png" alt=""></button>  
+                                </form>
                             </div>
                             
                             </div>
