@@ -33,12 +33,13 @@ mycursor=db.cursor(buffered=True)
 
 def create_db(table_name):
     # mycursor.execute(f"CREATE TABLE {table_name} (name VARCHAR(100),username VARCHAR(100),password VARCHAR(100), email VARCHAR(100),privilege VARCHAR(100),gender VARCHAR(100),age INT,birthday VARCHAR(100),join_date VARCHAR(100), personID INT PRIMARY KEY AUTO_INCREMENT)")
-    # mycursor.execute(f"CREATE TABLE {table_name} (author VARCHAR(100),post_date VARCHAR(100),post_time VARCHAR(100),post VARCHAR(100),post_file VARCHAR(100),placeholder_date VARCHAR(100),postID INT PRIMARY KEY AUTO_INCREMENT)")
-    mycursor.execute(f"CREATE TABLE {table_name} (author VARCHAR(100),post_date VARCHAR(100),post_time VARCHAR(100),comment VARCHAR(100),post_file VARCHAR(100),placeholder_date VARCHAR(100),commentID INT)")
-
+    mycursor.execute(f"CREATE TABLE {table_name} (author VARCHAR(100),post_date VARCHAR(100),post_time VARCHAR(100),post VARCHAR(100),post_file VARCHAR(100),placeholder_date VARCHAR(100),postID INT PRIMARY KEY AUTO_INCREMENT)")
+    # mycursor.execute(f"CREATE TABLE {table_name} (author VARCHAR(100),post_date VARCHAR(100),post_time VARCHAR(100),comment VARCHAR(100),post_file VARCHAR(100),placeholder_date VARCHAR(100),commentID INT)")
+    # mycursor.execute(f"CREATE TABLE {table_name} (name VARCHAR(100),id INT(100))")
 # create_db('Twitter_Users')
 # create_db('Post_Table')
 # create_db("Comments")
+# create_db("Likes")
 
 def insert_user():
     # mycursor.execute("INSERT INTO Flask_Profile_Info (author,gender,age,job,location) VALUES (%s,%s%s,%s,%s)", ("iphone 69+","Dsams"))
@@ -83,10 +84,11 @@ def delete_db(table):
 
 
 def add_column(table,column):
-    mycursor.execute(f"ALTER TABLE {table} ADD {column} varchar(300)")
+    # mycursor.execute(f"ALTER TABLE {table} ADD {column} varchar(10)")
+    mycursor.execute("ALTER TABLE Post_Table ADD like VARCHAR(10) NOT NULL")
 
 # add_column("Twitter_Users","profile_banner")
-# add_column("Post_Table","post_img")
+# add_column("Post_Table","like")
 
 
 def get_columns(table):
@@ -366,15 +368,11 @@ def get_time_ago(date1):
 # for i in mycursor:
 #     print(i)
 
-import json
-mycursor=db.cursor(buffered=True,dictionary=True)
+# import json
+# mycursor=db.cursor(buffered=True,dictionary=True)
 
 
-mycursor.execute(f"SELECT* FROM Twitter_Users WHERE username = 'dartsams'")
-# rv = mycursor.fetchall()
-# json_data=[]
-# for result in rv:
-#     json_data.append(result)
-# x= json.dumps(dict(json_data))
-for i in mycursor:
-    print(i)
+# mycursor.execute(f"SELECT* FROM Twitter_Users WHERE username = 'dartsams'")
+
+# for i in mycursor:
+#     print(i)

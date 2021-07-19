@@ -179,6 +179,7 @@ def allowed_file(filename):
 @app.route("/",methods=["GET","POST"])
 def index():
     date_lst=[]
+    like_lst=[]
     change_dates("Post_Table",date_lst)
     date_lst.clear()
     if request.method=="GET":
@@ -190,6 +191,12 @@ def index():
         for post_data in mycursor:
             # print(post_data)
             lst.append(post_data)
+
+
+        ##on the homepage tell if user liked the post but i need to get all post_id and feed it into this function
+        # mycursor.execute(f'SELECT * FROM Likes WHERE id=%s',post_id)
+        # for i in mycursor:
+        #     like_lst.append(i)
 
         # print("\nUsers in Twitter_Users:")
         # mycursor.execute(f"SELECT * FROM Twitter_Users")
@@ -248,6 +255,22 @@ def index():
 
         else:
             print(request.form)
+            if "enter-search" in request.form and "search-bar"=="":
+                pass
+            elif "search-bar" in request.form:
+                search=request.form.get("search-bar")
+                print(search)
+                return redirect(f"/{search}")
+
+            elif "Like" in request.form:
+                like=request.form.get("Like")
+                print(like)
+                mycursor.execute("INSERT INTO Likes (name,id) VALUES (%s,%s) ",(session["username"],like) )
+                conn.commit()
+                mycursor.execute("SELECT * FROM Likes")
+                for i in mycursor:
+                    print(i)
+                # mycursor.execute("UPDATE Twitter_Users SET gender = %s,age = %s,birthday = %s, join_date = %s WHERE username = %s" ,(gender,age,birthday,join_date,session["username"]))
             return redirect("/")
 
 
@@ -464,6 +487,7 @@ def post(post_id):
     user_post=[]
     comments=[]
     date_lst=[]
+    like_lst=[]
     change_dates("Comments",date_lst)
     post_date=time.ctime()
     if request.method=="GET":
@@ -477,45 +501,73 @@ def post(post_id):
         for i in mycursor:
             comments.append(i)
 
+        mycursor.execute(f'SELECT * FROM Likes WHERE id=%s',post_id)
+        for i in mycursor:
+            like_lst.append(i)
+
+
         if not comments:
             flash("No comments yet")
 
-        return render_template("post.html",user_post=user_post,ALLOWED_EXTENSIONS=ALLOWED_EXTENSIONS,post_date=split_compare_date(post_date),comments=comments[::-1])
-    
+        if like_lst:
+            return render_template("post.html",user_post=user_post,ALLOWED_EXTENSIONS=ALLOWED_EXTENSIONS,post_date=split_compare_date(post_date),comments=comments[::-1],like_lst=like_lst[0][0])
+
+        elif not like_lst:
+            return render_template("post.html",user_post=user_post,ALLOWED_EXTENSIONS=ALLOWED_EXTENSIONS,post_date=split_compare_date(post_date),comments=comments[::-1])
+
     elif request.method=="POST":
         comment=request.form.get("comment-field")
-        file = request.files['file']
-        # print(file)
+        if 'file' in request.files:
 
-        if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            file = request.files['file']
+            # print(file)
 
-            try:
-                im = Image.open(fr"{dirname}\{filename}")
-                newsize = (100,100)
-                im1 = im.resize(newsize)
-                im1.save(fr"{dirname}\{filename}")
+            if file and allowed_file(file.filename):
+                filename = secure_filename(file.filename)
+                file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
 
-            except:
-                pass
+                try:
+                    im = Image.open(fr"{dirname}\{filename}")
+                    newsize = (100,100)
+                    im1 = im.resize(newsize)
+                    im1.save(fr"{dirname}\{filename}")
 
-            # mycursor.execute("select * from Comments ORDER BY commentID DESC LIMIT 1")
-            # for i in mycursor:
-            #     print(i)
-            #     id=i[4]
-            #     # print(id)
+                except:
+                    pass
 
-            mycursor.execute("INSERT INTO Comments (author,post_date,post_time,comment,post_file,commentID) VALUES (%s,%s,%s,%s,%s,%s)", (session["username"],split_compare_date(post_date),calculate_post_time(post_date),comment,filename,post_id))
+                # mycursor.execute("select * from Comments ORDER BY commentID DESC LIMIT 1")
+                # for i in mycursor:
+                #     print(i)
+                #     id=i[4]
+                #     # print(id)
+
+                mycursor.execute("INSERT INTO Comments (author,post_date,post_time,comment,post_file,commentID) VALUES (%s,%s,%s,%s,%s,%s)", (session["username"],split_compare_date(post_date),calculate_post_time(post_date),comment,filename,post_id))
+                conn.commit()
+                return redirect(f"/{post_id}")
+
+            elif "file" not in request.files :
+                return redirect(f"/{post_id}")
+
+            mycursor.execute("INSERT INTO Comments (author,post_date,post_time,comment,commentID) VALUES (%s,%s,%s,%s,%s)", (session["username"],split_compare_date(post_date),calculate_post_time(post_date),comment,post_id))
             conn.commit()
             return redirect(f"/{post_id}")
-
-        elif "file" not in request.files :
+        
+        else:
+            print(request.form)
+            if "Like" in request.form:
+                like=request.form.get("Like")
+                print(like)
+                mycursor.execute("INSERT INTO Likes (name,id) VALUES (%s,%s) ",(session["username"],like) )
+                conn.commit()
+                mycursor.execute("SELECT * FROM Likes")
+                for i in mycursor:
+                    print(i)
+                
+            elif "UnLike" in request.form:
+                unlike=request.form.get("UnLike")
+                mycursor.execute("DELETE FROM Likes WHERE id = %s",(unlike))
+                conn.commit()
             return redirect(f"/{post_id}")
-
-        mycursor.execute("INSERT INTO Comments (author,post_date,post_time,comment,commentID) VALUES (%s,%s,%s,%s,%s)", (session["username"],split_compare_date(post_date),calculate_post_time(post_date),comment,post_id))
-        conn.commit()
-        return redirect(f"/{post_id}")
 
 
 @app.route("/test" ,methods=["get","post"])

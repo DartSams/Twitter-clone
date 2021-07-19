@@ -91,8 +91,18 @@
 
                         {%endif%}
 
-                        <!-- <p class="post-date">Posted {{i[1]}}</p> -->
-                        <!-- <p>post ID = {{i[4]}}</p> -->
+                        <form action="" method="post" class="post-buttons">
+                            <!-- <input type="image" src="/static/preview_img/black heart.png" name="watch" method="post"> -->
+                            <button id="4" name="Reply" class="Reply" value="{{i[6]}}"><img src="/static/preview_img/black heart.png" alt=""></button>  
+                            <button id="4" name="Retweet" class="Retweet" value="{{i[6]}}"><img src="/static/preview_img/black heart.png" alt=""></button>
+                            {% if like_lst == session["username"] %}
+                                <button id="4" name="UnLike" class="Like" value="{{i[6]}}"><img src="/static/preview_img/red heart.png" alt=""></button>
+                            {% else %}
+                                <button id="4" name="Like" class="Like" value="{{i[6]}}"><img src="/static/preview_img/black heart.png" alt=""></button>
+                                
+                            {%endif%}
+                            <button id="4" name="Share" class="Share" value="{{i[6]}}"><img src="/static/preview_img/black heart.png" alt=""></button>  
+                        </form>
                     </div>
                     {%endfor%}
 
@@ -106,6 +116,7 @@
                             </div>
                         </form>
                     {%endif%}
+
 
                     <h1>Comments</h1>
                     {%for i in comments%}
@@ -148,6 +159,7 @@
                                 {%endfor%}
                             {%endif%}
                         </div>
+                        
                     {%endfor%}
 
                     {% if not comments%}

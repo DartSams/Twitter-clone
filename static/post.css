@@ -136,3 +136,19 @@ img{
     width:450px;
     /* height:200px */
 }
+
+.post-buttons{
+    display:flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.post-buttons label{
+    color:white
+}
+.post-buttons button,.post-buttons button img,.post-buttons input{
+    width:30px;
+    border: none;
+    background: none;
+    cursor: pointer;
+}

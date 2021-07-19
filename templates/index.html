@@ -27,11 +27,14 @@
 <body>
 
     <main>
-        <h2 class="title" style="color: white;display: flex; justify-content: center;">Website Users</h2>
-        <!-- <form action="" method="POST" style="color: white;display: flex; justify-content: center;width:100px">
-            <input type="text" placeholder="Search.." name="search">
-            <button type="submit"><i class="fa fa-search"></i></button>
-        </form> -->
+        <!-- <h2 class="title" style="color: white;display: flex; justify-content: center;">Website Users</h2> -->
+        <div>
+            <form action="" method="post" class="search-bar">
+                <input type="text" name="search-bar" placeholder="Search..">
+                <button id="4" name="enter-search" value=""><img src="/static/preview_img/search-icon.png" alt=""></button>  
+            </form>
+        </div>
+
         <div class="container">
             <div class="navbar">
                 <a href="/" class="flex-item"><span>Website Name</span></a>
@@ -57,11 +60,11 @@
                 </div> -->
 
             </div>
+                
             
-            <!-- <div class="login_create"> -->
+
                 <div class="all-post">
                     <!-- <h3>Post bar</h3> -->
-                    
                     {% if "username" in session%}
                     <form action="" method="POST" enctype=multipart/form-data>
                         <textarea name="post-field" id="" cols="50" rows="5" style="resize: none;"></textarea>
@@ -76,6 +79,7 @@
                     <div class="post-board">
                         <div class="post" >
                             <!-- {{messages}} -->
+                            
                             {%for i in messages%}
                             <!-- {{session["username"]}} -->
                             <!-- <div style="color: blue;">Author:{{i[0]}}</div>
