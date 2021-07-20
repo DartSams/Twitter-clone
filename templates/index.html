@@ -58,6 +58,8 @@
                     <a href="/profile" >{{session["username"]}}</a>
                     <a href="/logout" >Logout</a>  
                 </div> -->
+                <a href="/switch/dartsams" class="flex-item">to dartsams</a>
+                <a href="/switch/michael" class="flex-item">to michael</a>
 
             </div>
                 
@@ -142,15 +144,36 @@
                                     <!-- <label for="share" onclick="myFunction()" name="Share">Share</label> -->
                                     <!-- <input type="image" src="/static/preview_img/6Ty5edK8c.png"> -->
                                 <!-- </form> -->
-                                <form action="" method="post" class="post-buttons">
-                                    <!-- <input type="image" src="/static/preview_img/black heart.png" name="watch" method="post"> -->
+                                <!-- <form action="" method="post" class="post-buttons">
                                     <button id="4" name="Reply" class="Reply" value="{{i[6]}}"><img src="/static/preview_img/black heart.png" alt=""></button>  
                                     <button id="4" name="Retweet" class="Retweet" value="{{i[6]}}"><img src="/static/preview_img/black heart.png" alt=""></button>  
                                     <button id="4" name="Like" class="Like" value="{{i[6]}}"><img src="/static/preview_img/black heart.png" alt=""></button>  
                                     <button id="4" name="Share" class="Share" value="{{i[6]}}"><img src="/static/preview_img/black heart.png" alt=""></button>  
-                                </form>
+                                </form> -->
+                                <div class="likes">
+                                    <!-- {{like_lst}}  -->
+                                    <form action="" method="post" class="post-buttons">
+                                        <button id="4" name="Reply" class="Reply" value="{{i[6]}}">Reply<img src="/static/preview_img/black heart.png" alt=""></button>  
+                                        <button id="4" name="Retweet" class="Retweet" value="{{i[6]}}">Retweet<img src="/static/preview_img/black heart.png" alt=""></button> 
+                                        {% if like_lst %}
+                                        <!-- {{like_lst}} -->
+                                            {% for j in like_lst %}
+                                                {% if j[1] == i[6] %}
+                                                    {% if session["username"] == j[0] %}
+                                                        <!-- {{j[0]}}-{{j[1]}} -->
+                                                        <button id="4" name="UnLike" class="Like" value="{{i[6]}}">Like<img src="/static/preview_img/red heart.png" alt=""></button>  
+                                                    {%endif%}
+                                                {%endif%}
+                                            {%endfor%}
+                                        {%endif%}
+
+                                        {% if i[6] not in like_lst_id %}
+                                            <button id="4" name="Like" class="Like" value="{{i[6]}}">Like<img src="/static/preview_img/black heart.png" alt=""></button>  
+                                        {%endif%}
+                                        <button id="4" name="Share" class="Share" value="{{i[6]}}">Share<img src="/static/preview_img/black heart.png" alt=""></button>  
+                                    </form>        
+                                </div>
                             </div>
-                            
                             </div>
                             {%endfor%}
 

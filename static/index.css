@@ -188,3 +188,14 @@ button,button a{
 /* .Reply:hover{
     background-color: rgb(29, 161, 242);
 } */
+
+.likes .post-buttons{
+    color:white
+}
+
+.like .post-buttons button,.like .post-buttons button img,.like .post-buttons input{
+    width:30px;
+    border: none;
+    background: none;
+    cursor: pointer;
+}

@@ -180,6 +180,7 @@ def allowed_file(filename):
 def index():
     date_lst=[]
     like_lst=[]
+    like_lst_id=[]
     change_dates("Post_Table",date_lst)
     date_lst.clear()
     if request.method=="GET":
@@ -194,9 +195,14 @@ def index():
 
 
         ##on the homepage tell if user liked the post but i need to get all post_id and feed it into this function
-        # mycursor.execute(f'SELECT * FROM Likes WHERE id=%s',post_id)
-        # for i in mycursor:
-        #     like_lst.append(i)
+        mycursor.execute(f'SELECT * FROM Likes WHERE name = %s',session["username"])
+        for i in mycursor:
+            print(i)
+            like_lst.append(i)
+
+        for i in like_lst:
+            print(i)
+            like_lst_id.append(i[1])
 
         # print("\nUsers in Twitter_Users:")
         # mycursor.execute(f"SELECT * FROM Twitter_Users")
@@ -208,7 +214,7 @@ def index():
         # for i in mycursor:
         #     print(i)
         
-        return render_template("index.html",messages=lst[::-1],ALLOWED_EXTENSIONS=ALLOWED_EXTENSIONS,post_date=split_compare_date(post_date))
+        return render_template("index.html",messages=lst[::-1],ALLOWED_EXTENSIONS=ALLOWED_EXTENSIONS,post_date=split_compare_date(post_date),like_lst=like_lst,like_lst_id=like_lst_id)
 
     elif request.method=="POST":
         # print(request.form)
@@ -270,7 +276,11 @@ def index():
                 mycursor.execute("SELECT * FROM Likes")
                 for i in mycursor:
                     print(i)
-                # mycursor.execute("UPDATE Twitter_Users SET gender = %s,age = %s,birthday = %s, join_date = %s WHERE username = %s" ,(gender,age,birthday,join_date,session["username"]))
+
+            elif "UnLike" in request.form:
+                unlike=request.form.get("UnLike")
+                mycursor.execute("DELETE FROM Likes WHERE id = %s AND name = %s",(unlike,session["username"]))
+                conn.commit()
             return redirect("/")
 
 
@@ -501,8 +511,9 @@ def post(post_id):
         for i in mycursor:
             comments.append(i)
 
-        mycursor.execute(f'SELECT * FROM Likes WHERE id=%s',post_id)
+        mycursor.execute(f'SELECT * FROM Likes WHERE id=%s AND name=%s',(post_id,session["username"]))
         for i in mycursor:
+            print(i)
             like_lst.append(i)
 
 
@@ -510,7 +521,7 @@ def post(post_id):
             flash("No comments yet")
 
         if like_lst:
-            return render_template("post.html",user_post=user_post,ALLOWED_EXTENSIONS=ALLOWED_EXTENSIONS,post_date=split_compare_date(post_date),comments=comments[::-1],like_lst=like_lst[0][0])
+            return render_template("post.html",user_post=user_post,ALLOWED_EXTENSIONS=ALLOWED_EXTENSIONS,post_date=split_compare_date(post_date),comments=comments[::-1],like_lst=like_lst[0])
 
         elif not like_lst:
             return render_template("post.html",user_post=user_post,ALLOWED_EXTENSIONS=ALLOWED_EXTENSIONS,post_date=split_compare_date(post_date),comments=comments[::-1])
@@ -565,7 +576,7 @@ def post(post_id):
                 
             elif "UnLike" in request.form:
                 unlike=request.form.get("UnLike")
-                mycursor.execute("DELETE FROM Likes WHERE id = %s",(unlike))
+                mycursor.execute("DELETE FROM Likes WHERE id = %s AND name = %s",(unlike,session["username"]))
                 conn.commit()
             return redirect(f"/{post_id}")
 
@@ -573,27 +584,27 @@ def post(post_id):
 @app.route("/test" ,methods=["get","post"])
 def test():
     user = {'firstname': "Finn", 'lastname': "The Human"}
-    # conn=mysql.connect(dictionary=True)
+    conn=mysql.connect(dictionary=True)
 
 
 
 
-    # x=mycursor.execute(f"SELECT* FROM Twitter_Users WHERE username = 'dartsams'")
-    # rv = mycursor.fetchall()
-    # json_data=[]
-    # for result in rv:
-    #     json_data.append(dict(result))
-    # x= json.dumps(json_data)
+    x=mycursor.execute(f"SELECT* FROM Twitter_Users WHERE username = 'dartsams'")
+    rv = mycursor.fetchall()
+    json_data=[]
+    for result in rv:
+        json_data.append(dict(result))
+    x= json.dumps(json_data)
 
 
-    # cur = mysql.connection.cursor()
-#     mycursor.execute('''SELECT * FROM Post_Table ''')
-#     row_headers=[x[0] for x in mycursor.description] #this will extract row headers
-#     rv = mycursor.fetchall()
-#     json_data=[]
-#     for result in rv:
-#         json_data.append(dict(zip(row_headers,result)))
-#     # x= json.dumps(json_data)
+    cur = mysql.connection.cursor()
+    mycursor.execute('''SELECT * FROM Post_Table ''')
+    row_headers=[x[0] for x in mycursor.description] #this will extract row headers
+    rv = mycursor.fetchall()
+    json_data=[]
+    for result in rv:
+        json_data.append(dict(zip(row_headers,result)))
+    x= json.dumps(json_data)
     if request.method == "GET":
         return render_template("test.html",user=user)
 
@@ -605,6 +616,9 @@ def test():
             print("puhh")   
         return redirect(url_for('test'))
 
-
+@app.route("/switch/<username>")
+def switch(username):
+    session["username"]= username
+    return redirect("/")
 if __name__=="__main__":
     app.run(debug=True)
