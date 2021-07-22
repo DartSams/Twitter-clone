@@ -110,12 +110,16 @@ textarea{
     margin-top: 10px;
 }
 
+.form-buttons button{
+    color:black
+}
+
 h1,h2,h3{
     color:white
 }
 
 button,button a{
-    color: black;
+    color: white;
     text-decoration: none;
 }
 

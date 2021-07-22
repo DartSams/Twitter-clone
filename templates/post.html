@@ -91,27 +91,29 @@
 
                         {%endif%}
 
+                        <br>
+
                         <form action="" method="post" class="post-buttons">
-                            <button id="4" name="Reply" class="Reply" value="{{i[6]}}"><img src="/static/preview_img/black heart.png" alt=""></button>  
-                            <button id="4" name="Retweet" class="Retweet" value="{{i[6]}}"><img src="/static/preview_img/black heart.png" alt=""></button>
+                            <button id="4" name="Reply" class="Reply" value="{{i[6]}}"><img src="/static/buttons/reply1.png" alt="">Reply</button>  
+                            <button id="4" name="Retweet" class="Retweet" value="{{i[6]}}"><img src="/static/buttons/retweet.png" alt="">Retweet</button> 
                             {% if like_lst %}
-                                {{like_lst}}
+                                <!-- {{like_lst}} -->
                                 {% if like_lst[1] == i[6] %}
                                     <!-- {{like_lst[1]}} -->
                                     {% if like_lst[0] == session["username"] %}
-                                        <button id="4" name="UnLike" class="Like" value="{{i[6]}}"><img src="/static/preview_img/red heart.png" alt=""></button>
+                                    <button id="4" name="UnLike" class="Like" value="{{i[6]}}"><img src="/static/buttons/unlike.png" alt="">Like</button>  
                                         
                                     {% else %}
-                                        {{like_lst}}
-                                        <button id="4" name="Like" class="Like" value="{{i[6]}}"><img src="/static/preview_img/black heart.png" alt=""></button>
-                                    {%endif%}    
+                                        <!-- {{like_lst}} -->
+                                        <button id="4" name="Like" class="Like" value="{{i[6]}}"><img src="/static/buttons/like.png" alt="">Like</button>  
+                                        {%endif%}    
                                 {% else %}
-                                    <button id="4" name="Like" class="Like" value="{{i[6]}}"><img src="/static/preview_img/black heart.png" alt=""></button>
+                                    <button id="4" name="Like" class="Like" value="{{i[6]}}"><img src="/static/buttons/like.png" alt="">Like</button>  
                                 {%endif%}
                             {% else %}
-                                <button id="4" name="Like" class="Like" value="{{i[6]}}"><img src="/static/preview_img/black heart.png" alt=""></button>
+                                <button id="4" name="Like" class="Like" value="{{i[6]}}"><img src="/static/buttons/like.png" alt="">Like</button>  
                             {%endif%}
-                            <button id="4" name="Share" class="Share" value="{{i[6]}}"><img src="/static/preview_img/black heart.png" alt=""></button>  
+                            <button id="4" name="Share" class="Share" value="{{i[6]}}"><img src="/static/buttons/black heart.png" alt="">Share</button>  
                         </form>
                     </div>
                     {%endfor%}

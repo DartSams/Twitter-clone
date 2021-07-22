@@ -364,9 +364,9 @@ def get_time_ago(date1):
 #     db.commit()
 
 # print("Winner | "*20)
-# mycursor.execute("select * from Post_Table")
-# for i in mycursor:
-#     print(i)
+mycursor.execute("select * from Post_Table")
+for i in mycursor:
+    print(i)
 
 # import json
 # mycursor=db.cursor(buffered=True,dictionary=True)

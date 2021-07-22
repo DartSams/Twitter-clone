@@ -197,11 +197,11 @@ def index():
         ##on the homepage tell if user liked the post but i need to get all post_id and feed it into this function
         mycursor.execute(f'SELECT * FROM Likes WHERE name = %s',session["username"])
         for i in mycursor:
-            print(i)
+            # print(i)
             like_lst.append(i)
 
         for i in like_lst:
-            print(i)
+            # print(i)
             like_lst_id.append(i[1])
 
         # print("\nUsers in Twitter_Users:")
@@ -270,21 +270,42 @@ def index():
 
             elif "Like" in request.form:
                 like=request.form.get("Like")
-                print(like)
+                # print(like)
                 mycursor.execute("INSERT INTO Likes (name,id) VALUES (%s,%s) ",(session["username"],like) )
                 conn.commit()
-                mycursor.execute("SELECT * FROM Likes")
-                for i in mycursor:
-                    print(i)
+                # mycursor.execute("SELECT * FROM Likes")
+                # for i in mycursor:
+                #     print(i)
 
             elif "UnLike" in request.form:
                 unlike=request.form.get("UnLike")
                 mycursor.execute("DELETE FROM Likes WHERE id = %s AND name = %s",(unlike,session["username"]))
                 conn.commit()
+
+            elif "Reply" in request.form:
+                reply=request.form.get("Reply")
+                return redirect(f"/{reply}")
+
+            elif "Retweet" in request.form:
+                retweet=request.form.get("Retweet")
+                # print(retweet)
+                mycursor.execute("SELECT * FROM Post_Table WHERE postID = %s", retweet)
+                for i in mycursor:
+                    # print(i)
+                    post=i[3]
+                    file_=i[4]
+                    # print(type(file_))
+                if file_ is None:
+                    # print("text")
+                    mycursor.execute("INSERT INTO Post_Table (author,post_date,post_time,post) VALUES (%s,%s,%s,%s)", (session["username"],split_compare_date(post_date),calculate_post_time(post_date),post))
+                    conn.commit()
+                else:
+                    # print("img")
+                    mycursor.execute("INSERT INTO Post_Table (author,post_date,post_time,post,post_file) VALUES (%s,%s,%s,%s,%s)", (session["username"],split_compare_date(post_date),calculate_post_time(post_date),post,file_))
+                    conn.commit()
+                
             return redirect("/")
-
-
-            
+     
 @app.route("/login",methods=["GET","POST"])
 def login():
     if request.method=="GET":
@@ -580,7 +601,6 @@ def post(post_id):
                 conn.commit()
             return redirect(f"/{post_id}")
 
-
 @app.route("/test" ,methods=["get","post"])
 def test():
     user = {'firstname': "Finn", 'lastname': "The Human"}
@@ -620,5 +640,6 @@ def test():
 def switch(username):
     session["username"]= username
     return redirect("/")
+
 if __name__=="__main__":
     app.run(debug=True)

@@ -118,8 +118,12 @@ form {
     justify-content: space-between;
 }
 
+.form-buttons button{
+    color:black
+}
+
 button,button a{
-    color: black;
+    color: white;
     text-decoration: none;
 }
 
