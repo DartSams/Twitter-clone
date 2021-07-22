@@ -264,12 +264,12 @@ def index():
             if "enter-search" in request.form and "search-bar"=="":
                 pass
             elif "search-bar" in request.form:
-                search=request.form.get("search-bar")
+                search=request.form["search-bar"]
                 print(search)
                 return redirect(f"/{search}")
 
             elif "Like" in request.form:
-                like=request.form.get("Like")
+                like=request.form["Like"]
                 # print(like)
                 mycursor.execute("INSERT INTO Likes (name,id) VALUES (%s,%s) ",(session["username"],like) )
                 conn.commit()
@@ -278,16 +278,16 @@ def index():
                 #     print(i)
 
             elif "UnLike" in request.form:
-                unlike=request.form.get("UnLike")
+                unlike=request.form["UnLike"]
                 mycursor.execute("DELETE FROM Likes WHERE id = %s AND name = %s",(unlike,session["username"]))
                 conn.commit()
 
             elif "Reply" in request.form:
-                reply=request.form.get("Reply")
+                reply=request.form["Reply"]
                 return redirect(f"/{reply}")
 
             elif "Retweet" in request.form:
-                retweet=request.form.get("Retweet")
+                retweet=request.form["Retweet"]
                 # print(retweet)
                 mycursor.execute("SELECT * FROM Post_Table WHERE postID = %s", retweet)
                 for i in mycursor:
@@ -413,7 +413,7 @@ def profile(username):
     if request.method=="GET":
         mycursor.execute(f'SELECT * FROM Post_Table WHERE author=%s',username)
         for i in mycursor:
-            print(i)
+            # print(i)
             user_post.append(i)
         
 

@@ -31,43 +31,41 @@
                     {% if profile_stuff %}
                         <div class="container-middle-top">
                             <!-- {% if profile_stuff %} -->
-                                {% for i in profile_stuff%}
-                                <!-- {{i}} -->
-                                    <!-- <img src="{{url_for('static',filename='preview_img/{{{i}}}')}}" alt="{{i}}" id="profile-banner"> -->
-                                    <img src='/static/preview_img/{{i[11]}}' alt="{{i[11]}}" id="profile-banner">
-                                    <!-- <img src="{{url_for('static',filename='preview_img/{{i}}')}}" alt="{{i}}" id="profile-img"> -->
-                                    <img src='/static/preview_img/{{i[12]}}' alt="{{i[12]}}" id="profile-img">
-                                    
-                                {%endfor%}
-                                <div class="profile-description">
-                                    <!-- <p style="color: white;">Name</p>
-                                    <p style="color: white;">Username</p>
-                                    <p style="color: white;">description</p>
-                                    <p style="color: white;">join date</p> 
-                                    <p style="color: white;">...</p>  -->
-
-                                    {% for i in profile_stuff%}
-                                    <div>
-                                        <!-- <button style="float: right;">Edit Account</button> -->
-                                        {% if username == session['username']%}
-                                        <a href="/profile/{{session['username']}}/settings" class="profile-edit">Edit Account</a>
-                                        {%endif%}
-                                        <h3 style="color: white;">{{i[0]}}</h3>
-                                    </div>
-                                    <!-- <h3 style="color: white;">Name:{{i[0]}}</h3> -->
-                                    <p style="color: white;">@{{i[1]}}</p>
-                                    <p style="color: white;">{{i[10]}}</p>
-                                    <!-- <p style="color: white;">{{i[11]}}</p>
-                                    <p style="color: white;">{{i[12]}}</p> -->
+                            {% for i in profile_stuff%}
+                            <!-- {{i}} -->
+                                <!-- <img src="{{url_for('static',filename='preview_img/{{{i}}}')}}" alt="{{i}}" id="profile-banner"> -->
+                                <img src='/static/preview_img/{{i[11]}}' alt="{{i[11]}}" id="profile-banner">
+                                <!-- <img src="{{url_for('static',filename='preview_img/{{i}}')}}" alt="{{i}}" id="profile-img"> -->
+                                <img src='/static/preview_img/{{i[12]}}' alt="{{i[12]}}" id="profile-img">
                                 
-                                    <!-- <p style="color: white;">Gender:{{i[5]}}</p> -->
-                                    <!-- <p style="color: white;">Age:{{i[6]}}</p> -->
-                                    <!-- <p style="color: white;">Birthday:{{i[7]}}</p>
-                                    <p style="color: white;">Join Date:{{i[8]}}</p> -->
-                                    {%endfor%}
-                                </div>
-                            {%endif%}
+                            <!-- {%endfor%} -->
+                            <!-- {% for i in profile_stuff%} -->
+                            <div>
+                                <!-- <button style="float: right;">Edit Account</button> -->
+                                {% if username == session['username']%}
+                                    <a href="/profile/{{session['username']}}/settings" class="profile-edit">Edit Account</a>
+                                {% else %}
+                                    <a href="/profile/{{session['username']}}/settings" class="profile-edit">Follow</a>
+
+                                {%endif%}
+                                
+                            </div>
+                            <!-- <h3 style="color: white;">Name:{{i[0]}}</h3> -->
+                            <div class="profile-description">
+                                <h3 style="color: white;">{{i[0]}}</h3>
+                                <p style="color: white;">@{{i[1]}}</p>
+                                <p style="color: white;">{{i[10]}}</p>
+                            </div>
+
+                            <div class="profile-tabs">
+                                <a href="/">Tab1</a>
+                                <a href="/">Tab2</a>
+                                <a href="/">Tab3</a>
+                                <a href="/">Tab4</a>
+                            </div>
+                            {%endfor%}
                         </div>
+                    {%endif%}
                     
                 
                         {% if user_post%}

@@ -112,7 +112,6 @@ a{
     top: 150px;
     left: 20px;
     /* margin-bottom:1000px */
-
 }
 
 .container-middle-top{
@@ -130,17 +129,33 @@ a{
 
 
 .profile-description{
-    margin-top: 80px;
-    display: flex;
-    flex-direction: column;
+    margin-top: 30px;
+    display: block;
+    /* flex-direction: column; */
     /* justify-content: space-between; */
 }
 
-/* .profile-description p{
-    margin-top:100px
-} */
+.profile-tabs{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.profile-tabs a{
+    font-size:20px;
+    text-decoration: none;
+    color:white;
+    padding: 10px;
+}
+
+.profile-tabs a:hover{
+    background-color: rgb(29, 161, 242);
+    border: 30px;
+    display: inline-flex;
+}
 
 .profile-edit{
+    margin-top: 10px;
     float: right;
     text-decoration: none;
     border-radius: 50px;
