@@ -195,14 +195,15 @@ def index():
 
 
         ##on the homepage tell if user liked the post but i need to get all post_id and feed it into this function
-        mycursor.execute(f'SELECT * FROM Likes WHERE name = %s',session["username"])
-        for i in mycursor:
-            # print(i)
-            like_lst.append(i)
+        if "username" in session:
+            mycursor.execute(f'SELECT * FROM Likes WHERE name = %s',session["username"])
+            for i in mycursor:
+                # print(i)
+                like_lst.append(i)
 
-        for i in like_lst:
-            # print(i)
-            like_lst_id.append(i[1])
+            for i in like_lst:
+                # print(i)
+                like_lst_id.append(i[1])
 
         # print("\nUsers in Twitter_Users:")
         # mycursor.execute(f"SELECT * FROM Twitter_Users")
@@ -411,6 +412,7 @@ def profile(username):
     post_date=time.ctime()
     like_lst=[]
     like_lst_id=[]
+    followers=[]
     # if "username" in session:
     if request.method=="GET":
         mycursor.execute(f'SELECT * FROM Post_Table WHERE author=%s',username)
@@ -425,20 +427,23 @@ def profile(username):
             # print(i)
             profile_stuff.append(i)
 
-        mycursor.execute(f'SELECT * FROM Likes WHERE name = %s',session["username"])
-        for i in mycursor:
-            # print(i)
-            like_lst.append(i)
+        if "username" in session:
+            mycursor.execute(f'SELECT * FROM Likes WHERE name = %s',session["username"])
+            for i in mycursor:
+                # print(i)
+                like_lst.append(i)
 
-        for i in like_lst:
-            # print(i)
-            like_lst_id.append(i[1])
+            for i in like_lst:
+                # print(i)
+                like_lst_id.append(i[1])
 
-        mycursor.execute(f"SELECT * FROM Following WHERE name = %s ",session["username"])
-        following = "fg"
-        for i in mycursor:
-            print(i)
-            # print(session["username"])
+        mycursor.execute(f"SELECT * FROM Followers WHERE follower = %s ",username)
+        for j in mycursor:
+            print(f"{j[0]} follows {j[1]}")
+            # followers.append(j)
+            followers.append(j[0])
+        print(f"Num of followers: {len(followers)}")
+
 
         mycursor.execute(f"SELECT * FROM Twitter_Users where username = %s",(username))
         myresult = mycursor.fetchone()
@@ -454,18 +459,18 @@ def profile(username):
         # print(files)
         # print(user_post)
         # print(profile_stuff)
-        return render_template("profile.html",username=username,user_post=user_post[::-1],profile_stuff=profile_stuff,files=files,ALLOWED_EXTENSIONS=ALLOWED_EXTENSIONS,post_date=split_compare_date(post_date),like_lst=like_lst,like_lst_id=like_lst_id,following=following)
+        return render_template("profile.html",username=username,user_post=user_post[::-1],profile_stuff=profile_stuff,files=files,ALLOWED_EXTENSIONS=ALLOWED_EXTENSIONS,post_date=split_compare_date(post_date),like_lst=like_lst,like_lst_id=like_lst_id,follower_num=len(followers))
 
     elif request.method == "POST":
         print(request.form)
         files=os.listdir(dirname)
         if "Follow" in request.form:
             follow=request.form["Follow"]
-            mycursor.execute("INSERT INTO Following (name,following) VALUES (%s,%s)",(session["username"],follow))
+            mycursor.execute("INSERT INTO Followers (name,follower) VALUES (%s,%s)",(session["username"],follow))
             conn.commit()
 
         # return render_template("profile.html",username=username,user_post=user_post[::-1],profile_stuff=profile_stuff,files=files,ALLOWED_EXTENSIONS=ALLOWED_EXTENSIONS,post_date=split_compare_date(post_date),like_lst=like_lst,like_lst_id=like_lst_id)
-        return redirect(f"/{username}/following")
+        return redirect(f"/{username}/followers")
 
 @app.route("/<username>/<tab>")
 def profile2(username,tab):
@@ -475,7 +480,7 @@ def profile2(username,tab):
     like_lst=[]
     like_lst_id=[]
     comment_lst=[]
-    following=[]
+    followers=[]
     # if "username" in session:
     if request.method=="GET":    
         mycursor.execute(f"SELECT * FROM Twitter_Users WHERE username = %s",username)
@@ -499,9 +504,12 @@ def profile2(username,tab):
         for j in mycursor:
             comment_lst.append(j)
 
-        mycursor.execute(f"SELECT * FROM Following WHERE following = %s ",username)
+        mycursor.execute(f"SELECT * FROM Followers WHERE follower = %s ",username)
         for j in mycursor:
-            following.append(j[0])
+            print(f"{j[0]} follows {j[1]}")
+            # followers.append(j)
+            followers.append(j[0])
+        print(f"Num of followers: {len(followers)}")
         
         # for i in like_lst_id:
         #     mycursor.execute("SELECT * FROM Post_Table WHERE postID=%s",i)
@@ -524,7 +532,7 @@ def profile2(username,tab):
         # if tabs == "":
         return render_template("profile_tabs.html",profile_stuff=profile_stuff,ALLOWED_EXTENSIONS=ALLOWED_EXTENSIONS,
             post_date=split_compare_date(post_date),like_lst=like_lst,like_lst_id=like_lst_id,user_post=user_post[::-1],
-            comment_lst=comment_lst[::-1],tab=tab,following=following)
+            comment_lst=comment_lst[::-1],tab=tab,followers=followers,follower_num=len(followers))
 
    
 

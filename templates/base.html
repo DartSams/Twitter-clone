@@ -55,6 +55,7 @@
                                     <h3 style="color: white;">{{i[0]}}</h3>
                                     <p style="color: white;">@{{i[1]}}</p>
                                     <p style="color: white;">{{i[10]}}</p>
+                                    <p style="color: white;">{{follower_num}} Followes</p>
                                 </div>
 
                                 <div class="profile-tabs">
@@ -80,8 +81,8 @@
                                 {% block replies %}
                                 {% endblock%}
 
-                            {% elif tab == "following" %}
-                                {% block following %}
+                            {% elif tab == "followers" %}
+                                {% block follower %}
                                 {% endblock %}
 
                             {% else %}

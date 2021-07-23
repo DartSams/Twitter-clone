@@ -36,12 +36,12 @@ def create_db(table_name):
     # mycursor.execute(f"CREATE TABLE {table_name} (author VARCHAR(100),post_date VARCHAR(100),post_time VARCHAR(100),post VARCHAR(100),post_file VARCHAR(100),placeholder_date VARCHAR(100),postID INT PRIMARY KEY AUTO_INCREMENT)")
     # mycursor.execute(f"CREATE TABLE {table_name} (author VARCHAR(100),post_date VARCHAR(100),post_time VARCHAR(100),comment VARCHAR(100),post_file VARCHAR(100),placeholder_date VARCHAR(100),commentID INT)")
     # mycursor.execute(f"CREATE TABLE {table_name} (name VARCHAR(100),id INT(100))")
-    mycursor.execute(f"CREATE TABLE {table_name} (name VARCHAR(100),following VARCHAR(100))")
+    mycursor.execute(f"CREATE TABLE {table_name} (name VARCHAR(100),follower VARCHAR(100))")
 # create_db('Twitter_Users')
 # create_db('Post_Table')
 # create_db("Comments")
 # create_db("Likes")
-create_db("Following")
+# create_db("Followers")
 
 def insert_user():
     # mycursor.execute("INSERT INTO Flask_Profile_Info (author,gender,age,job,location) VALUES (%s,%s%s,%s,%s)", ("iphone 69+","Dsams"))
@@ -80,6 +80,7 @@ def update_data(password,math,new_value):
 def delete_db(table):
     mycursor.execute(f"DROP TABLE {table}")
     db.commit()
+    print(f"Deleted {table} table")
 
 # delete_db('Twitter_Users')
 # delete_db('Post_Table')
