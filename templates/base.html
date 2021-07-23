@@ -41,13 +41,19 @@
                                 <!-- {%endfor%} -->
                                 <!-- {% for i in profile_stuff%} -->
                                 <div>
-                                    <!-- <button style="float: right;">Edit Account</button> -->
-                                    {% if username == session['username']%}
-                                        <a href="/profile/{{session['username']}}/settings" class="profile-edit">Edit Account</a>
-                                    {% else %}
-                                        <a href="/profile/{{session['username']}}/settings" class="profile-edit">Follow</a>
+                                    <form action="" method="POST">
+                                        {% if username == session['username']%}
+                                        <button name="Settings"><a ref="/profile/{{session['username']}}/settings" class="profile-edit">Edit Account</a></button>
+                                        {% else %}
+                                            {% if all_ready_followed[0] == session["username"] %}
+                                            <button name="UnFollow" value="{{i[1]}}"><a href="/profile/{{session['username']}}/settings" class="profile-edit">Already Following</a></button>
 
-                                    {%endif%}
+                                            {% else %}
+                                            <button name="Follow" value="{{i[1]}}"><p class="profile-edit">Follow</p></button>
+
+                                            {%endif%}
+                                        {%endif%}
+                                    </form>
                                     
                                 </div>
                                 <!-- <h3 style="color: white;">Name:{{i[0]}}</h3> -->
@@ -55,7 +61,7 @@
                                     <h3 style="color: white;">{{i[0]}}</h3>
                                     <p style="color: white;">@{{i[1]}}</p>
                                     <p style="color: white;">{{i[10]}}</p>
-                                    <p style="color: white;">{{follower_num}} Followes</p>
+                                    <p style="color: white;">{{follower_num}} Followers</p>
                                 </div>
 
                                 <div class="profile-tabs">

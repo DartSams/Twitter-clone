@@ -140,6 +140,14 @@ a{
     /* justify-content: space-between; */
 }
 
+form button{
+    border: none;
+    background: none;
+    cursor: pointer;
+    margin: 0;
+    padding: 0;
+}
+
 .profile-tabs{
     display: flex;
     flex-direction: row;
