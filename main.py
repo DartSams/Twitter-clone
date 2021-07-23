@@ -409,6 +409,7 @@ def profile(username):
     user_post=[]
     profile_stuff=[]
     post_date=time.ctime()
+    like_lst=[]
     # if "username" in session:
     if request.method=="GET":
         mycursor.execute(f'SELECT * FROM Post_Table WHERE author=%s',username)
@@ -422,7 +423,7 @@ def profile(username):
         for i in mycursor:
             # print(i)
             profile_stuff.append(i)
-        
+
 
         mycursor.execute(f"SELECT * FROM Twitter_Users where username = %s",(username))
         myresult = mycursor.fetchone()
@@ -437,10 +438,61 @@ def profile(username):
         # print(files)
         # print(user_post)
         # print(profile_stuff)
+        # if tabs == "":
         return render_template("profile.html",username=username,user_post=user_post[::-1],profile_stuff=profile_stuff,files=files,ALLOWED_EXTENSIONS=ALLOWED_EXTENSIONS,post_date=split_compare_date(post_date))
 
     # else:
     #     return redirect("/")
+
+@app.route("/<username>/<tab>")
+def profile2(username,tab):
+    user_post=[]
+    profile_stuff=[]
+    post_date=time.ctime()
+    like_lst=[]
+    like_lst_id=[]
+    comment_lst=[]
+    # if "username" in session:
+    if request.method=="GET":    
+        mycursor.execute(f"SELECT * FROM Twitter_Users WHERE username = %s",username)
+        for i in mycursor:
+            # print(i)
+            profile_stuff.append(i)
+
+        mycursor.execute(f'SELECT * FROM Likes WHERE name = %s',username)
+        for post in mycursor:
+            # print(post)
+            like_lst.append(post)
+
+        for id in like_lst:
+            # print(i)
+            post_id=id[1]
+            mycursor.execute("SELECT * FROM Post_Table WHERE postID=%s",post_id)
+            for j in mycursor:
+                user_post.append(j)
+        
+        mycursor.execute("SELECT * FROM Comments")
+        for j in mycursor:
+            comment_lst.append(j)
+        
+        # for i in like_lst_id:
+        #     mycursor.execute("SELECT * FROM Post_Table WHERE postID=%s",i)
+        #     for j in mycursor:
+        #         user_post.append(j)
+
+        mycursor.execute(f"SELECT * FROM Twitter_Users where username = %s",(username))
+        myresult = mycursor.fetchone()
+
+        if myresult == None:
+            flash("This user does not exist")
+
+            
+        files=os.listdir(dirname)
+        # print(files)
+        # print(user_post)
+        # print(profile_stuff)
+        # if tabs == "":
+        return render_template("profile_tabs.html",profile_stuff=profile_stuff,ALLOWED_EXTENSIONS=ALLOWED_EXTENSIONS,post_date=split_compare_date(post_date),like_lst=like_lst,like_lst_id=like_lst_id,user_post=user_post[::-1],comment_lst=comment_lst[::-1],tab=tab)
 
 @app.route('/logout')
 def logout():
@@ -603,38 +655,39 @@ def post(post_id):
 
 @app.route("/test" ,methods=["get","post"])
 def test():
-    user = {'firstname': "Finn", 'lastname': "The Human"}
-    conn=mysql.connect(dictionary=True)
+    # user = {'firstname': "Finn", 'lastname': "The Human"}
+    # conn=mysql.connect(dictionary=True)
 
 
 
 
-    x=mycursor.execute(f"SELECT* FROM Twitter_Users WHERE username = 'dartsams'")
-    rv = mycursor.fetchall()
-    json_data=[]
-    for result in rv:
-        json_data.append(dict(result))
-    x= json.dumps(json_data)
+    # x=mycursor.execute(f"SELECT* FROM Twitter_Users WHERE username = 'dartsams'")
+    # rv = mycursor.fetchall()
+    # json_data=[]
+    # for result in rv:
+    #     json_data.append(dict(result))
+    # x= json.dumps(json_data)
 
 
-    cur = mysql.connection.cursor()
-    mycursor.execute('''SELECT * FROM Post_Table ''')
-    row_headers=[x[0] for x in mycursor.description] #this will extract row headers
-    rv = mycursor.fetchall()
-    json_data=[]
-    for result in rv:
-        json_data.append(dict(zip(row_headers,result)))
-    x= json.dumps(json_data)
+    # cur = mysql.connection.cursor()
+    # mycursor.execute('''SELECT * FROM Post_Table ''')
+    # row_headers=[x[0] for x in mycursor.description] #this will extract row headers
+    # rv = mycursor.fetchall()
+    # json_data=[]
+    # for result in rv:
+    #     json_data.append(dict(zip(row_headers,result)))
+    # x= json.dumps(json_data)
     if request.method == "GET":
-        return render_template("test.html",user=user)
+        html_files=["index.html","login.html"]
+        return render_template("test.html",html_files=html_files)
 
-    elif request.method == "POST":
-        print(request.form)
-        if 'download' in request.form:
-            print("cum")
-        elif 'watch' in request.form:
-            print("puhh")   
-        return redirect(url_for('test'))
+    # elif request.method == "POST":
+    #     print(request.form)
+    #     if 'download' in request.form:
+    #         print("cum")
+    #     elif 'watch' in request.form:
+    #         print("puhh")   
+    #     return redirect(url_for('test'))
 
 @app.route("/switch/<username>")
 def switch(username):
