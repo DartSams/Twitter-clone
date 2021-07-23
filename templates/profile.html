@@ -26,6 +26,10 @@
                 {% elif "username" not in session %}
                 <a href="/login">Login</a>
                 {% endif %}
+
+                <hr>
+                <a href="/switch/dartsams" class="flex-item">to dartsams</a>
+                <a href="/switch/michael" class="flex-item">to michael</a>
             </div>
                 <div class="container-middle">
                     {% if profile_stuff %}
@@ -42,13 +46,14 @@
                                 <!-- {% for i in profile_stuff%} -->
                                 <div>
                                     <!-- <button style="float: right;">Edit Account</button> -->
-                                    {% if username == session['username']%}
-                                        <a href="/profile/{{session['username']}}/settings" class="profile-edit">Edit Account</a>
-                                    {% else %}
-                                        <a href="/profile/{{session['username']}}/settings" class="profile-edit">Follow</a>
+                                    <form action="" method="POST">
+                                        {% if username == session['username'] %}
+                                            <button name="Settings" class="Like"><a ref="/profile/{{session['username']}}/settings" class="profile-edit">Edit Account</a></button>
+                                        {% else %}s
+                                            <button name="Follow" class="Like" value="{{i[1]}}"><p class="profile-edit">Follow</p></button>
+                                        {%endif%}
+                                    </form>
 
-                                    {%endif%}
-                                    
                                 </div>
                                 <!-- <h3 style="color: white;">Name:{{i[0]}}</h3> -->
                                 <div class="profile-description">
@@ -116,8 +121,34 @@
                                         {%endfor%}
 
                                     {%endif%}
-                                </a> 
+
+                                    <div class="likes">
+                                        <!-- {{like_lst}}  -->
+                                        <br>
+    
+                                        <form action="" method="post" class="post-buttons">
+                                            <button id="4" name="Reply" class="Reply" value="{{i[6]}}"><img src="/static/buttons/reply1.png" alt="">Reply</button>  
+                                            <button id="4" name="Retweet" class="Retweet" value="{{i[6]}}"><img src="/static/buttons/retweet.png" alt="">Retweet</button> 
+                                            {% if like_lst %}
+                                            <!-- {{like_lst}} -->
+                                                {% for j in like_lst %}
+                                                    {% if j[1] == i[6] %}
+                                                        {% if session["username"] == j[0] %}
+                                                            <!-- {{j[0]}}-{{j[1]}} -->
+                                                            <button id="4" name="UnLike" class="Like" value="{{i[6]}}"><img src="/static/buttons/unlike.png" alt="">Like</button>  
+                                                        {%endif%}
+                                                    {%endif%}
+                                                {%endfor%}
+                                            {%endif%}
+    
+                                            {% if i[6] not in like_lst_id %}
+                                                <button id="4" name="Like" class="Like" value="{{i[6]}}"><img src="/static/buttons/like.png" alt="">Like</button>  
+                                            {%endif%}
+                                            <button id="4" name="Share" class="Share" value="{{i[6]}}"><img src="/static/buttons/black heart.png" alt="">Share</button>  
+                                        </form>        
+                                    </div>
                                 </div>
+                            </a>
                                 {%endfor%}
                             </div>
 

@@ -404,12 +404,13 @@ def create_account(page_id):
                 print(f"User created: {username}")
                 return redirect('/')
 
-@app.route("/<username>")
+@app.route("/<username>",methods=["GET","POST"])
 def profile(username):
     user_post=[]
     profile_stuff=[]
     post_date=time.ctime()
     like_lst=[]
+    like_lst_id=[]
     # if "username" in session:
     if request.method=="GET":
         mycursor.execute(f'SELECT * FROM Post_Table WHERE author=%s',username)
@@ -424,6 +425,20 @@ def profile(username):
             # print(i)
             profile_stuff.append(i)
 
+        mycursor.execute(f'SELECT * FROM Likes WHERE name = %s',session["username"])
+        for i in mycursor:
+            # print(i)
+            like_lst.append(i)
+
+        for i in like_lst:
+            # print(i)
+            like_lst_id.append(i[1])
+
+        mycursor.execute(f"SELECT * FROM Following WHERE name = %s ",session["username"])
+        following = "fg"
+        for i in mycursor:
+            print(i)
+            # print(session["username"])
 
         mycursor.execute(f"SELECT * FROM Twitter_Users where username = %s",(username))
         myresult = mycursor.fetchone()
@@ -433,16 +448,24 @@ def profile(username):
 
         elif not user_post:
             flash("No post yet")
+
             
         files=os.listdir(dirname)
         # print(files)
         # print(user_post)
         # print(profile_stuff)
-        # if tabs == "":
-        return render_template("profile.html",username=username,user_post=user_post[::-1],profile_stuff=profile_stuff,files=files,ALLOWED_EXTENSIONS=ALLOWED_EXTENSIONS,post_date=split_compare_date(post_date))
+        return render_template("profile.html",username=username,user_post=user_post[::-1],profile_stuff=profile_stuff,files=files,ALLOWED_EXTENSIONS=ALLOWED_EXTENSIONS,post_date=split_compare_date(post_date),like_lst=like_lst,like_lst_id=like_lst_id,following=following)
 
-    # else:
-    #     return redirect("/")
+    elif request.method == "POST":
+        print(request.form)
+        files=os.listdir(dirname)
+        if "Follow" in request.form:
+            follow=request.form["Follow"]
+            mycursor.execute("INSERT INTO Following (name,following) VALUES (%s,%s)",(session["username"],follow))
+            conn.commit()
+
+        # return render_template("profile.html",username=username,user_post=user_post[::-1],profile_stuff=profile_stuff,files=files,ALLOWED_EXTENSIONS=ALLOWED_EXTENSIONS,post_date=split_compare_date(post_date),like_lst=like_lst,like_lst_id=like_lst_id)
+        return redirect(f"/{username}/following")
 
 @app.route("/<username>/<tab>")
 def profile2(username,tab):
@@ -452,6 +475,7 @@ def profile2(username,tab):
     like_lst=[]
     like_lst_id=[]
     comment_lst=[]
+    following=[]
     # if "username" in session:
     if request.method=="GET":    
         mycursor.execute(f"SELECT * FROM Twitter_Users WHERE username = %s",username)
@@ -474,6 +498,10 @@ def profile2(username,tab):
         mycursor.execute("SELECT * FROM Comments")
         for j in mycursor:
             comment_lst.append(j)
+
+        mycursor.execute(f"SELECT * FROM Following WHERE following = %s ",username)
+        for j in mycursor:
+            following.append(j[0])
         
         # for i in like_lst_id:
         #     mycursor.execute("SELECT * FROM Post_Table WHERE postID=%s",i)
@@ -486,13 +514,20 @@ def profile2(username,tab):
         if myresult == None:
             flash("This user does not exist")
 
-            
+        elif tab != "Likes" or tab != "Replies":
+            flash("Hmm...this page doesn’t exist. Try searching for something else.")
+
         files=os.listdir(dirname)
         # print(files)
         # print(user_post)
         # print(profile_stuff)
         # if tabs == "":
-        return render_template("profile_tabs.html",profile_stuff=profile_stuff,ALLOWED_EXTENSIONS=ALLOWED_EXTENSIONS,post_date=split_compare_date(post_date),like_lst=like_lst,like_lst_id=like_lst_id,user_post=user_post[::-1],comment_lst=comment_lst[::-1],tab=tab)
+        return render_template("profile_tabs.html",profile_stuff=profile_stuff,ALLOWED_EXTENSIONS=ALLOWED_EXTENSIONS,
+            post_date=split_compare_date(post_date),like_lst=like_lst,like_lst_id=like_lst_id,user_post=user_post[::-1],
+            comment_lst=comment_lst[::-1],tab=tab,following=following)
+
+   
+
 
 @app.route('/logout')
 def logout():
@@ -692,7 +727,7 @@ def test():
 @app.route("/switch/<username>")
 def switch(username):
     session["username"]= username
-    return redirect("/")
+    return redirect(f"/{username}")
 
 if __name__=="__main__":
     app.run(debug=True)

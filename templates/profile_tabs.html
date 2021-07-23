@@ -128,3 +128,9 @@
         {%endfor%}       
     </div>
 {% endblock %}
+
+{% block following %}
+    {% for i in following %}
+        <p>{{i}}</p>
+    {%endfor%}
+{% endblock %}

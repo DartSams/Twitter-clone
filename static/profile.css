@@ -153,6 +153,13 @@ a{
     border: 30px;
     display: inline-flex;
 }
+form button{
+    border: none;
+    background: none;
+    cursor: pointer;
+    margin: 0;
+    padding: 0;
+}
 
 .profile-edit{
     margin-top: 10px;
@@ -164,4 +171,35 @@ a{
     border-color: rgb(29, 161, 242);
     border-width: 1px;
     color:rgb(29, 161, 242)
+}
+
+.post-buttons{
+    display:flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.post-buttons label{
+    color:white
+}
+.post-buttons button,.post-buttons button img,.post-buttons input{
+    width:30px;
+    border: none;
+    background: none;
+    cursor: pointer;
+}
+
+/* .Reply:hover{
+    background-color: rgb(29, 161, 242);
+} */
+
+.likes .post-buttons{
+    color:white
+}
+
+.like .post-buttons button,.like .post-buttons button img,.like .post-buttons input{
+    width:30px;
+    border: none;
+    background: none;
+    cursor: pointer;
 }

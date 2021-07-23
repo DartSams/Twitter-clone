@@ -79,6 +79,21 @@
                             {% elif tab == "Replies"%}
                                 {% block replies %}
                                 {% endblock%}
+
+                            {% elif tab == "following" %}
+                                {% block following %}
+                                {% endblock %}
+
+                            {% else %}
+                                <p style="color:white">
+                                    {% with messages = get_flashed_messages()%}
+                                        {% if messages %}
+                                            {% for message in messages%}
+                                                {{message}}
+                                            {%endfor%}
+                                        {%endif%}
+                                    {%endwith%}
+                                </p>
                             {%endif%}
                             
 
