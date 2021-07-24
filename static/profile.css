@@ -140,6 +140,11 @@ a{
     color:white;
 }
 
+.profile-description .follow{
+    display:flex;
+    flex-direction: row;
+}
+
 .profile-tabs{
     display: flex;
     flex-direction: row;

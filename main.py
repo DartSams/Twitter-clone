@@ -412,7 +412,8 @@ def profile(username):
     post_date=time.ctime()
     like_lst=[]
     like_lst_id=[]
-    followers=[]
+    followers=[];
+    following=[]
     # if "username" in session:
     if request.method=="GET":
         mycursor.execute(f'SELECT * FROM Post_Table WHERE author=%s',username)
@@ -437,15 +438,22 @@ def profile(username):
                 # print(i)
                 like_lst_id.append(i[1])
 
-        mycursor.execute(f"SELECT * FROM Followers WHERE follower = %s ",username)
+        mycursor.execute(f"SELECT * FROM Follow WHERE follower = %s ",username)
         for j in mycursor:
             print(f"{j[0]} follows {j[1]}")
             # followers.append(j)
             followers.append(j[0])
         print(f"Num of followers: {len(followers)}")
 
-        if "username" in request.method:
-            mycursor.execute(f"SELECT * FROM Followers WHERE name = %s ",session["username"])
+        mycursor.execute(f"SELECT * FROM Follow WHERE name = %s ",username)
+        for j in mycursor:
+            print(f"{j[0]} follows {j[1]}")
+            # followers.append(j)
+            following.append(j)
+        print(f"Num of followers: {len(followers)}")
+
+        if "username" in session:
+            mycursor.execute(f"SELECT * FROM Follow WHERE name = %s ",session["username"])
             all_ready_followed = mycursor.fetchone()
         else:
             all_ready_followed=" "
@@ -466,17 +474,16 @@ def profile(username):
         # print(profile_stuff)
         return render_template("profile.html",username=username,user_post=user_post[::-1],profile_stuff=profile_stuff,
         files=files,ALLOWED_EXTENSIONS=ALLOWED_EXTENSIONS,post_date=split_compare_date(post_date),like_lst=like_lst,
-        like_lst_id=like_lst_id,follower_num=len(followers),all_ready_followed=all_ready_followed)
+        like_lst_id=like_lst_id,follower_num=len(followers),following_num=len(following),all_ready_followed=all_ready_followed)
 
     elif request.method == "POST":
-        print(request.form)
+        # print(request.form)
         files=os.listdir(dirname)
         if "Follow" in request.form:
             follow=request.form["Follow"]
-            mycursor.execute("INSERT INTO Followers (name,follower) VALUES (%s,%s)",(session["username"],follow))
+            mycursor.execute("INSERT INTO Follow (name,follower) VALUES (%s,%s)",(session["username"],follow))
             conn.commit()
 
-        # return render_template("profile.html",username=username,user_post=user_post[::-1],profile_stuff=profile_stuff,files=files,ALLOWED_EXTENSIONS=ALLOWED_EXTENSIONS,post_date=split_compare_date(post_date),like_lst=like_lst,like_lst_id=like_lst_id)
         return redirect(f"/{username}/followers")
 
 @app.route("/<username>/<tab>",methods=["GET","POST"])
@@ -488,6 +495,7 @@ def profile2(username,tab):
     like_lst_id=[]
     comment_lst=[]
     followers=[]
+    following=[]
     # if "username" in session:
     if request.method=="GET":    
         mycursor.execute(f"SELECT * FROM Twitter_Users WHERE username = %s",username)
@@ -511,25 +519,26 @@ def profile2(username,tab):
         for j in mycursor:
             comment_lst.append(j)
 
-        mycursor.execute(f"SELECT * FROM Followers WHERE follower = %s ",username)
+        mycursor.execute(f"SELECT * FROM Follow WHERE follower = %s ",username)
         for j in mycursor:
             print(f"{j[0]} follows {j[1]}")
             # followers.append(j)
             followers.append(j)
         print(f"Num of followers: {len(followers)}")
 
+        mycursor.execute(f"SELECT * FROM Follow WHERE name = %s ",username)
+        for j in mycursor:
+            print(f"{j[0]} follows {j[1]}")
+            # followers.append(j)
+            following.append(j)
+        print(f"Num of followers: {len(followers)}")
+
+
         if "username" in request.method:
-            mycursor.execute(f"SELECT * FROM Followers WHERE name = %s ",session["username"])
+            mycursor.execute(f"SELECT * FROM Follow WHERE name = %s ",session["username"])
             all_ready_followed = mycursor.fetchone()
         else:
             all_ready_followed=" "
-
-
-        
-        # for i in like_lst_id:
-        #     mycursor.execute("SELECT * FROM Post_Table WHERE postID=%s",i)
-        #     for j in mycursor:
-        #         user_post.append(j)
 
         mycursor.execute(f"SELECT * FROM Twitter_Users where username = %s",(username))
         myresult = mycursor.fetchone()
@@ -545,16 +554,17 @@ def profile2(username,tab):
         # print(user_post)
         # print(profile_stuff)
         # if tabs == "":
-        return render_template("profile_tabs.html",profile_stuff=profile_stuff,ALLOWED_EXTENSIONS=ALLOWED_EXTENSIONS,
+        return render_template("profile_tabs.html",username=username,profile_stuff=profile_stuff,ALLOWED_EXTENSIONS=ALLOWED_EXTENSIONS,
             post_date=split_compare_date(post_date),like_lst=like_lst,like_lst_id=like_lst_id,user_post=user_post[::-1],
-            comment_lst=comment_lst[::-1],tab=tab,followers=followers,follower_num=len(followers),all_ready_followed=all_ready_followed)
+            comment_lst=comment_lst[::-1],tab=tab,followers=followers,follower_num=len(followers),following_num=len(following),all_ready_followed=all_ready_followed,
+            following=following)
 
     if request.method=="POST":  
         print(request.form)
         files=os.listdir(dirname)
         if "Follow" in request.form:
             follow=request.form["Follow"]
-            mycursor.execute("INSERT INTO Followers (name,follower) VALUES (%s,%s)",(session["username"],follow))
+            mycursor.execute("INSERT INTO Follow (name,follower) VALUES (%s,%s)",(session["username"],follow))
             conn.commit()
 
 

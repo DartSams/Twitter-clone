@@ -41,7 +41,7 @@ def create_db(table_name):
 # create_db('Post_Table')
 # create_db("Comments")
 # create_db("Likes")
-# create_db("Followers")
+# create_db("Follow")
 
 def insert_user():
     # mycursor.execute("INSERT INTO Flask_Profile_Info (author,gender,age,job,location) VALUES (%s,%s%s,%s,%s)", ("iphone 69+","Dsams"))
@@ -80,11 +80,11 @@ def update_data(password,math,new_value):
 def delete_db(table):
     mycursor.execute(f"DROP TABLE {table}")
     db.commit()
-    print(f"Deleted {table} table")
+    print(f"Deleted '{table}' table")
 
 # delete_db('Twitter_Users')
 # delete_db('Post_Table')
-# delete_db("Following")
+# delete_db("Followers")
 
 
 def add_column(table,column):

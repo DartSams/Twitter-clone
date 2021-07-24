@@ -28,8 +28,8 @@
                 {% endif %}
 
                 <hr>
-                <a href="/switch/dartsams" class="flex-item">to dartsams</a>
-                <a href="/switch/michael" class="flex-item">to michael</a>
+                <a href="/switch/dartsams" class="flex-item">Switch to dartsams</a>
+                <a href="/switch/michael" class="flex-item">Switch to michael</a>
             </div>
                 <div class="container-middle">
                     {% if profile_stuff %}
@@ -47,17 +47,24 @@
                                 <div>
                                     <!-- <button style="float: right;">Edit Account</button> -->
                                     <form action="" method="POST">
-                                        {% if username == session['username']%}
-                                            <button name="Settings"><a ref="/profile/{{session['username']}}/settings" class="profile-edit">Edit Account</a></button>
-                                        {% else %}
-                                            {% if all_ready_followed[0] == session["username"] %}
-                                                <button name="UnFollow" value="{{i[1]}}"><a href="/profile/{{session['username']}}/settings" class="profile-edit">Already Following</a></button>
-
+                                        {% if session["username"] %}
+                                            {% if username == session['username']%}
+                                                <button name="Settings"><a ref="/profile/{{session['username']}}/settings" class="profile-edit">Edit Account</a></button>
                                             {% else %}
-                                                <button name="Follow" value="{{i[1]}}"><p class="profile-edit">Follow</p></button>
+                                                {% if all_ready_followed[1] == session["username"] %}
+                                                    <button name="UnFollow" value="{{i[1]}}"><a href="/profile/{{session['username']}}/settings" class="profile-edit">Already Following</a></button>
 
+                                                {% else %}
+                                                    <button name="Follow" value="{{i[1]}}"><p class="profile-edit">Follow</p></button>
+
+                                                {%endif%}
                                             {%endif%}
+                                        {% else %}
+                                            <br>
+                                            <br>
+                                            <br>
                                         {%endif%}
+                                        
                                     </form>
 
                                 </div>
@@ -66,7 +73,12 @@
                                     <h3 style="color: white;">{{i[0]}}</h3>
                                     <p style="color: white;">@{{i[1]}}</p>
                                     <p style="color: white;">{{i[10]}}</p>
-                                    <p style="color: white;">{{follower_num}} <a href="/{{i[1]}}/followers">Followers</a></p>
+                                    <div class="follow" style="color: white;">
+                                        <a href="/{{i[1]}}/followers">{{follower_num}} Followers |</a> 
+                                        
+                                        <a href="/{{i[1]}}/following">| {{following_num}} Following</a>
+                                    </div>
+                                    
                                 </div>
 
                                 <div class="profile-tabs">

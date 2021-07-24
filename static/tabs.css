@@ -140,6 +140,16 @@ a{
     /* justify-content: space-between; */
 }
 
+.profile-description a{
+    text-decoration: none;
+    color:white;
+}
+
+.profile-description .follow{
+    display:flex;
+    flex-direction: row;
+}
+
 form button{
     border: none;
     background: none;

@@ -131,6 +131,17 @@
 
 {% block follower %}
     {% for i in followers %}
-        <p>{{i[0]}}</p>
+        {% if i[1] == username %}
+            <p>{{i[0]}}</p>
+        {%endif%}
+    {%endfor%}
+
+{% endblock %}
+
+{% block following %}
+    {% for i in following %}
+        {% if i[0] == username %}
+            <p>{{i[1]}}</p>
+        {%endif%}
     {%endfor%}
 {% endblock %}
