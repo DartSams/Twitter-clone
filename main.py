@@ -412,7 +412,7 @@ def profile(username):
     post_date=time.ctime()
     like_lst=[]
     like_lst_id=[]
-    followers=[];
+    followers=[]
     following=[]
     # if "username" in session:
     if request.method=="GET":
@@ -440,17 +440,17 @@ def profile(username):
 
         mycursor.execute(f"SELECT * FROM Follow WHERE follower = %s ",username)
         for j in mycursor:
-            print(f"{j[0]} follows {j[1]}")
+            # print(f"{j[0]} follows {j[1]}")
             # followers.append(j)
             followers.append(j[0])
-        print(f"Num of followers: {len(followers)}")
+        # print(f"Num of followers: {len(followers)}")
 
         mycursor.execute(f"SELECT * FROM Follow WHERE name = %s ",username)
         for j in mycursor:
-            print(f"{j[0]} follows {j[1]}")
+            # print(f"{j[0]} follows {j[1]}")
             # followers.append(j)
             following.append(j)
-        print(f"Num of followers: {len(followers)}")
+        # print(f"Num of followers: {len(followers)}")
 
         if "username" in session:
             mycursor.execute(f"SELECT * FROM Follow WHERE name = %s ",session["username"])
@@ -534,7 +534,7 @@ def profile2(username,tab):
         print(f"Num of followers: {len(followers)}")
 
 
-        if "username" in request.method:
+        if "username" in session:
             mycursor.execute(f"SELECT * FROM Follow WHERE name = %s ",session["username"])
             all_ready_followed = mycursor.fetchone()
         else:
@@ -567,7 +567,6 @@ def profile2(username,tab):
             mycursor.execute("INSERT INTO Follow (name,follower) VALUES (%s,%s)",(session["username"],follow))
             conn.commit()
 
-
 @app.route('/logout')
 def logout():
     if "username" in session:
@@ -582,7 +581,7 @@ def clear(post_id):
     lst.clear()
     mycursor.execute(f"DELETE FROM Post_Table WHERE postID=%s",(post_id))
     conn.commit()
-    return redirect("/")
+    return redirect(f"/admin/{session['username']}")
 
 @app.route("/profile/<username>/settings",methods=["GET","POST"])
 def profile_settings(username):
@@ -658,21 +657,30 @@ def post(post_id):
         for i in mycursor:
             comments.append(i)
 
-        if "username" in request.method:
+        if "username" in session:
             mycursor.execute(f'SELECT * FROM Likes WHERE id=%s AND name=%s',(post_id,session["username"]))
             for i in mycursor:
-                print(i)
+                # print(i)
                 like_lst.append(i)
 
 
         if not comments:
             flash("No comments yet")
 
+        mycursor.execute("SELECT * FROM Twitter_Users WHERE username = %s",session["username"])
+        maybe_admin=mycursor.fetchone()
+        # print(maybe_admin[4])
+        print("Admin logged in.")
+        if maybe_admin[4] == "admin":
+            admin_status=True
+        else:
+            admin_status=False
+
         if like_lst:
-            return render_template("post.html",user_post=user_post,ALLOWED_EXTENSIONS=ALLOWED_EXTENSIONS,post_date=split_compare_date(post_date),comments=comments[::-1],like_lst=like_lst[0])
+            return render_template("post.html",user_post=user_post,ALLOWED_EXTENSIONS=ALLOWED_EXTENSIONS,post_date=split_compare_date(post_date),comments=comments[::-1],like_lst=like_lst[0],admin_status=admin_status)
 
         elif not like_lst:
-            return render_template("post.html",user_post=user_post,ALLOWED_EXTENSIONS=ALLOWED_EXTENSIONS,post_date=split_compare_date(post_date),comments=comments[::-1])
+            return render_template("post.html",user_post=user_post,ALLOWED_EXTENSIONS=ALLOWED_EXTENSIONS,post_date=split_compare_date(post_date),comments=comments[::-1],admin_status=admin_status)
 
     elif request.method=="POST":
         comment=request.form.get("comment-field")
@@ -769,5 +777,62 @@ def switch(username):
     session["username"]= username
     return redirect(f"/{username}")
 
+@app.route("/admin/<username>",methods=["GET","POST"])
+def admin(username):
+    if request.method=="GET":
+        mycursor.execute("SELECT * FROM Twitter_Users WHERE username = %s",username)
+        maybe_admin=mycursor.fetchone()
+        # print(maybe_admin[4])
+        # print("Admin logged in.")
+        if maybe_admin[4] == "admin":
+            users=[]
+            lst=[]
+            mycursor.execute("SELECT * FROM Twitter_Users")
+            user=mycursor.fetchall()
+            for i in user:
+                # print(i)
+                users.append(i)
+
+            user_headers=[x[0] for x in mycursor.description] #this will extract row headers
+
+            mycursor.execute("SELECT * FROM Post_Table")
+            post=mycursor.fetchall()
+
+            post_headers=[x[0] for x in mycursor.description] #this will extract row headers
+
+
+            return render_template("admin.html",user_headers=user_headers,value=user,post=post[::-1],post_headers=post_headers)
+        
+        else:
+            print("You are not a admin")
+            return redirect(f"/{session['username']}")
+    
+    elif request.method == "POST":
+        print(request.form)
+        selected_table=request.form.get("tables")
+        delete_column=request.form.get("delete-column")
+        add_column=request.form.get("add-column")
+        add_column_types=request.form.get("add-column-types")
+        add_column_type_size=request.form.get("add-column-type-size")
+        old_column_name=request.form.get("old-column-name")
+        new_column_name=request.form.get("new-column-name")
+        
+        if delete_column != "":
+            print(f"going to delete '{delete_column}' from '{selected_table}'")
+            mycursor.execute(f"ALTER TABLE {selected_table} DROP {delete_column}")
+            conn.commit()
+            
+        if add_column != "":
+            print(f"adding column '{add_column}' to '{selected_table}' type '{add_column_types}' with a size of '{add_column_type_size}'")
+            mycursor.execute(f"ALTER TABLE {selected_table} ADD {add_column} {add_column_types}({add_column_type_size}) NOT NULL")
+            conn.commit()
+
+        if old_column_name != "" and new_column_name != "":
+            print(f"changing column '{old_column_name}' to '{new_column_name}' in table '{selected_table}'")
+            mycursor.execute(f"ALTER TABLE {selected_table} RENAME COLUMN {old_column_name} TO {new_column_name}")
+            conn.commit()
+
+        return redirect(f"/admin/{session['username']}")
+        
 if __name__=="__main__":
     app.run(debug=True)

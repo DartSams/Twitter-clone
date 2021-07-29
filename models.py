@@ -70,12 +70,17 @@ def delete_user(something):
 
 # delete_user("None")
 
-def update_data(password,math,new_value):
-    mycursor.execute(f"UPDATE Discord_DB SET money = money {math} {new_value} WHERE password = '{password}'")
+def update_data():
+    #change to admin
+    mycursor.execute("UPDATE Twitter_Users SET privilege = %s WHERE privilege = %s",("admin","user"))
+    #change to user
+    mycursor.execute("UPDATE Twitter_Users SET privilege = %s WHERE privilege = %s",("user","admin"))
     db.commit()
+    mycursor.execute("SELECT * FROM Twitter_Users")
+    for i in mycursor:
+        print(i)
 
-# update_data('6047','+','999999')
-# update_data('3979','+','999999')
+# update_data()
 
 def delete_db(table):
     mycursor.execute(f"DROP TABLE {table}")

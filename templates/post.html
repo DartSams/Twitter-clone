@@ -51,14 +51,14 @@
 
                         {% if i[1] == post_date %}
                         <p class="post-name">By <a href="/{{i[0]}}">{{i[0]}}</a> - {{i[2]}}
-                            {% if session["username"] == i[0] %}
-                            <a href="/clear/{{i[6]}}" style="float: right; text-decoration: none; color:white">delete post</a>
+                            {% if session["username"] == i[0] or admin_status == True %}
+                            <a href="/clear/{{i[6]}}" style="float: right; text-decoration: none; color:white">Delete post</a>
                             {% endif %}
                         </p>
                         {% else %}
                             <p class="post-name">By <a href="/{{i[0]}}">{{i[0]}}</a> - {{i[5]}}
-                                {% if session["username"] == i[0] %}
-                                <a href="/clear/{{i[6]}}" style="float: right; text-decoration: none; color:white">delete post</a>
+                                {% if session["username"] == i[0] or admin_status == True %}
+                                    <a href="/clear/{{i[6]}}" style="float: right; text-decoration: none; color:white">Delete post</a>
                                 {% endif %}
                             </p>
 

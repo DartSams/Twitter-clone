@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Page</title>
+    <link rel="stylesheet" href="{{url_for('static',filename='admin.css')}}">
+    
+</head>
+<body>
+
+    <div class="all-tables">        
+        <div class="table">
+            <div><h2>Users</h2></div>
+
+            <table>                
+                <thead> 
+                    {% for i in user_headers %}
+                        <th>{{i}}</th>
+                    {%endfor%}
+                </thead> 
+                <tbody> 
+                    {% for row in value %}
+                        <tr>
+                            {% for i in row %}
+                                <td>{{i}}</td>  
+                            {%endfor%}
+                            <td><a href="/{{row[1]}}">Profile</a></td>
+                            <td>button to delete</td>
+                        </tr>
+                    {% endfor %} 
+                </tbody> 
+            </table>
+        </div>
+
+        <div class="table">
+            <div><h2>Post</h2></div>
+            <table> 
+                <thead> 
+                    {% for i in post_headers %}
+                        <th>{{i}}</th>
+                    {%endfor%}
+                </thead> 
+                <tbody> 
+                    {% for row in post %}
+                        <tr>
+                            {% for i in row %}
+                                <td>{{i}}</td>  
+                            {%endfor%}
+                            <td><a href="/clear/{{row[6]}}">Delete post</a></td>
+                        </tr>
+                    {% endfor %} 
+                </tbody> 
+            </table>
+        </div>        
+    </div>
+
+     <form action="" method="post">
+         <fieldset>
+             <legend>Alter Database Tables</legend>
+
+            <label for="select-table">Please select a table:</label>
+            <select id="tables" name="tables">
+                <option value="Twitter_Users">Twitter_Users</option>
+                <option value="Post_Table">Post_Table</option>
+            </select><br><br>
+
+            <label for="delete-column">Delete column:</label>
+            <input type="text" name="delete-column" placeholder="Column name to delete"><br><br>
+
+            <label for="add-column">Add column:</label>
+            <input type="text" name="add-column" placeholder="Column name to add">
+
+            <select id="add-column-types" name="add-column-types">
+                <option value="VARCHAR">VARCHAR</option>
+                <option value="INT">INT</option>
+                <option value="INT PRIMARY KEY AUTO_INCREMENT">INT PRIMARY KEY AUTO_INCREMENT</option>
+            </select>
+
+            <input type="text" name="add-column-type-size" placeholder="Column size type"><br><br>
+
+            <label for="rename-column">Rename column:</label>
+            <input type="text" name="old-column-name" placeholder="Old Column Name">
+            <label for="">-</label>
+            <input type="text" name="new-column-name" placeholder="New Column Name"><br> <br>
+
+
+            <input type="submit">
+         </fieldset>
+        
+     </form>
+
+    
+</body>
+</html>
