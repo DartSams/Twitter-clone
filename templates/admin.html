@@ -27,7 +27,11 @@
                                 <td>{{i}}</td>  
                             {%endfor%}
                             <td><a href="/{{row[1]}}">Profile</a></td>
-                            <td>button to delete</td>
+                            <form action="" method="POST">
+                               <td><button name="delete-user" value="Twitter_Users,{{row[1]}},{{row[9]}}">Delete user</button></td>
+                               <td><button name="change-user-status-admin" value="Twitter_Users,{{row[1]}},{{row[9]}},admin">Turn to Admin</button>
+                               <button name="change-user-status-user" value="Twitter_Users,{{row[1]}},{{row[9]}},user">Turn to User</button></td>
+                            </form>
                         </tr>
                     {% endfor %} 
                 </tbody> 
@@ -62,8 +66,28 @@
 
             <label for="select-table">Please select a table:</label>
             <select id="tables" name="tables">
+                <option value="">None</option>
                 <option value="Twitter_Users">Twitter_Users</option>
                 <option value="Post_Table">Post_Table</option>
+            </select><br><br>
+
+            <label for="new-table">Create Table:</label>
+            <input type="text" name="new-table-name" placeholder="Table Name">
+            <input type="text" name="new-table-column" placeholder="Table must have atleast 1 column">
+
+            <select id="new-column-types" name="new-column-types">
+                <option value="VARCHAR">VARCHAR</option>
+                <option value="INT">INT</option>
+                <option value="INT PRIMARY KEY AUTO_INCREMENT">INT PRIMARY KEY AUTO_INCREMENT</option>
+            </select>
+
+            <input type="text" name="new-column-type-size" placeholder="Column size type"><br><br>
+
+            <label for="delete-table">Delete Table:</label>
+            <select name="" id="">
+                {% for table in all_tables %}
+                    <option value="{{table}}">{{table}}</option>
+                {%endfor%}
             </select><br><br>
 
             <label for="delete-column">Delete column:</label>

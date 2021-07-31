@@ -28,8 +28,10 @@ mycursor=db.cursor(buffered=True)
 #     id=i[6]
 #     print(post,placeholder_date)
 
-
-
+mycursor.execute("select * from test1")
+for i in mycursor:
+    print(i)
+    print("w")
 
 def create_db(table_name):
     # mycursor.execute(f"CREATE TABLE {table_name} (name VARCHAR(100),username VARCHAR(100),password VARCHAR(100), email VARCHAR(100),privilege VARCHAR(100),gender VARCHAR(100),age INT,birthday VARCHAR(100),join_date VARCHAR(100), personID INT PRIMARY KEY AUTO_INCREMENT)")
@@ -45,7 +47,8 @@ def create_db(table_name):
 
 def insert_user():
     # mycursor.execute("INSERT INTO Flask_Profile_Info (author,gender,age,job,location) VALUES (%s,%s%s,%s,%s)", ("iphone 69+","Dsams"))
-    mycursor.execute("INSERT INTO Post_Table (author,post_date,post) VALUES (%s,%s,%s)", ("dartsams","Sat Jun 12 14:13:45 2021","i hate life"))
+    # mycursor.execute("INSERT INTO Post_Table (author,post_date,post) VALUES (%s,%s,%s)", ("dartsams","Sat Jun 12 14:13:45 2021","i hate life"))
+    mycursor.execute("INSERT INTO test1 (column1) VALUES ('hello')")
     db.commit()
 
 # insert_user()
@@ -74,7 +77,7 @@ def update_data():
     #change to admin
     mycursor.execute("UPDATE Twitter_Users SET privilege = %s WHERE privilege = %s",("admin","user"))
     #change to user
-    mycursor.execute("UPDATE Twitter_Users SET privilege = %s WHERE privilege = %s",("user","admin"))
+    # mycursor.execute("UPDATE Twitter_Users SET privilege = %s WHERE privilege = %s",("user","admin"))
     db.commit()
     mycursor.execute("SELECT * FROM Twitter_Users")
     for i in mycursor:

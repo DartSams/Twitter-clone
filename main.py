@@ -800,38 +800,89 @@ def admin(username):
 
             post_headers=[x[0] for x in mycursor.description] #this will extract row headers
 
-
-            return render_template("admin.html",user_headers=user_headers,value=user,post=post[::-1],post_headers=post_headers)
+            mycursor.execute("Show tables;")
+  
+            all_tables = mycursor.fetchall()
+            return render_template("admin.html",user_headers=user_headers,value=user,post=post[::-1],post_headers=post_headers,all_tables=all_tables)
         
         else:
             print("You are not a admin")
+            flash("You are not a admin")
             return redirect(f"/{session['username']}")
     
     elif request.method == "POST":
-        print(request.form)
+        # print(request.form)
         selected_table=request.form.get("tables")
+        create_table=request.form.get("new-table-name")
+        create_table_column=request.form.get("new-table-column")
+        create_table_column_type=request.form.get("new-column-types")
+        create_table_column_size=request.form.get("new-column-type-size")
+
+
         delete_column=request.form.get("delete-column")
         add_column=request.form.get("add-column")
         add_column_types=request.form.get("add-column-types")
         add_column_type_size=request.form.get("add-column-type-size")
         old_column_name=request.form.get("old-column-name")
         new_column_name=request.form.get("new-column-name")
-        
-        if delete_column != "":
-            print(f"going to delete '{delete_column}' from '{selected_table}'")
-            mycursor.execute(f"ALTER TABLE {selected_table} DROP {delete_column}")
-            conn.commit()
-            
-        if add_column != "":
-            print(f"adding column '{add_column}' to '{selected_table}' type '{add_column_types}' with a size of '{add_column_type_size}'")
-            mycursor.execute(f"ALTER TABLE {selected_table} ADD {add_column} {add_column_types}({add_column_type_size}) NOT NULL")
-            conn.commit()
+        delete_user=request.form.get("delete-user")
+        make_admin=request.form.get("change-user-status-admin")
+        make_user=request.form.get("change-user-status-user")
+        # print(delete_user)
 
-        if old_column_name != "" and new_column_name != "":
-            print(f"changing column '{old_column_name}' to '{new_column_name}' in table '{selected_table}'")
-            mycursor.execute(f"ALTER TABLE {selected_table} RENAME COLUMN {old_column_name} TO {new_column_name}")
-            conn.commit()
+        if selected_table is not None:
+            if create_table:
+                print(f"({create_table_column} {create_table_column_type}({create_table_column_size})")
+                mycursor.execute(f"CREATE TABLE {create_table} ({create_table_column} {create_table_column_type}({create_table_column_size}))")
+                conn.commit()
+                print(f"{create_table} has been created")
 
+            if delete_column != "":
+                print(f"going to delete '{delete_column}' from '{selected_table}'")
+                mycursor.execute(f"ALTER TABLE {selected_table} DROP {delete_column}")
+                conn.commit()
+                
+            if add_column != "":
+                print(f"adding column '{add_column}' to '{selected_table}' type '{add_column_types}' with a size of '{add_column_type_size}'")
+                mycursor.execute(f"ALTER TABLE {selected_table} ADD {add_column} {add_column_types}({add_column_type_size}) NOT NULL")
+                conn.commit()
+
+            if old_column_name != "" and new_column_name != "":
+                print(f"changing column '{old_column_name}' to '{new_column_name}' in table '{selected_table}'")
+                mycursor.execute(f"ALTER TABLE {selected_table} RENAME COLUMN {old_column_name} TO {new_column_name}")
+                conn.commit()
+
+        else:
+            if delete_user:
+                # print("delete user")
+                delete_user=delete_user.split(",")
+                table_name=delete_user[0]
+                delete_user=delete_user[1]
+                delete_user_id=delete_user[2]
+                mycursor.execute(f"DELETE FROM {table_name} WHERE personID = %s",delete_user_id)
+                conn.commit()
+                print(f"{delete_user} deleted")
+
+            if make_admin:
+                make_admin=make_admin.split(",")
+                table_name=make_admin[0]
+                new_admin_username=make_admin[1]
+                new_admin_id=make_admin[2]
+                new_user_privilege=make_admin[3]
+                # print(make_admin)
+                mycursor.execute(f"UPDATE {table_name} SET privilege = %s WHERE personID = %s",(new_user_privilege,new_admin_id))
+                conn.commit()
+                print(f"{new_admin_username} has been promoted to {new_user_privilege}")
+
+            if make_user:
+                make_user=make_user.split(",")
+                table_name=make_user[0]
+                username=make_user[1]
+                user_id=make_user[2]
+                new_user_privilege=make_user[3]
+                mycursor.execute(f"UPDATE {table_name} SET privilege = %s WHERE personID = %s",(new_user_privilege,user_id))
+                conn.commit()
+                print(f"{username} has been demoted to {new_user_privilege}")
         return redirect(f"/admin/{session['username']}")
         
 if __name__=="__main__":
