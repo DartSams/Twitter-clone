@@ -168,12 +168,13 @@ form button{
     border: none;
     background: none;
     cursor: pointer;
-    margin: 0;
-    padding: 0;
+    /* margin: 0;
+    padding: 0; */
+    
 }
 
-.profile-edit{
-    margin-top: 10px;
+.profile-edit,button{
+    /* margin-top: 10px; */
     float: right;
     text-decoration: none;
     border-radius: 50px;
@@ -181,7 +182,7 @@ form button{
     border-style: solid;
     border-color: rgb(29, 161, 242);
     border-width: 1px;
-    color:rgb(29, 161, 242)
+    color:rgb(29, 161, 242);
 }
 
 .post-buttons{

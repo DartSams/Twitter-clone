@@ -69,7 +69,7 @@
 
                 <div class="all-post">
                     <!-- <h3>Post bar</h3> -->
-                    {% if "username" in session%}
+                    {% if "username" in session %}
                     <form action="" method="POST" enctype=multipart/form-data>
                         <textarea name="post-field" id="" cols="50" rows="5" style="resize: none;"></textarea>
                         <div class="form-buttons">
@@ -84,7 +84,7 @@
                         <div class="post" >
                             <!-- {{messages}} -->
                             
-                            {%for i in messages%}
+                            {%for i in data["all_post"]%}
                             <!-- {{session["username"]}} -->
                             <!-- <div style="color: blue;">Author:{{i[0]}}</div>
                             <div style="color: blue;">Post Date:{{i[1]}}</div>
@@ -121,7 +121,7 @@
 
                                     {%endif%}
 
-                                    {% for pic_type in ALLOWED_EXTENSIONS%}
+                                    {% for pic_type in data["ALLOWED_EXTENSIONS"] %}
                                         {% if pic_type == i[4].split(".")[1] %}
                                             <img src="/static/preview_img/{{i[4]}}" alt="">
                                         {%endif%}
@@ -159,9 +159,9 @@
                                     <form action="" method="post" class="post-buttons">
                                         <button id="4" name="Reply" class="Reply" value="{{i[6]}}"><img src="/static/buttons/reply1.png" alt="">Reply</button>  
                                         <button id="4" name="Retweet" class="Retweet" value="{{i[6]}}"><img src="/static/buttons/retweet.png" alt="">Retweet</button> 
-                                        {% if like_lst %}
+                                        {% if data["like_lst"] %}
                                         <!-- {{like_lst}} -->
-                                            {% for j in like_lst %}
+                                            {% for j in data["like_lst"] %}
                                                 {% if j[1] == i[6] %}
                                                     {% if session["username"] == j[0] %}
                                                         <!-- {{j[0]}}-{{j[1]}} -->
@@ -171,7 +171,7 @@
                                             {%endfor%}
                                         {%endif%}
 
-                                        {% if i[6] not in like_lst_id %}
+                                        {% if i[6] not in data["like_lst_id"] %}
                                             <button id="4" name="Like" class="Like" value="{{i[6]}}"><img src="/static/buttons/like.png" alt="">Like</button>  
                                         {%endif%}
                                         <button id="4" name="Share" class="Share" value="{{i[6]}}"><img src="/static/buttons/black heart.png" alt="">Share</button>  

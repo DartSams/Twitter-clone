@@ -183,6 +183,7 @@ def index():
     like_lst_id=[]
     change_dates("Post_Table",date_lst)
     date_lst.clear()
+    
     if request.method=="GET":
         lst.clear()
         post_date=time.ctime()
@@ -215,7 +216,17 @@ def index():
         # for i in mycursor:
         #     print(i)
         
-        return render_template("index.html",messages=lst[::-1],ALLOWED_EXTENSIONS=ALLOWED_EXTENSIONS,post_date=split_compare_date(post_date),like_lst=like_lst,like_lst_id=like_lst_id)
+        data={
+            "all_post":lst[::-1],
+            "Allowed_Extension":ALLOWED_EXTENSIONS,
+            "post_date":split_compare_date(post_date),
+            "like_lst":like_lst,
+            "like_lst_id":like_lst_id
+        }
+
+        # print(json.dumps(data,indent=2))
+        
+        return render_template("index.html",data=data)
 
     elif request.method=="POST":
         # print(request.form)
@@ -472,22 +483,81 @@ def profile(username):
         # print(files)
         # print(user_post)
         # print(profile_stuff)
-        return render_template("profile.html",username=username,user_post=user_post[::-1],profile_stuff=profile_stuff,
-        files=files,ALLOWED_EXTENSIONS=ALLOWED_EXTENSIONS,post_date=split_compare_date(post_date),like_lst=like_lst,
-        like_lst_id=like_lst_id,follower_num=len(followers),following_num=len(following),all_ready_followed=all_ready_followed)
+        data={
+            "username":username,
+            "post":user_post[::-1],
+            "profile_details":profile_stuff,
+            "files":files,
+            "Allowed Extensions":ALLOWED_EXTENSIONS,
+            "post date":split_compare_date(post_date),
+            "like lst":like_lst,
+            "like id":like_lst_id,
+            "Amount of followers":len(followers),
+            "Following Amount":len(following),
+            "all ready followed":all_ready_followed
+        }
+        # print(all_ready_followed)
+        
+        return render_template("profile.html",data=data,profile_stuff=data["profile_details"])
 
     elif request.method == "POST":
-        # print(request.form)
+        print(request.form)
         files=os.listdir(dirname)
-        if "Follow" in request.form:
+        if "Settings" in request.form:
+            return redirect(f"/profile/{session['username']}/settings")
+
+        elif "Follow" in request.form:
             follow=request.form["Follow"]
             mycursor.execute("INSERT INTO Follow (name,follower) VALUES (%s,%s)",(session["username"],follow))
             conn.commit()
 
-        return redirect(f"/{username}/followers")
+        ##fix this trash
+        elif "UnFollow" in request.form:
+            unfollow=request.form["UnFollow"]
+            # print(unfollow)
+            mycursor.execute("DELETE FROM Follow WHERE name = %s",unfollow)
+            conn.commit()
+
+        elif "Like" in request.form:
+            like=request.form["Like"]
+            # print(like)
+            mycursor.execute("INSERT INTO Likes (name,id) VALUES (%s,%s) ",(session["username"],like) )
+            conn.commit()
+            # mycursor.execute("SELECT * FROM Likes")
+            # for i in mycursor:
+            #     print(i)
+
+        elif "UnLike" in request.form:
+            unlike=request.form["UnLike"]
+            mycursor.execute("DELETE FROM Likes WHERE id = %s AND name = %s",(unlike,session["username"]))
+            conn.commit()
+
+        elif "Reply" in request.form:
+            reply=request.form["Reply"]
+            return redirect(f"/{reply}")
+
+        elif "Retweet" in request.form:
+            retweet=request.form["Retweet"]
+            # print(retweet)
+            mycursor.execute("SELECT * FROM Post_Table WHERE postID = %s", retweet)
+            for i in mycursor:
+                # print(i)
+                post=i[3]
+                file_=i[4]
+                # print(type(file_))
+            if file_ is None:
+                # print("text")
+                mycursor.execute("INSERT INTO Post_Table (author,post_date,post_time,post) VALUES (%s,%s,%s,%s)", (session["username"],split_compare_date(post_date),calculate_post_time(post_date),post))
+                conn.commit()
+            else:
+                # print("img")
+                mycursor.execute("INSERT INTO Post_Table (author,post_date,post_time,post,post_file) VALUES (%s,%s,%s,%s,%s)", (session["username"],split_compare_date(post_date),calculate_post_time(post_date),post,file_))
+                conn.commit()
+
+        return redirect(f"/{username}")
 
 @app.route("/<username>/<tab>",methods=["GET","POST"])
-def profile2(username,tab):
+def profile_tab(username,tab):
     user_post=[]
     profile_stuff=[]
     post_date=time.ctime()
@@ -554,18 +624,82 @@ def profile2(username,tab):
         # print(user_post)
         # print(profile_stuff)
         # if tabs == "":
-        return render_template("profile_tabs.html",username=username,profile_stuff=profile_stuff,ALLOWED_EXTENSIONS=ALLOWED_EXTENSIONS,
-            post_date=split_compare_date(post_date),like_lst=like_lst,like_lst_id=like_lst_id,user_post=user_post[::-1],
-            comment_lst=comment_lst[::-1],tab=tab,followers=followers,follower_num=len(followers),following_num=len(following),all_ready_followed=all_ready_followed,
-            following=following)
+
+        data={
+            "username":username,
+            "post":user_post[::-1],
+            "profile_details":profile_stuff,
+            "files":files,
+            "Allowed Extensions":ALLOWED_EXTENSIONS,
+            "post date":split_compare_date(post_date),
+            "like lst":like_lst,
+            "like id":like_lst_id,
+            "Amount of followers":len(followers),
+            "Following Amount":len(following),
+            "all ready followed":all_ready_followed,
+            "comments":comment_lst[::-1],
+            "followers":followers,
+            "following":following,
+            "tab":tab
+        }
+
+        return render_template("profile_tabs.html",data=data,username=username,profile_stuff=data["profile_details"])
 
     if request.method=="POST":  
         print(request.form)
         files=os.listdir(dirname)
-        if "Follow" in request.form:
+        if "Settings" in request.form:
+            return redirect(f"/profile/{session['username']}/settings")
+
+        elif "Follow" in request.form:
             follow=request.form["Follow"]
             mycursor.execute("INSERT INTO Follow (name,follower) VALUES (%s,%s)",(session["username"],follow))
             conn.commit()
+
+        ##fix this trash
+        elif "UnFollow" in request.form:
+            unfollow=request.form["UnFollow"]
+            # print(unfollow)
+            mycursor.execute("DELETE FROM Follow WHERE name = %s",unfollow)
+            conn.commit()
+
+        elif "Like" in request.form:
+            like=request.form["Like"]
+            # print(like)
+            mycursor.execute("INSERT INTO Likes (name,id) VALUES (%s,%s) ",(session["username"],like) )
+            conn.commit()
+            # mycursor.execute("SELECT * FROM Likes")
+            # for i in mycursor:
+            #     print(i)
+
+        elif "UnLike" in request.form:
+            unlike=request.form["UnLike"]
+            mycursor.execute("DELETE FROM Likes WHERE id = %s AND name = %s",(unlike,session["username"]))
+            conn.commit()
+
+        elif "Reply" in request.form:
+            reply=request.form["Reply"]
+            return redirect(f"/{reply}")
+
+        elif "Retweet" in request.form:
+            retweet=request.form["Retweet"]
+            # print(retweet)
+            mycursor.execute("SELECT * FROM Post_Table WHERE postID = %s", retweet)
+            for i in mycursor:
+                # print(i)
+                post=i[3]
+                file_=i[4]
+                # print(type(file_))
+            if file_ is None:
+                # print("text")
+                mycursor.execute("INSERT INTO Post_Table (author,post_date,post_time,post) VALUES (%s,%s,%s,%s)", (session["username"],split_compare_date(post_date),calculate_post_time(post_date),post))
+                conn.commit()
+            else:
+                # print("img")
+                mycursor.execute("INSERT INTO Post_Table (author,post_date,post_time,post,post_file) VALUES (%s,%s,%s,%s,%s)", (session["username"],split_compare_date(post_date),calculate_post_time(post_date),post,file_))
+                conn.commit()
+
+        return redirect(f"/{username}")
 
 @app.route('/logout')
 def logout():
@@ -595,10 +729,14 @@ def profile_settings(username):
 
         mycursor.execute(f"SELECT * FROM Twitter_Users WHERE username = %s",username)
         for i in mycursor:
-            # print(i)
+            print(i)
             profile_stuff.append(i)
 
-        return render_template("settings.html",user_post=user_post[::-1],profile_stuff=profile_stuff)
+        data={
+            "profile details":profile_stuff
+        }
+
+        return render_template("settings.html",data=data)
 
     elif request.method=="POST":
         profile_description=request.form['profile_description']
@@ -660,7 +798,7 @@ def post(post_id):
         if "username" in session:
             mycursor.execute(f'SELECT * FROM Likes WHERE id=%s AND name=%s',(post_id,session["username"]))
             for i in mycursor:
-                # print(i)
+                print(i)
                 like_lst.append(i)
 
 
@@ -676,11 +814,19 @@ def post(post_id):
         else:
             admin_status=False
 
+        data={
+            "post":user_post,
+            "Allowed Extensions":ALLOWED_EXTENSIONS,
+            "post date":split_compare_date(post_date),
+            "comments":comments[::-1],
+            "admin status":admin_status
+        }
+
         if like_lst:
-            return render_template("post.html",user_post=user_post,ALLOWED_EXTENSIONS=ALLOWED_EXTENSIONS,post_date=split_compare_date(post_date),comments=comments[::-1],like_lst=like_lst[0],admin_status=admin_status)
+            return render_template("post.html",data=data,like_lst=like_lst[0])
 
         elif not like_lst:
-            return render_template("post.html",user_post=user_post,ALLOWED_EXTENSIONS=ALLOWED_EXTENSIONS,post_date=split_compare_date(post_date),comments=comments[::-1],admin_status=admin_status)
+            return render_template("post.html",data=data)
 
     elif request.method=="POST":
         comment=request.form.get("comment-field")
@@ -723,7 +869,7 @@ def post(post_id):
             print(request.form)
             if "Like" in request.form:
                 like=request.form.get("Like")
-                print(like)
+                # print(like)
                 mycursor.execute("INSERT INTO Likes (name,id) VALUES (%s,%s) ",(session["username"],like) )
                 conn.commit()
                 mycursor.execute("SELECT * FROM Likes")
@@ -735,42 +881,6 @@ def post(post_id):
                 mycursor.execute("DELETE FROM Likes WHERE id = %s AND name = %s",(unlike,session["username"]))
                 conn.commit()
             return redirect(f"/{post_id}")
-
-@app.route("/test" ,methods=["get","post"])
-def test():
-    # user = {'firstname': "Finn", 'lastname': "The Human"}
-    # conn=mysql.connect(dictionary=True)
-
-
-
-
-    # x=mycursor.execute(f"SELECT* FROM Twitter_Users WHERE username = 'dartsams'")
-    # rv = mycursor.fetchall()
-    # json_data=[]
-    # for result in rv:
-    #     json_data.append(dict(result))
-    # x= json.dumps(json_data)
-
-
-    # cur = mysql.connection.cursor()
-    # mycursor.execute('''SELECT * FROM Post_Table ''')
-    # row_headers=[x[0] for x in mycursor.description] #this will extract row headers
-    # rv = mycursor.fetchall()
-    # json_data=[]
-    # for result in rv:
-    #     json_data.append(dict(zip(row_headers,result)))
-    # x= json.dumps(json_data)
-    if request.method == "GET":
-        html_files=["index.html","login.html"]
-        return render_template("test.html",html_files=html_files)
-
-    # elif request.method == "POST":
-    #     print(request.form)
-    #     if 'download' in request.form:
-    #         print("cum")
-    #     elif 'watch' in request.form:
-    #         print("puhh")   
-    #     return redirect(url_for('test'))
 
 @app.route("/switch/<username>")
 def switch(username):
@@ -803,7 +913,14 @@ def admin(username):
             mycursor.execute("Show tables;")
   
             all_tables = mycursor.fetchall()
-            return render_template("admin.html",user_headers=user_headers,value=user,post=post[::-1],post_headers=post_headers,all_tables=all_tables)
+            data={
+                "user headers":user_headers,
+                "users":users,
+                "post headers":post_headers,
+                "post":post,
+                "all tables":all_tables,
+            }
+            return render_template("admin.html",data=data)
         
         else:
             print("You are not a admin")

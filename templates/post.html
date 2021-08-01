@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    {% for i in user_post %}
+    {% for i in data["post"] %}
         {% if i[3] != "" %}
             <title>{{i[0]}} on Twitter:"{{i[3].capitalize()}}"</title>
         {% else %}
@@ -29,9 +29,9 @@
                     <a href="/profile" >{{session["username"]}}</a>
                     <a href="/logout">Logout</a>  
                 </div> -->
-                <a href="/{{session['username']}}" class="flex-item">{{session["username"]}}</a>
+                    <a href="/{{session['username']}}" class="flex-item">{{session["username"]}}</a>
                 {% elif "username" not in session %}
-                <a href="/login" class="flex-item">Login</a>
+                    <a href="/login" class="flex-item">Login</a>
                 {% endif %}
 
                 <!-- <div class="profile-bar">
@@ -44,20 +44,20 @@
             <!-- {{user_post}} -->
 
             <div class="post">
-                {{user_post}}
-                {%for i in user_post%}
+                <!-- {{user_post}} -->
+                {%for i in data["post"] %}
                     <!-- {{session["username"]}} -->
                     <div class="post-detail">
 
-                        {% if i[1] == post_date %}
+                        {% if i[1] == data["post date"] %}
                         <p class="post-name">By <a href="/{{i[0]}}">{{i[0]}}</a> - {{i[2]}}
-                            {% if session["username"] == i[0] or admin_status == True %}
-                            <a href="/clear/{{i[6]}}" style="float: right; text-decoration: none; color:white">Delete post</a>
+                            {% if session["username"] == i[0] or data["admin status"] == True %}
+                                <a href="/clear/{{i[6]}}" style="float: right; text-decoration: none; color:white">Delete post</a>
                             {% endif %}
                         </p>
                         {% else %}
                             <p class="post-name">By <a href="/{{i[0]}}">{{i[0]}}</a> - {{i[5]}}
-                                {% if session["username"] == i[0] or admin_status == True %}
+                                {% if session["username"] == i[0] or data["admin status"] == True %}
                                     <a href="/clear/{{i[6]}}" style="float: right; text-decoration: none; color:white">Delete post</a>
                                 {% endif %}
                             </p>
@@ -81,7 +81,7 @@
 
                             {%endif%}
 
-                            {% for pic_type in ALLOWED_EXTENSIONS%}
+                            {% for pic_type in data["Allowed Extensions"] %}
                                 {% if pic_type == i[4].split(".")[1] %}
                                     <img src="/static/preview_img/{{i[4]}}" alt="">
                                     <!-- {{i[4]}} -->
@@ -131,17 +131,17 @@
 
 
                     <h1>Comments</h1>
-                    {%for i in comments%}
+                    {%for i in data["comments"] %}
                         <!-- {{session["username"]}} -->
-                        <div style="color: blue;">Author:{{i[0]}}</div>
+                        <!-- <div style="color: blue;">Author:{{i[0]}}</div>
                         <div style="color: blue;">Post Date:{{i[1]}}</div>
                         <div style="color: blue;">Post Time:{{i[2]}}</div>
                         <div style="color: blue;">Post:{{i[3]}}</div>
                         <div style="color: blue;">Post File:{{i[4]}}</div>
                         <div style="color: blue;">Placeholder Date:{{i[5]}}</div>
-                        <div style="color: blue;">Post ID:{{i[6]}}</div>
+                        <div style="color: blue;">Post ID:{{i[6]}}</div> -->
                         <div class="post-detail">
-                            {% if i[1] == post_date %}
+                            {% if i[1] == data["post date"] %}
                                 <p class="post-name">By <a href="/{{i[0]}}">{{i[0]}}</a> - {{i[2]}}</p>
                             {% else %}
                                 <p class="post-name">By {{i[0]}} - {{i[5]}}</p>
@@ -164,7 +164,7 @@
 
                                 {%endif%}
 
-                                {% for pic_type in ALLOWED_EXTENSIONS%}
+                                {% for pic_type in data["Allowed Extensions"] %}
                                     {% if pic_type == i[4].split(".")[1] %}
                                         <img src="/static/preview_img/{{i[4]}}" alt="">
                                     {%endif%}
@@ -174,7 +174,7 @@
                         
                     {%endfor%}
 
-                    {% if not comments%}
+                    {% if not data["comments"] %}
                     <p style="color:white">
                         {% with messages = get_flashed_messages()%}
                             {% if messages %}

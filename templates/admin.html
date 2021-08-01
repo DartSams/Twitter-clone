@@ -16,12 +16,12 @@
 
             <table>                
                 <thead> 
-                    {% for i in user_headers %}
+                    {% for i in data["user headers"] %}
                         <th>{{i}}</th>
                     {%endfor%}
                 </thead> 
                 <tbody> 
-                    {% for row in value %}
+                    {% for row in data["users"] %}
                         <tr>
                             {% for i in row %}
                                 <td>{{i}}</td>  
@@ -29,8 +29,8 @@
                             <td><a href="/{{row[1]}}">Profile</a></td>
                             <form action="" method="POST">
                                <td><button name="delete-user" value="Twitter_Users,{{row[1]}},{{row[9]}}">Delete user</button></td>
-                               <td><button name="change-user-status-admin" value="Twitter_Users,{{row[1]}},{{row[9]}},admin">Turn to Admin</button>
-                               <button name="change-user-status-user" value="Twitter_Users,{{row[1]}},{{row[9]}},user">Turn to User</button></td>
+                               <td><button name="change-user-status-admin" value="Twitter_Users,{{row[1]}},{{row[9]}},admin">Promote to Admin</button>
+                               <button name="change-user-status-user" value="Twitter_Users,{{row[1]}},{{row[9]}},user">Demote to User</button></td>
                             </form>
                         </tr>
                     {% endfor %} 
@@ -42,12 +42,12 @@
             <div><h2>Post</h2></div>
             <table> 
                 <thead> 
-                    {% for i in post_headers %}
+                    {% for i in data["post headers"] %}
                         <th>{{i}}</th>
                     {%endfor%}
                 </thead> 
                 <tbody> 
-                    {% for row in post %}
+                    {% for row in data["post"] %}
                         <tr>
                             {% for i in row %}
                                 <td>{{i}}</td>  
@@ -67,8 +67,9 @@
             <label for="select-table">Please select a table:</label>
             <select id="tables" name="tables">
                 <option value="">None</option>
-                <option value="Twitter_Users">Twitter_Users</option>
-                <option value="Post_Table">Post_Table</option>
+                {% for table in data["all tables"] %}
+                    <option value="{{table}}">{{table}}</option>
+                {%endfor%}
             </select><br><br>
 
             <label for="new-table">Create Table:</label>
@@ -85,7 +86,7 @@
 
             <label for="delete-table">Delete Table:</label>
             <select name="" id="">
-                {% for table in all_tables %}
+                {% for table in data["all tables"] %}
                     <option value="{{table}}">{{table}}</option>
                 {%endfor%}
             </select><br><br>

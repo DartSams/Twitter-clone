@@ -28,10 +28,9 @@ mycursor=db.cursor(buffered=True)
 #     id=i[6]
 #     print(post,placeholder_date)
 
-mycursor.execute("select * from test1")
+mycursor.execute("select * from Follow")
 for i in mycursor:
     print(i)
-    print("w")
 
 def create_db(table_name):
     # mycursor.execute(f"CREATE TABLE {table_name} (name VARCHAR(100),username VARCHAR(100),password VARCHAR(100), email VARCHAR(100),privilege VARCHAR(100),gender VARCHAR(100),age INT,birthday VARCHAR(100),join_date VARCHAR(100), personID INT PRIMARY KEY AUTO_INCREMENT)")

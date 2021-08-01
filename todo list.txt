@@ -7,3 +7,5 @@ add a report button to post
 on individual post allow admin to delete post
 
 allow admins to give admin privileges
+
+make a report button
