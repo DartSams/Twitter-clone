@@ -2,7 +2,7 @@
 
 {% block likes %}
     <div class="post">
-        {% for i in data["post"] %}
+        {% for i in user_post %}
             <!-- {{session["username"]}} -->
             <!-- <div style="color: blue;">Author:{{i[0]}}</div> -->
             <!-- <div style="color: blue;">Post Date:{{i[1]}}</div> -->
@@ -14,7 +14,7 @@
 
             <a href="/{{i[6]}}">
                 <div class="post-detail">
-                    {% if i[1] == data["post date"] %}
+                    {% if i[1] == post_date %}
                         <p class="post-name">By {{i[0]}} - {{i[2]}}</p>
 
                     {% else %}
@@ -39,7 +39,7 @@
 
                         {%endif%}
 
-                        {% for pic_type in data["Allowed Extensions"] %}
+                        {% for pic_type in ALLOWED_EXTENSIONS%}
                             {% if pic_type == i[4].split(".")[1] %}
                                 <img src="/static/preview_img/{{i[4]}}" alt="">
                             {%endif%}
@@ -52,11 +52,12 @@
             
         {%endfor%}
     </div>
+    <h2 style="color: white;">All Post Likes</h2>
 {% endblock %}
 
 {% block replies %}
     <div class="post">
-        {%for i in data["comments"] %}
+        {%for i in comment_lst %}
             <!-- {{session["username"]}} -->
             <!-- <div style="color: blue;">Author:{{i[0]}}</div>
             <div style="color: blue;">Post Date:{{i[1]}}</div>
@@ -66,7 +67,7 @@
             <div style="color: blue;">Placeholder Date:{{i[5]}}</div>
             <div style="color: blue;">Post ID:{{i[6]}}</div> -->
             <div class="post-detail"> 
-                {% if i[1] == data["post date"] %}
+                {% if i[1] == post_date %}
                     <p class="post-name">By <a href="/{{i[0]}}">{{i[0]}}</a> - {{i[2]}}</p>
                 {% else %}
                     <p class="post-name">By <a href="/{{i[0]}}">{{i[0]}}</a> - {{i[5]}}</p>
@@ -89,7 +90,7 @@
 
                     {%endif%}
 
-                    {% for pic_type in data["Allowed Extensions"] %}
+                    {% for pic_type in ALLOWED_EXTENSIONS%}
                         {% if pic_type == i[4].split(".")[1] %}
                             <img src="/static/preview_img/{{i[4]}}" alt="">
                         {%endif%}
@@ -99,20 +100,21 @@
             
         {%endfor%}
     </div>
+    <h2 style="color: white;">All Replies</h2>
 {% endblock%}
 
 {% block post_buttons %}
     <div class="likes">
         <!-- {{like_lst}}  -->
-        {% for i in data["post"] %}
+        {% for i in user_post %}
             <br>
 
             <form action="" method="post" class="post-buttons">
                 <button id="4" name="Reply" class="Reply" value="{{i[6]}}"><img src="/static/buttons/reply1.png" alt="">Reply</button>  
                 <button id="4" name="Retweet" class="Retweet" value="{{i[6]}}"><img src="/static/buttons/retweet.png" alt="">Retweet</button> 
-                {% if data["like lst"] %}
+                {% if like_lst %}
                 <!-- {{like_lst}} -->
-                    {% for j in data["like lst"] %}
+                    {% for j in like_lst %}
                         {% if j[1] == i[6] %}
                             {% if session["username"] == j[0] %}
                                 <!-- {{j[0]}}-{{j[1]}} -->
@@ -130,18 +132,20 @@
 {% endblock %}
 
 {% block follower %}
-    {% for i in data["followers"] %}
-        {% if i[1] == data["username"] %}
+    
+    {% for i in followers %}
+        {% if i[1] == username %}
             <p>{{i[0]}}</p>
         {%endif%}
     {%endfor%}
-
+    <h2 style="color: white;">Followers</h2>
 {% endblock %}
 
 {% block following %}
-    {% for i in data["following"] %}
-        {% if i[0] == data["username"] %}
+    {% for i in following %}
+        {% if i[0] == username %}
             <p>{{i[1]}}</p>
         {%endif%}
     {%endfor%}
+    <h2 style="color: white;">Following</h2>
 {% endblock %}

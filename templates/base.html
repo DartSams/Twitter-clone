@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    {% for i in data["profile_details"] %}
+    {% for i in profile_stuff%}
         <title>{{i[0]}} (@{{i[1]}})</title>
     {%endfor%}
     <!-- <link rel="stylesheet" type= "text/css" href="\twitter clone\static\index.css"> -->
@@ -28,10 +28,10 @@
                 {% endif %}
             </div>
                 <div class="container-middle">
-                    {% if data["profile_details"] %}
+                    {% if profile_stuff %}
                         <div class="container-middle-top">
                             <!-- {% if profile_stuff %} -->
-                            {% for i in data["profile_details"] %}
+                            {% for i in profile_stuff%}
                                 <!-- {{i}} -->
                                     <!-- <img src="{{url_for('static',filename='preview_img/{{{i}}}')}}" alt="{{i}}" id="profile-banner"> -->
                                     <img src='/static/preview_img/{{i[11]}}' alt="{{i[11]}}" id="profile-banner">
@@ -46,8 +46,8 @@
                                             {% if username == session['username']%}
                                                 <button name="Settings"><a ref="/profile/{{session['username']}}/settings" class="profile-edit">Edit Account</a></button>
                                             {% else %}
-                                                {% if data["all ready followed"][0] == session["username"] %}
-                                                    <button name="UnFollow" value="{{session['username']}}"><a href="/profile/{{session['username']}}/settings" class="profile-edit">Already Following</a></button>
+                                                {% if all_ready_followed[1] == session["username"] %}
+                                                    <button name="UnFollow" value="{{i[1]}}"><a href="/profile/{{session['username']}}/settings" class="profile-edit">Already Following</a></button>
 
                                                 {% else %}
                                                     <button name="Follow" value="{{i[1]}}"><p class="profile-edit">Follow</p></button>
@@ -69,9 +69,9 @@
                                     <p style="color: white;">@{{i[1]}}</p>
                                     <p style="color: white;">{{i[10]}}</p>
                                     <div class="follow" style="color: white;">
-                                        <a href="/{{i[1]}}/followers">{{data["Amount of followers"]}} Followers |</a> 
+                                        <a href="/{{i[1]}}/followers">{{follower_num}} Followers |</a> 
                                         
-                                        <a href="/{{i[1]}}/following">| {{data["Following Amount"]}} Following</a>
+                                        <a href="/{{i[1]}}/following">| {{following_num}} Following</a>
                                     </div>
                                 </div>
 
@@ -89,20 +89,20 @@
                         <div class="post-board">
                             
                             
-                            {% if data["tab"] == "Likes"%}
+                            {% if tab == "Likes"%}
                                 {% block likes %}
                                 {% endblock %}
                                 
 
-                            {% elif data["tab"] == "Replies"%}
+                            {% elif tab == "Replies"%}
                                 {% block replies %}
                                 {% endblock%}
 
-                            {% elif data["tab"] == "followers" %}
+                            {% elif tab == "followers" %}
                                 {% block follower %}
                                 {% endblock %}
 
-                            {% elif data["tab"] == "following" %}
+                            {% elif tab == "following" %}
                                 {% block following %}
                                 {% endblock %}
 
@@ -124,7 +124,7 @@
                         </div>
 
 
-                    {% elif not data["post"] %}
+                    {% elif not user_post%}
                     <p style="color:white">
                         {% with messages = get_flashed_messages()%}
                             {% if messages %}

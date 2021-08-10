@@ -8,7 +8,6 @@
 
     <!-- <link rel="stylesheet" type= "text/css" href="\twitter clone\static\index.css"> -->
     <link rel="stylesheet" href="{{url_for('static',filename='index.css')}}">
-    <script type=text/javascript src="{{url_for('static', filename='javascript/main.js') }}"></script>
 </head>
 
 <!-- <header class="flex-container-header">
@@ -36,7 +35,7 @@
         </div>
 
         <div class="container">
-            <div class="navbar">
+            <div class="navbar" style="display: none;">
                 <a href="/" class="flex-item"><span>Website Name</span></a>
                 <a href="/" class="flex-item" id="active"><span>Home</span></a>
                 <a href="/" class="flex-item">Shop</a>
@@ -67,24 +66,24 @@
                 
             
 
-                <div class="all-post">
-                    <!-- <h3>Post bar</h3> -->
-                    {% if "username" in session %}
-                    <form action="" method="POST" enctype=multipart/form-data>
-                        <textarea name="post-field" id="" cols="50" rows="5" style="resize: none;"></textarea>
-                        <div class="form-buttons">
-                            <input type="file" name="file" style="color: white;">
-                            <!-- <input type="submit" value="Post"> -->
-                            <button type="submit">Post</button>
-                        </div>
-                    </form>
-                    {%endif%}
+            <div class="all-post">
+                <!-- <h3>Post bar</h3> -->
+                {% if "username" in session%}
+                <form action="" method="POST" enctype=multipart/form-data>
+                    <textarea name="post-field" id="myPost" cols="50" rows="5" style="resize: none;"></textarea>
+                    <div class="form-buttons">
+                        <input type="file" name="file" style="color: white;">
+                        <!-- <input type="submit" value="Post"> -->
+                        <button type="submit">Post</button>
+                    </div>
+                </form>
+                {%endif%}
 
-                    <div class="post-board">
-                        <div class="post" >
-                            <!-- {{messages}} -->
-                            
-                            {%for i in data["all_post"]%}
+                <div class="post-board">
+                    <div class="post" >
+                        <!-- {{messages}} -->
+                        
+                        {%for i in data["all post"] %}
                             <!-- {{session["username"]}} -->
                             <!-- <div style="color: blue;">Author:{{i[0]}}</div>
                             <div style="color: blue;">Post Date:{{i[1]}}</div>
@@ -96,7 +95,7 @@
 
                             <a href="/{{i[6]}}">
                             <div class="post-detail" >
-                                {% if i[1] == post_date %}
+                                {% if i[1] == data["post date"] %}
                                 <p class="post-name">By {{i[0]}} - {{i[2]}}</p>
 
                                 {% else %}
@@ -121,7 +120,7 @@
 
                                     {%endif%}
 
-                                    {% for pic_type in data["ALLOWED_EXTENSIONS"] %}
+                                    {% for pic_type in data["extensions"]%}
                                         {% if pic_type == i[4].split(".")[1] %}
                                             <img src="/static/preview_img/{{i[4]}}" alt="">
                                         {%endif%}
@@ -159,9 +158,9 @@
                                     <form action="" method="post" class="post-buttons">
                                         <button id="4" name="Reply" class="Reply" value="{{i[6]}}"><img src="/static/buttons/reply1.png" alt="">Reply</button>  
                                         <button id="4" name="Retweet" class="Retweet" value="{{i[6]}}"><img src="/static/buttons/retweet.png" alt="">Retweet</button> 
-                                        {% if data["like_lst"] %}
+                                        {% if data["like lst"] %}
                                         <!-- {{like_lst}} -->
-                                            {% for j in data["like_lst"] %}
+                                            {% for j in data["like lst"] %}
                                                 {% if j[1] == i[6] %}
                                                     {% if session["username"] == j[0] %}
                                                         <!-- {{j[0]}}-{{j[1]}} -->
@@ -171,24 +170,111 @@
                                             {%endfor%}
                                         {%endif%}
 
-                                        {% if i[6] not in data["like_lst_id"] %}
+                                        {% if i[6] not in data["like lst id"] %}
                                             <button id="4" name="Like" class="Like" value="{{i[6]}}"><img src="/static/buttons/like.png" alt="">Like</button>  
                                         {%endif%}
                                         <button id="4" name="Share" class="Share" value="{{i[6]}}"><img src="/static/buttons/black heart.png" alt="">Share</button>  
                                     </form>        
                                 </div>
                             </div>
-                            </div>
-                            {%endfor%}
-
-                            
                         </div>
+                        {%endfor%}
+
+                        
                     </div>
                 </div>
-                    
-        
             </div>
+            <!-- <button onclick="myFunction()">Test socket button</button> -->
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js" integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA==" crossorigin="anonymous"></script>
+
+            <script type="text/javascript" charset="utf-8">
+                var socket = io();
+                var username = "{{session['username']}}"
+                // socket.on('connect', function() {
+                //     socket.send("User has connected");
+                //     // socket.emit("message",{data:"hello im new"})
+                // });
+
+                socket.on("message",function(msg,name){
+                    // var list = document.getElementById('messages');
+                    // var entry = document.createElement('li');
+                    // console.log(msg)
+                    // entry.appendChild(document.createTextNode(`${username} says ${msg.message}`));
+                    // list.appendChild(entry);
+                    // // alert(`${msg.user} says ${msg.message}`)
+                    // document.getElementById('myMessage').value = ''
+
+                    var list = document.getElementById('postList');
+                    var entry = document.createElement('p');
+                    console.log(msg)
+                    entry.appendChild(document.createTextNode(`${msg.user} says ${msg.message}`));
+                    list.prepend(entry)
+                    // list.appendChild(entry);
+                    // alert(`${msg.user} says ${msg.message}`)
+                    document.getElementById('myMessage').value = ''
+                });
+
+                function myFunction() {
+                    let send_message = document.getElementById("myMessage").value;
+                    // socket.send(send_message)
+                    socket.emit("message",{user:username,message:send_message})
+                    // var entry = document.createElement('li');
+                    // entry.appendChild(document.createTextNode(send_message));
+                    // list.appendChild(entry);
+                    // document.getElementById('myMessage').value = ''
+                };
+
+                // var list = document.getElementById('messages');
+                // // var entry = document.createElement('li');
+                var all_post = "{{data['all post']}}"
+                // console.log(all_post)
+                // for (let i = 0; i< all_post; i++){
+                //     // console.log(all_post);
+                //     // var list = document.getElementById('messages');
+                //     var entry = document.createElement('li');
+                //     // console.log(msg)
+                //     entry.appendChild(document.createTextNode(i));
+                //     list.appendChild(entry);
+                // }
+
+
+                let newElement = document.createElement("ul");
+                newElement.setAttribute("id","all-post")
+                console.dir(newElement)
+                
+                // const lst=["hello","world",];
+                // for(let i = 0;i<lst.length;i++) {
+                //     let item = document.createElement("li");
+                //     item.innerHTML = lst[i];
+                //     newElement.appendChild(item);
+                // }
+
+                // let items = document.createElement("li");
+                // items.appendChild(document.createTextNode("hell"));
+                // newElement.appendChild(items);
+
+
+
+                // newElement.innerHTML=all_post
+                document.body.appendChild(newElement);
+                
+            </script>
+
+            <ul id="messages"></ul>
+            <input type="text" id="myMessage">
+            <input type="submit" id="sendMessage" onclick="myFunction()">
+
+            <br>
+            <br>
+            <div id="postList">
+                {% for i in data["all post"] %}
+                    <p id="postItem">{{i}}</p>
+                {%endfor%}
+            </div>
+                
         </div>
+        
+        
 
     </main>
     
