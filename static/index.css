@@ -99,33 +99,35 @@ a{
     margin-bottom: 10px;
 }
 
-form {
-    display: flex;
-    flex-direction: column;
-    margin-bottom: 10px;
-    /* width: 100%; */
-
-    /* width:500px;
-    border-style: solid;
-    border-color: white;
-    padding: 20px;
-    margin-bottom: 10px; */
-}
-
-.form-buttons{
+.create-post textarea {
+    width:500px;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
 }
 
-.form-buttons button{
+/* form {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 10px;
+
+} */
+
+.form-buttons{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin: 10px 10px;
+}
+
+/* .form-buttons button{
     color:black
 }
 
 button,button a{
     color: white;
     text-decoration: none;
-}
+} */
 
 /* form input,button a{
     color:black;
