@@ -64,7 +64,9 @@
 
                         {%endif%}
 
-                        <p class="post-body">{{i[3].capitalize()}}</p>
+                        {% if i[3] != None%}
+                            <p class="post-body">{{i[3].capitalize()}}</p>
+                        {%endif%}
                         
                         {% if i[4] != None %}
                             {% if 'mp4' == i[4].split(".")[1] %}

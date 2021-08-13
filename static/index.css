@@ -106,33 +106,33 @@ a{
     justify-content: space-between;
 }
 
-/* form {
+form {
     display: flex;
     flex-direction: column;
     margin-bottom: 10px;
 
-} */
+}
 
 .form-buttons{
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    margin: 10px 10px;
+    /* margin: 10px 10px; */
 }
 
 /* .form-buttons button{
     color:black
-}
+} */
 
 button,button a{
-    color: white;
+    /* color: white; */
     text-decoration: none;
-} */
+}
 
-/* form input,button a{
+form input,button a{
     color:black;
     text-decoration: none;
-} */
+}
 
 .post-board{
     display: flex;

@@ -153,7 +153,7 @@ def get_time_ago(date1):
         return f"{year_difference} years ago"
 
 def change_dates(table_name,date_lst):
-    mycursor.execute("select * from Post_Table")
+    mycursor.execute("SELECT * from Post_Table")
     for i in mycursor:
         # print(i)
         author=i[0]
@@ -232,6 +232,7 @@ def index():
         
         return render_template("index.html",data=data,messages=lst[::-1],ALLOWED_EXTENSIONS=ALLOWED_EXTENSIONS,post_date=split_compare_date(post_date),like_lst=like_lst,like_lst_id=like_lst_id)
 
+
     elif request.method=="POST":
         # print(request.form)
         post=request.form.get("post-field")
@@ -240,43 +241,43 @@ def index():
         post_date=time.ctime()
         # print(post_date)
 
-        # if 'file' in request.files:
-        #     file = request.files['file']
-        #     if file and allowed_file(file.filename):
-        #         filename = secure_filename(file.filename)
-        #         file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        if 'file' in request.files:
+            file = request.files['file']
+            if file and allowed_file(file.filename):
+                filename = secure_filename(file.filename)
+                file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
 
-        #         try:
-        #             im = Image.open(fr"{dirname}\{filename}")
-        #             newsize = (100,100)
-        #             im1 = im.resize(newsize)
-        #             im1.save(fr"{dirname}\{filename}")
+                try:
+                    im = Image.open(fr"{dirname}\{filename}")
+                    newsize = (100,100)
+                    im1 = im.resize(newsize)
+                    im1.save(fr"{dirname}\{filename}")
 
-        #         except:
-        #             pass
+                except:
+                    pass
 
-        #         mycursor.execute("select * from Post_Table ORDER BY postID DESC LIMIT 1")
-        #         for i in mycursor:
-        #             # print(i)
-        #             id=i[4]
-        #             # print(id)
+                mycursor.execute("select * from Post_Table ORDER BY postID DESC LIMIT 1")
+                for i in mycursor:
+                    # print(i)
+                    id=i[4]
+                    # print(id)
 
-        #             mycursor.execute("INSERT INTO Post_Table (author,post_date,post_time,post,post_file) VALUES (%s,%s,%s,%s,%s)", (session["username"],split_compare_date(post_date),calculate_post_time(post_date),post,filename))
-        #             conn.commit()
-        #         return redirect("/")
+                    mycursor.execute("INSERT INTO Post_Table (author,post_date,post_time,post,post_file) VALUES (%s,%s,%s,%s,%s)", (session["username"],split_compare_date(post_date),calculate_post_time(post_date),post,filename))
+                    conn.commit()
+                return redirect("/")
 
-        #     elif "file" not in request.files :
-        #         return redirect("/")
+            elif "file" not in request.files :
+                return redirect("/")
 
-        #     mycursor.execute("INSERT INTO Post_Table (author,post_date,post_time,post) VALUES (%s,%s,%s,%s)", (session["username"],split_compare_date(post_date),calculate_post_time(post_date),post))
-        #     conn.commit()
+            mycursor.execute("INSERT INTO Post_Table (author,post_date,post_time,post) VALUES (%s,%s,%s,%s)", (session["username"],split_compare_date(post_date),calculate_post_time(post_date),post))
+            conn.commit()
+            return redirect("/")
+        # elif 'like' in request.form:
+        #     print("cum")
         #     return redirect("/")
-        # # elif 'like' in request.form:
-        # #     print("cum")
-        # #     return redirect("/")
 
-        # else:
-        #     print(request.form)
+        else:
+            print(request.form)
         if "enter-search" in request.form and "search-bar"=="":
             pass
         elif "search-bar" in request.form:
@@ -428,7 +429,7 @@ def profile(username):
     post_date=time.ctime()
     like_lst=[]
     like_lst_id=[]
-    followers=[];
+    followers=[]
     following=[]
     # if "username" in session:
     if request.method=="GET":
@@ -456,17 +457,17 @@ def profile(username):
 
         mycursor.execute(f"SELECT * FROM Follow WHERE follower = %s ",username)
         for j in mycursor:
-            print(f"{j[0]} follows {j[1]}")
+            # print(f"{j[0]} follows {j[1]}")
             # followers.append(j)
             followers.append(j[0])
-        print(f"Num of followers: {len(followers)}")
+        # print(f"Num of followers: {len(followers)}")
 
         mycursor.execute(f"SELECT * FROM Follow WHERE name = %s ",username)
         for j in mycursor:
-            print(f"{j[0]} follows {j[1]}")
+            # print(f"{j[0]} follows {j[1]}")
             # followers.append(j)
             following.append(j)
-        print(f"Num of followers: {len(followers)}")
+        # print(f"Num of followers: {len(followers)}")
 
         if "username" in session:
             mycursor.execute(f"SELECT * FROM Follow WHERE name = %s ",session["username"])
@@ -802,67 +803,38 @@ def admin(username):
     return render_template("test.html",admin_user=admin_user)
 
 
+
+@socketio.on('connect')
+def test_connect(auth):
+    # print("Connected 123456")
+    lsts=[]
+    mycursor.execute("SELECT * FROM Likes WHERE name = %s",session["username"])
+    # likes_lst=mycursor.fetchall()
+    for i in mycursor:
+        # print(i)
+        lsts.append(i)
+    print(lsts)
+    emit('onConnect', lsts,broadcast=True)
+
 @socketio.on("message")
 def handle_message(post):
-    # print(post)
+    print(post)
     current_post=[]
     # print(request.form)
-    # post=request.form.get("post-field")
     
     # print(file)
     post_date=time.ctime()
     # print(post_date)
-    # print(request.form)
-
-    if 'file' in request.files:
-        file = request.files['file']
-        if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-
-            try:
-                im = Image.open(fr"{dirname}\{filename}")
-                newsize = (100,100)
-                im1 = im.resize(newsize)
-                im1.save(fr"{dirname}\{filename}")
-
-            except:
-                pass
-
-            mycursor.execute("select * from Post_Table ORDER BY postID DESC LIMIT 1")
-            for i in mycursor:
-                # print(i)
-                id=i[4]
-                # print(id)
-
-                mycursor.execute("INSERT INTO Post_Table (author,post_date,post_time,post,post_file) VALUES (%s,%s,%s,%s,%s)", (session["username"],split_compare_date(post_date),calculate_post_time(post_date),post["message"],filename))
-                conn.commit()
-            # return redirect("/")
-
-        # elif "file" not in request.files :
-        #     return redirect("/")
 
     mycursor.execute("INSERT INTO Post_Table (author,post_date,post_time,post) VALUES (%s,%s,%s,%s)", (session["username"],split_compare_date(post_date),calculate_post_time(post_date),post["message"]))
     conn.commit()
-    # return redirect("/")
 
     mycursor.execute("SELECT * FROM Post_Table WHERE post = %s",(post["message"]))
-    # post=mycursor.fetchone()
     current_post=mycursor.fetchall()
-    print(f"start: {current_post} :end")
-    # for i in mycursor:
-    #     print(i)
-    # mycursor.execute("SELECT * FROM Twitter_Users")
+    # print(f"start: {current_post} :end")
     row_headers=[x[0] for x in mycursor.description] #this will extract row headers
-    # for i in mycursor:
-    #     # print(f"start here: {i}")
-    #     lst.append(i)
-    #     for j in i:
-    #         current_post.append(j)
-    # print(current_post)
     post=dict(zip(row_headers,current_post[-1]))
-    # print(post)
-    send(post,broadcast=True)
+    emit("message",post,broadcast=True)
 
 
 if __name__=="__main__":
