@@ -102,13 +102,13 @@
                             <!-- <div style="color: blue;">Author:{{i[0]}}</div>
                             <div style="color: blue;">Post Date:{{i[1]}}</div>
                             <div style="color: blue;">Post Time:{{i[2]}}</div>
-                            <div style="color: blue;">Post:{{i[3]}}</div>
+                            <div style="color: blue;">{{i[3]}}</div>
                             <div style="color: blue;">Post File:{{i[4]}}</div>
                             <div style="color: blue;">Placeholder Date:{{i[5]}}</div>
                             <div style="color: blue;">Post ID:{{i[6]}}</div> -->
 
-                            <a href="/{{i[6]}}">
-                            <div class="post-detail" >
+                            <a href="/{{i[6]}}" >
+                            <div class="post-detail">
                                 {{i}}
                                 {% if i[1] == data["post date"] %}
                                 <p class="post-name">By {{i[0]}} - {{i[2]}}</p>
@@ -120,7 +120,7 @@
 
                                 <!-- <p class="post-body">{{i[3]}}</p> -->
                                 {% if i[3] != None%}
-                                    <p class="post-body">{{i[3].capitalize()}}</p>
+                                    <p class="post-body" id="{{i[6]}}">{{i[3].capitalize()}}</p>
                                 {%endif%}
                                 
                                 {% if i[4] != None %}
@@ -152,7 +152,7 @@
 
                                 <!-- <form action="" class="post-buttons"> -->
                                     <button name="Reply" class="Reply" value="{{i[6]}}"><img src="/static/buttons/reply1.png" alt="">Reply</button>  
-                                    <button name="Retweet" class="Retweet" value="{{i[6]}}"><img src="/static/buttons/retweet.png" alt="">Retweet</button> 
+                                    <button name="Retweet" class="Retweet" value="{{i[6]}}"><img src="/static/buttons/retweet.png" alt="" onclick="retweet(id)" id="post:{{i[3]}}">Retweet</button> 
                                     {% if data["like lst"] %}
                                     <!-- {{like_lst}} -->
                                         {% for j in data["like lst"] %}
@@ -197,16 +197,18 @@
                 });
 
                 socket.on("message",function(msg,name){
-                    console.log("not working")
+                    // console.log(`${msg}`)
 
 
                     var postDiv = document.createElement("div");
                     postDiv.setAttribute("class","post-detail");
+                    // postDiv.setAttribute("id",`${msg.postID}`)
                     postDiv.style.color = "white";
 
                     var postHeader = document.createElement("a");
                     postHeader.setAttribute("class","post-name");
                     postHeader.setAttribute("href",`/${msg.postID}`);
+                    // postDiv.setAttribute("id",`${msg.postID}`)
 
                     postHeader.innerHTML = `By ${msg.author} - ${msg.post_time}`;
                     postHeader.style.color = "white";
@@ -214,6 +216,7 @@
 
                     var post = document.createElement("p");
                     post.setAttribute("class","post-body")
+                    // post.setAttribute("id",`${msg.postID}`)
                     post.innerHTML = `${msg.post}`
                     postDiv.appendChild(post);
 
@@ -232,12 +235,17 @@
                     var retweet = document.createElement("button");
                     var retweetImage = document.createElement("img");
                     retweetImage.setAttribute("src","/static/buttons/retweet.png")
+                    retweetImage.setAttribute("onclick","retweet(id)")
+                    // console.log(msg.postID)
+                    retweetImage.setAttribute("id",`post:${msg.post}`)
                     retweet.appendChild(retweetImage)
                     postButtons.appendChild(retweet)
 
                     var like = document.createElement("button");
                     var likeImage = document.createElement("img");
                     likeImage.setAttribute("src","/static/buttons/like.png")
+                    likeImage.setAttribute("onclick","changeLike(id)")
+                    likeImage.setAttribute("id",`like:${msg.postID}`)
                     like.appendChild(likeImage)
                     postButtons.appendChild(like)
 
@@ -295,6 +303,14 @@
                     }
                 }
 
+                function retweet(id) {
+                    let button = document.getElementById(`${id}`).id
+                    // console.log(buttond)
+                    let splitButton = button.split(":");
+                    let postMessage = splitButton[1]
+
+                    socket.emit("message",{message:postMessage})
+                }
             </script>
         </div>
 

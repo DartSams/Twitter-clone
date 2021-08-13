@@ -834,6 +834,7 @@ def handle_message(post):
     # print(f"start: {current_post} :end")
     row_headers=[x[0] for x in mycursor.description] #this will extract row headers
     post=dict(zip(row_headers,current_post[-1]))
+    print(post)
     emit("message",post,broadcast=True)
 
 @socketio.on("changeLike")
@@ -850,6 +851,7 @@ def changeLikes(data):
         conn.commit()
         mycursor.execute("SELECT * FROM Likes")
         print("socket worked post unliked")
+
 
 if __name__=="__main__":
     app.run(debug=True)
