@@ -175,16 +175,16 @@ form input,button a{
 .try{
     margin-right: 100px;
 } */
-.post-buttons{
+.likes{
     display:flex;
     flex-direction: row;
     justify-content: space-between;
 }
 
-.post-buttons label{
+.likes label{
     color:white
 }
-.post-buttons button,.post-buttons button img,.post-buttons input{
+.likes button,.likes button img,.likes input{
     width:30px;
     border: none;
     background: none;
@@ -195,11 +195,11 @@ form input,button a{
     background-color: rgb(29, 161, 242);
 } */
 
-.likes .post-buttons{
+.likes .likes{
     color:white
 }
 
-.like .post-buttons button,.like .post-buttons button img,.like .post-buttons input{
+.like .likes button,.like .likes button img,.like .likes input{
     width:30px;
     border: none;
     background: none;

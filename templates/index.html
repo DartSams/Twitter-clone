@@ -35,7 +35,7 @@
         </div>
 
         <div class="container">
-            <div class="navbar">
+            <div class="navbar" >
                 <a href="/" class="flex-item"><span>Website Name</span></a>
                 <a href="/" class="flex-item" id="active"><span>Home</span></a>
                 <a href="/" class="flex-item">Shop</a>
@@ -149,9 +149,8 @@
 
                             <div class="likes">
                                 <!-- {{like_lst}}  -->
-                                <br>
 
-                                <form action="" method="post" class="post-buttons">
+                                <!-- <form action="" class="post-buttons"> -->
                                     <button name="Reply" class="Reply" value="{{i[6]}}"><img src="/static/buttons/reply1.png" alt="">Reply</button>  
                                     <button name="Retweet" class="Retweet" value="{{i[6]}}"><img src="/static/buttons/retweet.png" alt="">Retweet</button> 
                                     {% if data["like lst"] %}
@@ -160,17 +159,17 @@
                                             {% if j[1] == i[6] %}
                                                 {% if session["username"] == j[0] %}
                                                     <!-- {{j[0]}}-{{j[1]}} -->
-                                                    <button name="UnLike" class="Like" value="{{i[6]}}" id="{{i[6]}}" onclick="removeLike()"><img src="/static/buttons/unlike.png" alt="" id="{{i[6]}}">Like</button>  
+                                                    <button name="UnLike" class="Like" value="{{i[6]}}" ><img src="/static/buttons/unlike.png" alt="" onclick="changeLike(id)" id="unlike:{{i[6]}}">Like</button>  
                                                 {%endif%}
                                             {%endif%}
                                         {%endfor%}
                                     {%endif%}
 
                                     {% if i[6] not in data["like lst id"] %}
-                                        <button name="Like" class="Like" value="{{i[6]}}"><img src="/static/buttons/like.png" alt="" onclick="addLike('{{i[6]}}')">Like</button>  
+                                        <button name="Like" class="Like" value="{{i[6]}}"><img src="/static/buttons/like.png" alt="" onclick="changeLike(id)" id="like:{{i[6]}}">Like</button>  
                                     {%endif%}
                                     <button name="Share" class="Share" value="{{i[6]}}"><img src="/static/buttons/black heart.png" alt="">Share</button>  
-                                </form>        
+                                <!-- </form>         -->
                             </div>
                         </div>
                         {%endfor%}
@@ -186,14 +185,14 @@
                 var socket = io();
                 var username = "{{session['username']}}"
                 var all_post = "{{data['all post']}}"
-                // socket.emit("onConnect",{user:username})
+                // socket.emit("changeLike",{user:username})
                 socket.on('onConnect', function(data) {
-                    console.log(`${data}`)
+                    // console.log(`${data}`)
                     for (let i = 0;i<data.length;i++) {
-                        console.log(data[i])
+                        // console.log(data[i])
 
                         let ass = document.getElementById(data[i][1]);
-                        console.log(ass)
+                        // console.log(ass.getElementsByTagName("*"))
                     }
                 });
 
@@ -220,8 +219,8 @@
 
                     var postButtonDiv = document.createElement("div");
                     // postButtonDiv.innerHTML = "still working"
-                    var postButtons = document.createElement("form");
-                    postButtons.setAttribute("class","post-buttons")
+                    var postButtons = document.createElement("div");
+                    postButtons.setAttribute("class","likes")
 
 
                     var reply = document.createElement("button");
@@ -242,11 +241,11 @@
                     like.appendChild(likeImage)
                     postButtons.appendChild(like)
 
-                    var unlike = document.createElement("button");
-                    var unlikeImage = document.createElement("img");
-                    unlikeImage.setAttribute("src","/static/buttons/unlike.png")
-                    unlike.appendChild(unlikeImage)
-                    postButtons.appendChild(unlike)
+                    // var unlike = document.createElement("button");
+                    // var unlikeImage = document.createElement("img");
+                    // unlikeImage.setAttribute("src","/static/buttons/unlike.png")
+                    // unlike.appendChild(unlikeImage)
+                    // postButtons.appendChild(unlike)
 
                     var share = document.createElement("button");
                     var shareImage = document.createElement("img");
@@ -270,8 +269,30 @@
                     socket.emit("message",{message:send_message})
                 };
 
-                function addLike(id) {
-                    console.log(id)
+                function changeLike(id) {
+                    let button = document.getElementById(id).id
+
+                    // console.log(button)
+                    let splitButton = button.split(":");
+                    // console.log(splitButton);
+                    var likeStatus = splitButton[0];
+                    var likeID = splitButton[1];
+                    // console.log("-"+likeID)
+
+                    if (likeStatus === "like") {
+                        // console.log("works")
+                        document.getElementById(id).src = "/static/buttons/unlike.png";
+                        socket.emit("changeLike",{user:username,status:likeStatus,id:likeID})
+                        // var likeStatus="unlike"
+                        document.getElementById(id).id = `unlike:${likeID}`
+                        // console.log(button)
+                    } else if (likeStatus === "unlike") {
+                        document.getElementById(id).src = "/static/buttons/like.png";
+                        socket.emit("changeLike",{user:username,status:likeStatus,id:likeID})
+                        // var likeStatus="like"
+                        document.getElementById(id).id = `like:${likeID}`
+                        // console.log(button)
+                    }
                 }
 
             </script>
