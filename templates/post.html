@@ -45,19 +45,19 @@
 
             <div class="post">
                 {{user_post}}
-                {%for i in user_post%}
+                {%for i in data["post"]%}
                     <!-- {{session["username"]}} -->
                     <div class="post-detail">
 
                         {% if i[1] == post_date %}
                         <p class="post-name">By <a href="/{{i[0]}}">{{i[0]}}</a> - {{i[2]}}
-                            {% if session["username"] == i[0] %}
+                            {% if session["username"] == i[0] or data["admin status"]%}
                             <a href="/clear/{{i[6]}}" style="float: right; text-decoration: none; color:white">delete post</a>
                             {% endif %}
                         </p>
                         {% else %}
                             <p class="post-name">By <a href="/{{i[0]}}">{{i[0]}}</a> - {{i[5]}}
-                                {% if session["username"] == i[0] %}
+                                {% if session["username"] == i[0] or data["admin status"]%}
                                 <a href="/clear/{{i[6]}}" style="float: right; text-decoration: none; color:white">delete post</a>
                                 {% endif %}
                             </p>
@@ -83,7 +83,7 @@
 
                             {%endif%}
 
-                            {% for pic_type in ALLOWED_EXTENSIONS%}
+                            {% for pic_type in data["Allowed Extensions"] %}
                                 {% if pic_type == i[4].split(".")[1] %}
                                     <img src="/static/preview_img/{{i[4]}}" alt="">
                                     <!-- {{i[4]}} -->
@@ -93,47 +93,50 @@
 
                         {%endif%}
 
-                        <br>
-
-                        <form action="" method="post" class="post-buttons">
-                            <button id="4" name="Reply" class="Reply" value="{{i[6]}}"><img src="/static/buttons/reply1.png" alt="">Reply</button>  
-                            <button id="4" name="Retweet" class="Retweet" value="{{i[6]}}"><img src="/static/buttons/retweet.png" alt="">Retweet</button> 
+                        <!-- <br> -->
+                        <div class="post-buttons">
+                           <!-- <form action=""  class="post-buttons"> -->
+                            <a id="4" name="Reply" class="Reply" value="{{i[6]}}" href="{{i[6]}}"><img src="/static/buttons/reply1.png" alt="">Reply</a>  
+                            <button id="4" name="Retweet" class="Retweet" value="{{i[6]}}"><img src="/static/buttons/retweet.png" alt="" onclick="retweet(id)" id="post:{{i[3]}}">Retweet</button> 
                             {% if like_lst %}
                                 <!-- {{like_lst}} -->
                                 {% if like_lst[1] == i[6] %}
                                     <!-- {{like_lst[1]}} -->
                                     {% if like_lst[0] == session["username"] %}
-                                    <button id="4" name="UnLike" class="Like" value="{{i[6]}}"><img src="/static/buttons/unlike.png" alt="">Like</button>  
+                                    <button id="4" name="UnLike" class="Like" value="{{i[6]}}"><img src="/static/buttons/unlike.png" alt="" onclick="changeLike(id)" id="unlike:{{i[6]}}">Like</button>  
                                         
                                     {% else %}
                                         <!-- {{like_lst}} -->
-                                        <button id="4" name="Like" class="Like" value="{{i[6]}}"><img src="/static/buttons/like.png" alt="">Like</button>  
+                                        <button id="4" name="Like" class="Like" value="{{i[6]}}"><img src="/static/buttons/like.png" alt="" onclick="changeLike(id)" id="like:{{i[6]}}">Like</button>  
                                         {%endif%}    
                                 {% else %}
-                                    <button id="4" name="Like" class="Like" value="{{i[6]}}"><img src="/static/buttons/like.png" alt="">Like</button>  
+                                    <button id="4" name="Like" class="Like" value="{{i[6]}}"><img src="/static/buttons/like.png" alt="" onclick="changeLike(id)" id="like:{{i[6]}}">Like</button>  
                                 {%endif%}
                             {% else %}
-                                <button id="4" name="Like" class="Like" value="{{i[6]}}"><img src="/static/buttons/like.png" alt="">Like</button>  
+                                <button id="4" name="Like" class="Like" value="{{i[6]}}"><img src="/static/buttons/like.png" alt="" onclick="changeLike(id)" id="like:{{i[6]}}">Like</button>  
                             {%endif%}
                             <button id="4" name="Share" class="Share" value="{{i[6]}}"><img src="/static/buttons/black heart.png" alt="">Share</button>  
-                        </form>
+                        <!-- </form> --> 
+                        </div>
+
+                        
                     </div>
                     {%endfor%}
 
                     {% if "username" in session %}
-                        <form action="" method="POST" enctype=multipart/form-data>
-                            <textarea name="comment-field" id="" cols="50" rows="5" placeholder="Type Here"></textarea>
+                        <!-- <form action="" method="POST" enctype=multipart/form-data> -->
+                            <textarea name="comment-field" id="myComment" cols="50" rows="5" placeholder="Type Here"></textarea>
                             <div class="form-buttons">
                                 <input type="file" name="file" style="color: white;">
                                 <!-- <input type="submit" value="Post"> -->
-                                <button type="submit">Post</button>
+                                <button type="submit" onclick="makeComment()">Post</button>
                             </div>
-                        </form>
+                        <!-- </form> -->
                     {%endif%}
 
 
                     <h1>Comments</h1>
-                    {%for i in comments%}
+                    {%for i in data["comments"] %}
                         <!-- {{session["username"]}} -->
                         <div style="color: blue;">Author:{{i[0]}}</div>
                         <div style="color: blue;">Post Date:{{i[1]}}</div>
@@ -143,7 +146,7 @@
                         <div style="color: blue;">Placeholder Date:{{i[5]}}</div>
                         <div style="color: blue;">Post ID:{{i[6]}}</div>
                         <div class="post-detail">
-                            {% if i[1] == post_date %}
+                            {% if i[1] == data["post date"] %}
                                 <p class="post-name">By <a href="/{{i[0]}}">{{i[0]}}</a> - {{i[2]}}</p>
                             {% else %}
                                 <p class="post-name">By {{i[0]}} - {{i[5]}}</p>
@@ -166,7 +169,7 @@
 
                                 {%endif%}
 
-                                {% for pic_type in ALLOWED_EXTENSIONS%}
+                                {% for pic_type in data["Allowed Extensions"] %}
                                     {% if pic_type == i[4].split(".")[1] %}
                                         <img src="/static/preview_img/{{i[4]}}" alt="">
                                     {%endif%}
@@ -176,7 +179,7 @@
                         
                     {%endfor%}
 
-                    {% if not comments%}
+                    {% if not data["comments"] %}
                     <p style="color:white">
                         {% with messages = get_flashed_messages()%}
                             {% if messages %}
@@ -190,7 +193,149 @@
                     </p>
                     {%endif%}
             </div>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js" integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA==" crossorigin="anonymous"></script>
+
+        <script type="text/javascript" charset="utf-8">
+            var socket = io();
+            var username = "{{session['username']}}"
+            var all_post = "{{data['post']}}"
+            // socket.emit("changeLike",{user:username})
+            socket.on('onConnect', function(data) {
+                // console.log(`${data}`)
+                for (let i = 0;i<data.length;i++) {
+                    // console.log(data[i])
+
+                    let ass = document.getElementById(data[i][1]);
+                    // console.log(ass.getElementsByTagName("*"))
+                }
+            });
+
+            socket.on("message",function(msg,name){
+                // console.log(`${msg}`)
+
+
+                var postDiv = document.createElement("div");
+                postDiv.setAttribute("class","post-detail");
+                // postDiv.setAttribute("id",`${msg.postID}`)
+                postDiv.style.color = "white";
+
+                var postHeader = document.createElement("a");
+                postHeader.setAttribute("class","post-name");
+                postHeader.setAttribute("href",`/${msg.postID}`);
+                // postDiv.setAttribute("id",`${msg.postID}`)
+
+                postHeader.innerHTML = `By ${msg.author} - ${msg.post_time}`;
+                postHeader.style.color = "white";
+                postDiv.appendChild(postHeader);
+
+                var post = document.createElement("p");
+                post.setAttribute("class","post-body")
+                // post.setAttribute("id",`${msg.postID}`)
+                post.innerHTML = `${msg.post}`
+                postDiv.appendChild(post);
+
+                var postButtonDiv = document.createElement("div");
+                // postButtonDiv.innerHTML = "still working"
+                var postButtons = document.createElement("div");
+                postButtons.setAttribute("class","likes")
+
+
+                var reply = document.createElement("a");
+                var replyImage = document.createElement("img");
+                replyImage.setAttribute("src","/static/buttons/reply1.png")
+                reply.setAttribute("href",`/${msg.postID}`);
+                // reply.style.width = "30px";
+                reply.appendChild(replyImage)
+                postButtons.appendChild(reply)
+
+                var retweet = document.createElement("button");
+                var retweetImage = document.createElement("img");
+                retweetImage.setAttribute("src","/static/buttons/retweet.png")
+                retweetImage.setAttribute("onclick","retweet(id)")
+                // console.log(msg.postID)
+                retweetImage.setAttribute("id",`post:${msg.post}`)
+                retweet.appendChild(retweetImage)
+                postButtons.appendChild(retweet)
+
+                var like = document.createElement("button");
+                var likeImage = document.createElement("img");
+                likeImage.setAttribute("src","/static/buttons/like.png")
+                likeImage.setAttribute("onclick","changeLike(id)")
+                likeImage.setAttribute("id",`like:${msg.postID}`)
+                like.appendChild(likeImage)
+                postButtons.appendChild(like)
+
+                // var unlike = document.createElement("button");
+                // var unlikeImage = document.createElement("img");
+                // unlikeImage.setAttribute("src","/static/buttons/unlike.png")
+                // unlike.appendChild(unlikeImage)
+                // postButtons.appendChild(unlike)
+
+                var share = document.createElement("button");
+                var shareImage = document.createElement("img");
+                shareImage.setAttribute("src","/static/buttons/black heart.png")
+                share.appendChild(shareImage)
+                postButtons.appendChild(share)
+
+
+                postButtonDiv.appendChild(postButtons)
+                postDiv.appendChild(postButtonDiv);
+
+
+
+                document.getElementById("post").prepend(postDiv); 
+                document.getElementById('myPost').value = ''
+    
+            });
+
+            function myFunction() {
+                let send_message = document.getElementById("myPost").value;
+                socket.emit("message",{message:send_message})
+            };
+
+            function changeLike(id) {
+                let button = document.getElementById(id).id
+
+                // console.log(button)
+                let splitButton = button.split(":");
+                // console.log(splitButton);
+                var likeStatus = splitButton[0];
+                var likeID = splitButton[1];
+                // console.log("-"+likeID)
+
+                if (likeStatus === "like") {
+                    // console.log("works")
+                    document.getElementById(id).src = "/static/buttons/unlike.png";
+                    socket.emit("changeLike",{user:username,status:likeStatus,id:likeID})
+                    // var likeStatus="unlike"
+                    document.getElementById(id).id = `unlike:${likeID}`
+                    // console.log(button)
+                } else if (likeStatus === "unlike") {
+                    document.getElementById(id).src = "/static/buttons/like.png";
+                    socket.emit("changeLike",{user:username,status:likeStatus,id:likeID})
+                    // var likeStatus="like"
+                    document.getElementById(id).id = `like:${likeID}`
+                    // console.log(button)
+                }
+            }
+
+            function retweet(id) {
+                let button = document.getElementById(`${id}`).id
+                // console.log(buttond)
+                let splitButton = button.split(":");
+                let postMessage = splitButton[1]
+
+                socket.emit("message",{message:postMessage})
+            }
             
+            function makeComment() {
+                let comment = document.getElementById("myComment").value
+                console.log(comment)
+
+                socket.emit("makeComment",{user:username,comment:comment})
+            }
+        </script>
     </main>
 
 </body>

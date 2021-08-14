@@ -109,7 +109,7 @@
 
                             <a href="/{{i[6]}}" >
                             <div class="post-detail">
-                                {{i}}
+                                <!-- {{i}} -->
                                 {% if i[1] == data["post date"] %}
                                 <p class="post-name">By {{i[0]}} - {{i[2]}}</p>
 
@@ -151,7 +151,7 @@
                                 <!-- {{like_lst}}  -->
 
                                 <!-- <form action="" class="post-buttons"> -->
-                                    <button name="Reply" class="Reply" value="{{i[6]}}"><img src="/static/buttons/reply1.png" alt="">Reply</button>  
+                                    <a name="Reply" class="Reply" value="{{i[6]}}" href="/{{i[6]}}"><img src="/static/buttons/reply1.png" alt="">Reply</a>  
                                     <button name="Retweet" class="Retweet" value="{{i[6]}}"><img src="/static/buttons/retweet.png" alt="" onclick="retweet(id)" id="post:{{i[3]}}">Retweet</button> 
                                     {% if data["like lst"] %}
                                     <!-- {{like_lst}} -->
@@ -226,9 +226,11 @@
                     postButtons.setAttribute("class","likes")
 
 
-                    var reply = document.createElement("button");
+                    var reply = document.createElement("a");
                     var replyImage = document.createElement("img");
                     replyImage.setAttribute("src","/static/buttons/reply1.png")
+                    reply.setAttribute("href",`/${msg.postID}`);
+                    // reply.style.width = "30px";
                     reply.appendChild(replyImage)
                     postButtons.appendChild(reply)
 

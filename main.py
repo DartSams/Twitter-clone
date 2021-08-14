@@ -680,69 +680,89 @@ def post(post_id):
                 # print(i)
                 like_lst.append(i)
 
+        mycursor.execute("SELECT * FROM Twitter_Users WHERE username = %s",session["username"])
+        maybe_admin=mycursor.fetchone()
+        # print(maybe_admin[4])
+        print("Admin logged in.")
+        if maybe_admin[4] == "admin":
+            admin_status=True
+        else:
+            admin_status=False
+
 
         if not comments:
             flash("No comments yet")
 
+        data={
+            "post":user_post,
+            "Allowed Extensions":ALLOWED_EXTENSIONS,
+            "post date":split_compare_date(post_date),
+            "comments":comments[::-1],
+            "admin status":admin_status
+        }
+
         if like_lst:
-            return render_template("post.html",user_post=user_post,ALLOWED_EXTENSIONS=ALLOWED_EXTENSIONS,post_date=split_compare_date(post_date),comments=comments[::-1],like_lst=like_lst[0])
+            # return render_template("post.html",user_post=user_post,ALLOWED_EXTENSIONS=ALLOWED_EXTENSIONS,post_date=split_compare_date(post_date),comments=comments[::-1],like_lst=like_lst[0])
+            return render_template("post.html",data=data,like_lst=like_lst[0])
 
         elif not like_lst:
-            return render_template("post.html",user_post=user_post,ALLOWED_EXTENSIONS=ALLOWED_EXTENSIONS,post_date=split_compare_date(post_date),comments=comments[::-1])
+            # return render_template("post.html",user_post=user_post,ALLOWED_EXTENSIONS=ALLOWED_EXTENSIONS,post_date=split_compare_date(post_date),comments=comments[::-1])
+            return render_template("post.html",data=data)
 
-    elif request.method=="POST":
-        comment=request.form.get("comment-field")
-        if 'file' in request.files:
 
-            file = request.files['file']
-            # print(file)
+    # elif request.method=="POST":
+    #     comment=request.form.get("comment-field")
+    #     if 'file' in request.files:
 
-            if file and allowed_file(file.filename):
-                filename = secure_filename(file.filename)
-                file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+    #         file = request.files['file']
+    #         # print(file)
 
-                try:
-                    im = Image.open(fr"{dirname}\{filename}")
-                    newsize = (100,100)
-                    im1 = im.resize(newsize)
-                    im1.save(fr"{dirname}\{filename}")
+    #         if file and allowed_file(file.filename):
+    #             filename = secure_filename(file.filename)
+    #             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
 
-                except:
-                    pass
+    #             try:
+    #                 im = Image.open(fr"{dirname}\{filename}")
+    #                 newsize = (100,100)
+    #                 im1 = im.resize(newsize)
+    #                 im1.save(fr"{dirname}\{filename}")
 
-                # mycursor.execute("select * from Comments ORDER BY commentID DESC LIMIT 1")
-                # for i in mycursor:
-                #     print(i)
-                #     id=i[4]
-                #     # print(id)
+    #             except:
+    #                 pass
 
-                mycursor.execute("INSERT INTO Comments (author,post_date,post_time,comment,post_file,commentID) VALUES (%s,%s,%s,%s,%s,%s)", (session["username"],split_compare_date(post_date),calculate_post_time(post_date),comment,filename,post_id))
-                conn.commit()
-                return redirect(f"/{post_id}")
+    #             # mycursor.execute("select * from Comments ORDER BY commentID DESC LIMIT 1")
+    #             # for i in mycursor:
+    #             #     print(i)
+    #             #     id=i[4]
+    #             #     # print(id)
 
-            elif "file" not in request.files :
-                return redirect(f"/{post_id}")
+    #             mycursor.execute("INSERT INTO Comments (author,post_date,post_time,comment,post_file,commentID) VALUES (%s,%s,%s,%s,%s,%s)", (session["username"],split_compare_date(post_date),calculate_post_time(post_date),comment,filename,post_id))
+    #             conn.commit()
+    #             return redirect(f"/{post_id}")
 
-            mycursor.execute("INSERT INTO Comments (author,post_date,post_time,comment,commentID) VALUES (%s,%s,%s,%s,%s)", (session["username"],split_compare_date(post_date),calculate_post_time(post_date),comment,post_id))
-            conn.commit()
-            return redirect(f"/{post_id}")
+    #         elif "file" not in request.files :
+    #             return redirect(f"/{post_id}")
+
+    #         mycursor.execute("INSERT INTO Comments (author,post_date,post_time,comment,commentID) VALUES (%s,%s,%s,%s,%s)", (session["username"],split_compare_date(post_date),calculate_post_time(post_date),comment,post_id))
+    #         conn.commit()
+    #         return redirect(f"/{post_id}")
         
-        else:
-            print(request.form)
-            if "Like" in request.form:
-                like=request.form.get("Like")
-                print(like)
-                mycursor.execute("INSERT INTO Likes (name,id) VALUES (%s,%s) ",(session["username"],like) )
-                conn.commit()
-                mycursor.execute("SELECT * FROM Likes")
-                for i in mycursor:
-                    print(i)
+    #     else:
+    #         print(request.form)
+    #         if "Like" in request.form:
+    #             like=request.form.get("Like")
+    #             print(like)
+    #             mycursor.execute("INSERT INTO Likes (name,id) VALUES (%s,%s) ",(session["username"],like) )
+    #             conn.commit()
+    #             mycursor.execute("SELECT * FROM Likes")
+    #             for i in mycursor:
+    #                 print(i)
                 
-            elif "UnLike" in request.form:
-                unlike=request.form.get("UnLike")
-                mycursor.execute("DELETE FROM Likes WHERE id = %s AND name = %s",(unlike,session["username"]))
-                conn.commit()
-            return redirect(f"/{post_id}")
+    #         elif "UnLike" in request.form:
+    #             unlike=request.form.get("UnLike")
+    #             mycursor.execute("DELETE FROM Likes WHERE id = %s AND name = %s",(unlike,session["username"]))
+    #             conn.commit()
+    #         return redirect(f"/{post_id}")
 
 @app.route("/test" ,methods=["get","post"])
 def test():
@@ -851,6 +871,10 @@ def changeLikes(data):
         conn.commit()
         mycursor.execute("SELECT * FROM Likes")
         print("socket worked post unliked")
+
+@socketio.on("makeComment")
+def comment(data):
+    print("new comment to post is: " + data)
 
 
 if __name__=="__main__":

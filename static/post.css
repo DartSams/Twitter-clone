@@ -147,12 +147,18 @@ img{
     justify-content: space-between;
 }
 
-.post-buttons label{
+/* .post-buttons label{
     color:white
-}
-.post-buttons button,.post-buttons button img,.post-buttons input{
+} */
+/* .post-buttons button,.post-buttons button img{
     width:30px;
     border: none;
     background: none;
     cursor: pointer;
+} */
+
+.post-buttons a img,.post-buttons button img,.post-buttons button{
+    width:30px;
+    background: none;
+    border: none;
 }

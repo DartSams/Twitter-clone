@@ -184,22 +184,29 @@ form input,button a{
 .likes label{
     color:white
 }
-.likes button,.likes button img,.likes input{
+
+.likes button,.likes a,.likes button img,.likes a img{
     width:30px;
     border: none;
     background: none;
     cursor: pointer;
 }
 
+/* .likes a{
+    text-decoration: none;
+    color:black
+} */
+
+
 /* .Reply:hover{
     background-color: rgb(29, 161, 242);
 } */
 
-.likes .likes{
+.likes .likes,.likes button,.likes a{
     color:white
 }
 
-.like .likes button,.like .likes button img,.like .likes input{
+.like .likes button,.like .likes button img,.like .likes input,.likes a{
     width:30px;
     border: none;
     background: none;
