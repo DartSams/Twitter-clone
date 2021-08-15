@@ -8,6 +8,7 @@ import os
 import time
 from PIL import Image
 import json
+from flask_socketio import SocketIO,emit,send,join_room, leave_room
 load_dotenv()
 
 
@@ -35,7 +36,6 @@ conn=mysql.connect()
 mycursor=conn.cursor()
 
 
-from flask_socketio import SocketIO,emit,send,join_room, leave_room
 socketio = SocketIO(app)
 
 
@@ -57,13 +57,14 @@ month_dict={
 }
 
 def calculate_post_time(post_date):
-    # post_date=time.ctime()
+    post_date=time.ctime()
     ## return correct posted hours
     split_date=post_date.split(" ")
     if "" in split_date:
         split_date.remove("")
     split_hours=split_date[3].split(":")
     current_hour=int(split_hours[0])
+    # print(current_hour)
     if current_hour >12:
         finished_post_time=current_hour-12
         # print(current_hour)
@@ -76,7 +77,11 @@ def calculate_post_time(post_date):
                 # print(str(finished_post_time) + ":" + str(split_hours[1]) + " am")
                 return str(finished_post_time) + ":" + str(split_hours[1]) + " am"
 
-    elif current_hour == 12 or current_hour == 0:
+    elif current_hour == 12:
+        current_hour=12
+        return str(current_hour) + ":" + str(split_hours[1]) + " pm"
+
+    elif current_hour == 0:
         current_hour=12
         return str(current_hour) + ":" + str(split_hours[1]) + " am"
 
@@ -153,7 +158,7 @@ def get_time_ago(date1):
         return f"{year_difference} years ago"
 
 def change_dates(table_name,date_lst):
-    mycursor.execute("SELECT * from Post_Table")
+    mycursor.execute(f"SELECT * from Post_Table")
     for i in mycursor:
         # print(i)
         author=i[0]
@@ -167,8 +172,9 @@ def change_dates(table_name,date_lst):
         # print(date,post_time)
 
     for date in date_lst:
-        mycursor.execute(f"UPDATE {table_name} SET placeholder_date = %s WHERE post_date = %s" ,(get_time_ago(date),date))
+        mycursor.execute(f"UPDATE Post_Table SET placeholder_date = %s WHERE post_date = %s" ,(get_time_ago(date),date))
         conn.commit()
+    return True
 
 def allowed_file(filename):
     # print(filename)
@@ -187,6 +193,7 @@ def index():
     date_lst=[]
     like_lst=[]
     like_lst_id=[]
+    # socketio.emit("load","not working")
     change_dates("Post_Table",date_lst)
     date_lst.clear()
     if request.method=="GET":
@@ -683,7 +690,7 @@ def post(post_id):
         mycursor.execute("SELECT * FROM Twitter_Users WHERE username = %s",session["username"])
         maybe_admin=mycursor.fetchone()
         # print(maybe_admin[4])
-        print("Admin logged in.")
+        # print("Admin logged in.")
         if maybe_admin[4] == "admin":
             admin_status=True
         else:
@@ -825,17 +832,24 @@ def admin(username):
 
 
 
-# @socketio.on('connect')
-# def test_connect(auth):
-#     # print("Connected 123456")
-#     lsts=[]
-#     mycursor.execute("SELECT * FROM Likes WHERE name = %s",session["username"])
-#     # likes_lst=mycursor.fetchall()
-#     for i in mycursor:
-#         # print(i)
-#         lsts.append(i)
-#     # print(lsts)
-#     emit('onConnect', lsts,broadcast=True)
+# @socketio.on('load')
+# def test_connect(data):
+#     date_lst=[]
+#     change_dates("Post_Table",date_lst)
+#     date_lst.clear()
+#     print(data)
+
+
+
+#     print("Connected 123456")
+    # lsts=[]
+    # mycursor.execute("SELECT * FROM Likes WHERE name = %s",session["username"])
+    # # likes_lst=mycursor.fetchall()
+    # for i in mycursor:
+    #     # print(i)
+    #     lsts.append(i)
+    # # print(lsts)
+    # emit('onConnect', lsts,broadcast=True)
 
 @socketio.on("message")
 def handle_message(post):
@@ -847,18 +861,22 @@ def handle_message(post):
     # print(file)
     post_date=time.ctime()
     # print(post_date)
-    mycursor.execute("INSERT INTO Post_Table (author,post_date,post_time,post) VALUES (%s,%s,%s,%s)", (session["username"],split_compare_date(post_date),calculate_post_time(post_date),post["message"]))
-    conn.commit()
+    if post["type"] == "newPost" or post["type"] == "retweetPost":
+        mycursor.execute("INSERT INTO Post_Table (author,post_date,post_time,post) VALUES (%s,%s,%s,%s)", (session["username"],split_compare_date(post_date),calculate_post_time(post_date),post["message"]))
+        conn.commit()
 
-    mycursor.execute("SELECT * FROM Post_Table WHERE post = %s",(post["message"]))
-    current_post=mycursor.fetchall()
-    # print(f"start: {current_post} :end")
-    row_headers=[x[0] for x in mycursor.description] #this will extract row headers
-    post=dict(zip(row_headers,current_post[-1]))
-    
-    join_room(room)
-    # print(post["type"])
-    emit("message",post,broadcast=True,to=room)
+        mycursor.execute("SELECT * FROM Post_Table WHERE post = %s",(post["message"]))
+        current_post=mycursor.fetchall()
+        # print(f"start: {current_post} :end")
+        row_headers=[x[0] for x in mycursor.description] #this will extract row headers
+        post=dict(zip(row_headers,current_post[-1]))
+        
+        join_room(room)
+        # print(post["type"])
+        emit("message",post,broadcast=True,to=room)
+
+    else:
+        print("something")
 
 
 @socketio.on("changeLike")
@@ -878,13 +896,20 @@ def changeLikes(data):
 
 @socketio.on("makeComment")
 def comment(data):
-    print(data)
+    # print(data)
     post_date=time.ctime()
     room=data["type"]
     join_room(room)
 
     mycursor.execute("INSERT INTO Comments (author,post_date,post_time,comment,commentID) VALUES (%s,%s,%s,%s,%s)", (session["username"],split_compare_date(post_date),calculate_post_time(post_date),data["comment"],data["commentID"]))
     conn.commit()
+
+    mycursor.execute("SELECT * FROM Comments WHERE comment = %s",(data["comment"]))
+    current_post=mycursor.fetchall()
+    # print(f"start: {current_post} :end")
+    row_headers=[x[0] for x in mycursor.description] #this will extract row headers
+    data=dict(zip(row_headers,current_post[-1]))
+    # print(data)
     emit("message",data,broadcast=True,to=room)
 
 

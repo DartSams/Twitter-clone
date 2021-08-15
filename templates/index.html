@@ -185,18 +185,32 @@
                 var socket = io();
                 var username = "{{session['username']}}"
                 var all_post = "{{data['all post']}}"
-                // socket.emit("changeLike",{user:username})
-                socket.on('onConnect', function(data) {
-                    // console.log(`${data}`)
-                    for (let i = 0;i<data.length;i++) {
-                        // console.log(data[i])
 
-                        let ass = document.getElementById(data[i][1]);
-                        // console.log(ass.getElementsByTagName("*"))
-                    }
-                });
+                // while (true) {
+                //     var today=new Date();
+                //     console.log(today.getDay())
+                //     today[0] = "Sunday";
+                //     today[1] = "Monday";
+                //     today[2] = "Tuesday";
+                //     today[3] = "Wednesday";
+                //     today[4] = "Thursday";
+                //     today[5] = "Friday";
+                //     today[6] = "Saturday";
 
-                socket.on("message",function(msg,name){
+                // }
+                
+                // socket.emit("load",{user:username})
+                // socket.on('onConnect', function(data) {
+                //     // console.log(`${data}`)
+                //     for (let i = 0;i<data.length;i++) {
+                //         // console.log(data[i])
+
+                //         let ass = document.getElementById(data[i][1]);
+                //         // console.log(ass.getElementsByTagName("*"))
+                //     }
+                // });
+
+                socket.on("message",function(msg){
                     // console.log(`${msg}`)
 
 

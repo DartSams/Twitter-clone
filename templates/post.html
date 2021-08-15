@@ -48,13 +48,13 @@
                 {%for i in data["post"]%}
                     <!-- {{session["username"]}} -->
                     <div class="post-detail">
-
-                        {% if i[1] == post_date %}
-                        <p class="post-name">By <a href="/{{i[0]}}">{{i[0]}}</a> - {{i[2]}}
-                            {% if session["username"] == i[0] or data["admin status"]%}
-                            <a href="/clear/{{i[6]}}" style="float: right; text-decoration: none; color:white">delete post</a>
-                            {% endif %}
-                        </p>
+                        {{i}}
+                        {% if i[1] == data["post date"] %}
+                            <p class="post-name">By <a href="/{{i[0]}}">{{i[0]}}</a> - {{i[2]}}
+                                {% if session["username"] == i[0] or data["admin status"]%}
+                                <a href="/clear/{{i[6]}}" style="float: right; text-decoration: none; color:white">delete post</a>
+                                {% endif %}
+                            </p>
                         {% else %}
                             <p class="post-name">By <a href="/{{i[0]}}">{{i[0]}}</a> - {{i[5]}}
                                 {% if session["username"] == i[0] or data["admin status"]%}
@@ -227,13 +227,38 @@
 
             socket.on("message",function(msg){
                 // console.log(`${msg.comment}`)
-                let removeComments = document.querySelector(".no-comments")
-                removeComments.parentNode.removeChild(removeComments)
+                try {
+                    let removeComments = document.querySelector(".no-comments")
+                    removeComments.parentNode.removeChild(removeComments)
+                } catch (error) {
+                    console.error(error);
+                    // expected output: ReferenceError: nonExistentFunction is not defined
+                    // Note - error messages will vary depending on browser
+                }
+                
 
                 var postDiv = document.createElement("div");
                 postDiv.setAttribute("class","post-detail");
-                postDiv.innerHTML = msg.comment;
+                // postDiv.innerHTML = msg.comment;
                 postDiv.style.color = "white";
+
+
+                var postHeader = document.createElement("a");
+                postHeader.setAttribute("class","post-name");
+                postHeader.setAttribute("href",`/${msg.author}`);
+                // postDiv.setAttribute("id",`${msg.postID}`)
+
+                postHeader.innerHTML = `By ${msg.author} - ${msg.post_time}`;
+                postHeader.style.color = "white";
+                postDiv.appendChild(postHeader);
+
+
+                var post = document.createElement("p");
+                post.setAttribute("class","post-body")
+                // post.setAttribute("id",`${msg.postID}`)
+                post.innerHTML = `${msg.comment}`
+                postDiv.appendChild(post);
+
 
                 document.getElementById("comment-list").prepend(postDiv); 
                 document.getElementById('myComment').value = ''
