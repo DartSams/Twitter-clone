@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    {% for i in user_post %}
+    {% for i in data["post"] %}
         {% if i[3] != "" %}
-            <title>{{i[0]}} on Twitter:"{{i[3].capitalize()}}"</title>
+            <title>{{i[0]}} on Twitter:"{{i[3]}}"</title>
         {% else %}
             <title>{{i[0]}}'s Post</title>
         {%endif%}
@@ -19,7 +19,7 @@
         <div class="container">
             <div class="navbar">
                 <a href="/" class="flex-item"><span>Website Name</span></a>
-                <a href="/" class="flex-item" id="active"><span>Home</span></a>
+                <a href="/" class="flex-item"><span>Home</span></a>
                 <a href="/" class="flex-item">Shop</a>
                 <a href="" class="flex-item">About Us</a>
                 <a href="" class="flex-item">Contact</a>
@@ -65,33 +65,36 @@
                         {%endif%}
 
                         {% if i[3] != None%}
-                            <p class="post-body">{{i[3].capitalize()}}</p>
+                            <p class="post-body" id="{{i[6]}}">{{i[3]}}</p>
                         {%endif%}
                         
-                        {% if i[4] != None %}
-                            {% if 'mp4' == i[4].split(".")[1] %}
-                                <video controls width="320" height="240">
-                                    <source src="/static/preview_img/{{i[4].split('.')[0]}}.{{i[4].split('.')[1]}}" type="video/{{i[4].split('.')[1]}}">
-                                Your browser does not support the audio element.
-                                </video>
+                        <div class="current-post-file">
+                            {% if i[4] != None %}
+                                {% if 'mp4' == i[4].split(".")[1] %}
+                                    <video controls width="320" height="240">
+                                        <source src="/static/preview_img/{{i[4].split('.')[0]}}.{{i[4].split('.')[1]}}" type="video/{{i[4].split('.')[1]}}">
+                                    Your browser does not support the audio element.
+                                    </video>
 
-                            {%elif 'mp3' == i[4].split(".")[1]%}
-                                <audio controls width="320" height="240">
-                                    <source src="/static/preview_img/{{i[4].split('.')[0]}}.{{i[4].split('.')[1]}}" type="audio/{{i[4].split('.')[1]}}">
-                                Your browser does not support the audio element.
-                                </audio>
+                                {%elif 'mp3' == i[4].split(".")[1]%}
+                                    <audio controls width="320" height="240">
+                                        <source src="/static/preview_img/{{i[4].split('.')[0]}}.{{i[4].split('.')[1]}}" type="audio/{{i[4].split('.')[1]}}">
+                                    Your browser does not support the audio element.
+                                    </audio>
+
+                                {%endif%}
+
+                                {% for pic_type in data["Allowed Extensions"] %}
+                                    {% if pic_type == i[4].split(".")[1] %}
+                                        <img src="/static/preview_img/{{i[4]}}" alt="">
+                                        <!-- {{i[4]}} -->
+                                    {%endif%}
+                                    <!-- {{pic_type}} -->
+                                {%endfor%}
 
                             {%endif%}
-
-                            {% for pic_type in data["Allowed Extensions"] %}
-                                {% if pic_type == i[4].split(".")[1] %}
-                                    <img src="/static/preview_img/{{i[4]}}" alt="">
-                                    <!-- {{i[4]}} -->
-                                {%endif%}
-                                <!-- {{pic_type}} -->
-                            {%endfor%}
-
-                        {%endif%}
+                        </div>
+                        
 
                         <!-- <br> -->
                         <div class="post-buttons">
@@ -124,74 +127,85 @@
                     {%endfor%}
 
                     {% if "username" in session %}
-                        <!-- <form action="" method="POST" enctype=multipart/form-data> -->
-                            <textarea name="comment-field" id="myComment" cols="50" rows="5" placeholder="Type Here"></textarea>
-                            <div class="form-buttons">
-                                <input type="file" name="file" style="color: white;">
-                                <!-- <input type="submit" value="Post"> -->
-                                <button type="submit" onclick="makeComment()">Post</button>
-                            </div>
-                        <!-- </form> -->
+
+                        <form action=""  method="POST" enctype=multipart/form-data>
+                            <!-- <div class="create-post"> -->
+                                <textarea name="comment-field" id="myComment" cols="50" rows="5" placeholder="Type Here"></textarea>
+                                <div class="form-buttons">
+                                    <input type="file" name="file" >
+                                    <!-- <input type="submit" value="Post"> -->
+                                    <button type="submit">Upload</button>
+                                </div>
+                            <!-- </div> -->
+
+                        </form>
+                        <button onclick="onNewComment()" style="width: 500px;color:black">Post</button>
                     {%endif%}
 
 
                     <h1>Comments</h1>
-                    {%for i in data["comments"] %}
-                        <!-- {{session["username"]}} -->
-                        <div style="color: blue;">Author:{{i[0]}}</div>
-                        <div style="color: blue;">Post Date:{{i[1]}}</div>
-                        <div style="color: blue;">Post Time:{{i[2]}}</div>
-                        <div style="color: blue;">Post:{{i[3]}}</div>
-                        <div style="color: blue;">Post File:{{i[4]}}</div>
-                        <div style="color: blue;">Placeholder Date:{{i[5]}}</div>
-                        <div style="color: blue;">Post ID:{{i[6]}}</div>
-                        <div class="post-detail">
-                            {% if i[1] == data["post date"] %}
-                                <p class="post-name">By <a href="/{{i[0]}}">{{i[0]}}</a> - {{i[2]}}</p>
-                            {% else %}
-                                <p class="post-name">By {{i[0]}} - {{i[5]}}</p>
-                            {%endif%}
-
-                            <p class="post-body">{{i[3].capitalize()}}</p>
-                            
-                            {% if i[4] != None %}
-                                {% if 'mp4' == i[4].split(".")[1] %}
-                                    <video controls width="320" height="240">
-                                        <source src="/static/preview_img/{{i[4].split('.')[0]}}.{{i[4].split('.')[1]}}" type="video/{{i[4].split('.')[1]}}">
-                                    Your browser does not support the audio element.
-                                    </video>
-
-                                {%elif 'mp3' == i[4].split(".")[1]%}
-                                    <audio controls width="320" height="240">
-                                        <source src="/static/preview_img/{{i[4].split('.')[0]}}.{{i[4].split('.')[1]}}" type="audio/{{i[4].split('.')[1]}}">
-                                    Your browser does not support the audio element.
-                                    </audio>
-
+                    <div class="comment-list" id="comment-list">
+                            {%for i in data["comments"] %}
+                            <!-- {{session["username"]}} -->
+                            <!-- <div style="color: blue;">Author:{{i[0]}}</div>
+                            <div style="color: blue;">Post Date:{{i[1]}}</div>
+                            <div style="color: blue;">Post Time:{{i[2]}}</div>
+                            <div style="color: blue;">Post:{{i[3]}}</div>
+                            <div style="color: blue;">Post File:{{i[4]}}</div>
+                            <div style="color: blue;">Placeholder Date:{{i[5]}}</div>
+                            <div style="color: blue;">Post ID:{{i[6]}}</div> -->
+                            <div class="post-detail">
+                                {% if i[1] == data["post date"] %}
+                                    <p class="post-name">By <a href="/{{i[0]}}">{{i[0]}}</a> - {{i[2]}}</p>
+                                {% else %}
+                                    <p class="post-name">By {{i[0]}} - {{i[5]}}</p>
                                 {%endif%}
 
-                                {% for pic_type in data["Allowed Extensions"] %}
-                                    {% if pic_type == i[4].split(".")[1] %}
-                                        <img src="/static/preview_img/{{i[4]}}" alt="">
+                                <p class="post-body">{{i[3].capitalize()}}</p>
+                                
+                                {% if i[4] != None %}
+                                    {% if 'mp4' == i[4].split(".")[1] %}
+                                        <video controls>
+                                            <source src="/static/preview_img/{{i[4].split('.')[0]}}.{{i[4].split('.')[1]}}" type="video/{{i[4].split('.')[1]}}">
+                                        Your browser does not support the audio element.
+                                        </video>
+
+                                    {%elif 'mp3' == i[4].split(".")[1]%}
+                                        <audio controls>
+                                            <source src="/static/preview_img/{{i[4].split('.')[0]}}.{{i[4].split('.')[1]}}" type="audio/{{i[4].split('.')[1]}}">
+                                        Your browser does not support the audio element.
+                                        </audio>
+
                                     {%endif%}
-                                {%endfor%}
+
+                                    {% for pic_type in data["Allowed Extensions"] %}
+                                        {% if pic_type == i[4].split(".")[1] %}
+                                            <img src="/static/preview_img/{{i[4]}}" alt="" width="60" height="100">
+                                        {%endif%}
+                                    {%endfor%}
+                                {%endif%}
+                            </div>
+                            
+                        {%endfor%}
+
+                        <div class="no-comments">
+                            {% if not data["comments"] %}
+                                <p style="color:white">
+                                    {% with messages = get_flashed_messages()%}
+                                        {% if messages %}
+                                            {% for message in messages%}
+                                                {{message}}
+                                                <br>
+                                                <br>
+                                            {%endfor%}
+                                        {%endif%}
+                                    {%endwith%}
+                                </p>
                             {%endif%}
                         </div>
                         
-                    {%endfor%}
-
-                    {% if not data["comments"] %}
-                    <p style="color:white">
-                        {% with messages = get_flashed_messages()%}
-                            {% if messages %}
-                                {% for message in messages%}
-                                    {{message}}
-                                    <br>
-                                    <br>
-                                {%endfor%}
-                            {%endif%}
-                        {%endwith%}
-                    </p>
-                    {%endif%}
+                    </div>
+                    
             </div>
 
         <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js" integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA==" crossorigin="anonymous"></script>
@@ -201,92 +215,33 @@
             var username = "{{session['username']}}"
             var all_post = "{{data['post']}}"
             // socket.emit("changeLike",{user:username})
-            socket.on('onConnect', function(data) {
-                // console.log(`${data}`)
-                for (let i = 0;i<data.length;i++) {
-                    // console.log(data[i])
+            // socket.on('onConnect', function(data) {
+            //     // console.log(`${data}`)
+            //     for (let i = 0;i<data.length;i++) {
+            //         // console.log(data[i])
 
-                    let ass = document.getElementById(data[i][1]);
-                    // console.log(ass.getElementsByTagName("*"))
-                }
-            });
+            //         let ass = document.getElementById(data[i][1]);
+            //         // console.log(ass.getElementsByTagName("*"))
+            //     }
+            // });
 
-            socket.on("message",function(msg,name){
-                // console.log(`${msg}`)
-
+            socket.on("message",function(msg){
+                // console.log(`${msg.comment}`)
+                let removeComments = document.querySelector(".no-comments")
+                removeComments.parentNode.removeChild(removeComments)
 
                 var postDiv = document.createElement("div");
                 postDiv.setAttribute("class","post-detail");
-                // postDiv.setAttribute("id",`${msg.postID}`)
+                postDiv.innerHTML = msg.comment;
                 postDiv.style.color = "white";
 
-                var postHeader = document.createElement("a");
-                postHeader.setAttribute("class","post-name");
-                postHeader.setAttribute("href",`/${msg.postID}`);
-                // postDiv.setAttribute("id",`${msg.postID}`)
-
-                postHeader.innerHTML = `By ${msg.author} - ${msg.post_time}`;
-                postHeader.style.color = "white";
-                postDiv.appendChild(postHeader);
-
-                var post = document.createElement("p");
-                post.setAttribute("class","post-body")
-                // post.setAttribute("id",`${msg.postID}`)
-                post.innerHTML = `${msg.post}`
-                postDiv.appendChild(post);
-
-                var postButtonDiv = document.createElement("div");
-                // postButtonDiv.innerHTML = "still working"
-                var postButtons = document.createElement("div");
-                postButtons.setAttribute("class","likes")
-
-
-                var reply = document.createElement("a");
-                var replyImage = document.createElement("img");
-                replyImage.setAttribute("src","/static/buttons/reply1.png")
-                reply.setAttribute("href",`/${msg.postID}`);
-                // reply.style.width = "30px";
-                reply.appendChild(replyImage)
-                postButtons.appendChild(reply)
-
-                var retweet = document.createElement("button");
-                var retweetImage = document.createElement("img");
-                retweetImage.setAttribute("src","/static/buttons/retweet.png")
-                retweetImage.setAttribute("onclick","retweet(id)")
-                // console.log(msg.postID)
-                retweetImage.setAttribute("id",`post:${msg.post}`)
-                retweet.appendChild(retweetImage)
-                postButtons.appendChild(retweet)
-
-                var like = document.createElement("button");
-                var likeImage = document.createElement("img");
-                likeImage.setAttribute("src","/static/buttons/like.png")
-                likeImage.setAttribute("onclick","changeLike(id)")
-                likeImage.setAttribute("id",`like:${msg.postID}`)
-                like.appendChild(likeImage)
-                postButtons.appendChild(like)
-
-                // var unlike = document.createElement("button");
-                // var unlikeImage = document.createElement("img");
-                // unlikeImage.setAttribute("src","/static/buttons/unlike.png")
-                // unlike.appendChild(unlikeImage)
-                // postButtons.appendChild(unlike)
-
-                var share = document.createElement("button");
-                var shareImage = document.createElement("img");
-                shareImage.setAttribute("src","/static/buttons/black heart.png")
-                share.appendChild(shareImage)
-                postButtons.appendChild(share)
-
-
-                postButtonDiv.appendChild(postButtons)
-                postDiv.appendChild(postButtonDiv);
-
-
-
-                document.getElementById("post").prepend(postDiv); 
-                document.getElementById('myPost').value = ''
+                document.getElementById("comment-list").prepend(postDiv); 
+                document.getElementById('myComment').value = ''
     
+            });
+
+            socket.on("makeComment", function(data) {
+                console.log(data)
             });
 
             function myFunction() {
@@ -325,15 +280,20 @@
                 // console.log(buttond)
                 let splitButton = button.split(":");
                 let postMessage = splitButton[1]
+                let socketType = "newComment"
 
-                socket.emit("message",{message:postMessage})
+                socket.emit("message",{message:postMessage,type:socketType})
             }
             
-            function makeComment() {
+            function onNewComment() {
                 let comment = document.getElementById("myComment").value
-                console.log(comment)
+                let commentID = document.querySelector(".post-body").id
+                let socketType = "newComment"
+                console.log(comment,commentID)
 
-                socket.emit("makeComment",{user:username,comment:comment})
+                socket.emit("makeComment",{user:username,comment:comment,commentID:commentID,type:socketType})
+                // socket.emit("message",{message:comment})
+
             }
         </script>
     </main>

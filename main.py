@@ -15,7 +15,7 @@ load_dotenv()
 dirname=os.path.dirname(__file__) + "\static\preview_img"
 # print(dirname)
 UPLOAD_FOLDER = dirname
-ALLOWED_EXTENSIONS = ['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'jfif', 'mp3', 'mp4']
+ALLOWED_EXTENSIONS = ['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'jfif']
 
 
 app=Flask(__name__)
@@ -35,7 +35,7 @@ conn=mysql.connect()
 mycursor=conn.cursor()
 
 
-from flask_socketio import SocketIO,emit,send
+from flask_socketio import SocketIO,emit,send,join_room, leave_room
 socketio = SocketIO(app)
 
 
@@ -233,45 +233,45 @@ def index():
         return render_template("index.html",data=data,messages=lst[::-1],ALLOWED_EXTENSIONS=ALLOWED_EXTENSIONS,post_date=split_compare_date(post_date),like_lst=like_lst,like_lst_id=like_lst_id)
 
 
-    # elif request.method=="POST":
-    #     # print(request.form)
-    #     post=request.form.get("post-field")
-        
-    #     # print(file)
-    #     post_date=time.ctime()
-    #     # print(post_date)
+    elif request.method=="POST":
+        # print(request.form)
+        post=request.form.get("post-field")
+        post=post.capitalize()
+        # print(file)
+        post_date=time.ctime()
+        # print(post_date)
 
-    #     if 'file' in request.files:
-    #         file = request.files['file']
-    #         if file and allowed_file(file.filename):
-    #             filename = secure_filename(file.filename)
-    #             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        if 'file' in request.files:
+            file = request.files['file']
+            if file and allowed_file(file.filename):
+                filename = secure_filename(file.filename)
+                file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
 
-    #             try:
-    #                 im = Image.open(fr"{dirname}\{filename}")
-    #                 newsize = (100,100)
-    #                 im1 = im.resize(newsize)
-    #                 im1.save(fr"{dirname}\{filename}")
+                try:
+                    im = Image.open(fr"{dirname}\{filename}")
+                    newsize = (100,100)
+                    im1 = im.resize(newsize)
+                    im1.save(fr"{dirname}\{filename}")
 
-    #             except:
-    #                 pass
+                except:
+                    pass
 
-    #             mycursor.execute("select * from Post_Table ORDER BY postID DESC LIMIT 1")
-    #             for i in mycursor:
-    #                 # print(i)
-    #                 id=i[4]
-    #                 # print(id)
+                mycursor.execute("select * from Post_Table ORDER BY postID DESC LIMIT 1")
+                for i in mycursor:
+                    # print(i)
+                    id=i[4]
+                    # print(id)
 
-    #                 mycursor.execute("INSERT INTO Post_Table (author,post_date,post_time,post,post_file) VALUES (%s,%s,%s,%s,%s)", (session["username"],split_compare_date(post_date),calculate_post_time(post_date),post,filename))
-    #                 conn.commit()
-    #             return redirect("/")
+                    mycursor.execute("INSERT INTO Post_Table (author,post_date,post_time,post,post_file) VALUES (%s,%s,%s,%s,%s)", (session["username"],split_compare_date(post_date),calculate_post_time(post_date),post,filename))
+                    conn.commit()
+                return redirect("/")
 
-    #         elif "file" not in request.files :
-    #             return redirect("/")
+            elif "file" not in request.files :
+                return redirect("/")
 
-    #         mycursor.execute("INSERT INTO Post_Table (author,post_date,post_time,post) VALUES (%s,%s,%s,%s)", (session["username"],split_compare_date(post_date),calculate_post_time(post_date),post))
-    #         conn.commit()
-    #         return redirect("/")
+            mycursor.execute("INSERT INTO Post_Table (author,post_date,post_time,post) VALUES (%s,%s,%s,%s)", (session["username"],split_compare_date(post_date),calculate_post_time(post_date),post))
+            conn.commit()
+            return redirect("/")
     #     # elif 'like' in request.form:
     #     #     print("cum")
     #     #     return redirect("/")
@@ -710,59 +710,60 @@ def post(post_id):
             return render_template("post.html",data=data)
 
 
-    # elif request.method=="POST":
-    #     comment=request.form.get("comment-field")
-    #     if 'file' in request.files:
+    elif request.method=="POST":
+        comment=request.form.get("comment-field")
+        comment=comment.capitalize()
+        if 'file' in request.files:
 
-    #         file = request.files['file']
-    #         # print(file)
+            file = request.files['file']
+            # print(file)
 
-    #         if file and allowed_file(file.filename):
-    #             filename = secure_filename(file.filename)
-    #             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            if file and allowed_file(file.filename):
+                filename = secure_filename(file.filename)
+                file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
 
-    #             try:
-    #                 im = Image.open(fr"{dirname}\{filename}")
-    #                 newsize = (100,100)
-    #                 im1 = im.resize(newsize)
-    #                 im1.save(fr"{dirname}\{filename}")
+                try:
+                    im = Image.open(fr"{dirname}\{filename}")
+                    newsize = (100,100)
+                    im1 = im.resize(newsize)
+                    im1.save(fr"{dirname}\{filename}")
 
-    #             except:
-    #                 pass
+                except:
+                    pass
 
-    #             # mycursor.execute("select * from Comments ORDER BY commentID DESC LIMIT 1")
-    #             # for i in mycursor:
-    #             #     print(i)
-    #             #     id=i[4]
-    #             #     # print(id)
+                # mycursor.execute("select * from Comments ORDER BY commentID DESC LIMIT 1")
+                # for i in mycursor:
+                #     print(i)
+                #     id=i[4]
+                #     # print(id)
 
-    #             mycursor.execute("INSERT INTO Comments (author,post_date,post_time,comment,post_file,commentID) VALUES (%s,%s,%s,%s,%s,%s)", (session["username"],split_compare_date(post_date),calculate_post_time(post_date),comment,filename,post_id))
-    #             conn.commit()
-    #             return redirect(f"/{post_id}")
+                mycursor.execute("INSERT INTO Comments (author,post_date,post_time,comment,post_file,commentID) VALUES (%s,%s,%s,%s,%s,%s)", (session["username"],split_compare_date(post_date),calculate_post_time(post_date),comment,filename,post_id))
+                conn.commit()
+                return redirect(f"/{post_id}")
 
-    #         elif "file" not in request.files :
-    #             return redirect(f"/{post_id}")
+            elif "file" not in request.files :
+                return redirect(f"/{post_id}")
 
-    #         mycursor.execute("INSERT INTO Comments (author,post_date,post_time,comment,commentID) VALUES (%s,%s,%s,%s,%s)", (session["username"],split_compare_date(post_date),calculate_post_time(post_date),comment,post_id))
-    #         conn.commit()
-    #         return redirect(f"/{post_id}")
+            mycursor.execute("INSERT INTO Comments (author,post_date,post_time,comment,commentID) VALUES (%s,%s,%s,%s,%s)", (session["username"],split_compare_date(post_date),calculate_post_time(post_date),comment,post_id))
+            conn.commit()
+            return redirect(f"/{post_id}")
         
-    #     else:
-    #         print(request.form)
-    #         if "Like" in request.form:
-    #             like=request.form.get("Like")
-    #             print(like)
-    #             mycursor.execute("INSERT INTO Likes (name,id) VALUES (%s,%s) ",(session["username"],like) )
-    #             conn.commit()
-    #             mycursor.execute("SELECT * FROM Likes")
-    #             for i in mycursor:
-    #                 print(i)
+        # else:
+        #     print(request.form)
+        #     if "Like" in request.form:
+        #         like=request.form.get("Like")
+        #         print(like)
+        #         mycursor.execute("INSERT INTO Likes (name,id) VALUES (%s,%s) ",(session["username"],like) )
+        #         conn.commit()
+        #         mycursor.execute("SELECT * FROM Likes")
+        #         for i in mycursor:
+        #             print(i)
                 
-    #         elif "UnLike" in request.form:
-    #             unlike=request.form.get("UnLike")
-    #             mycursor.execute("DELETE FROM Likes WHERE id = %s AND name = %s",(unlike,session["username"]))
-    #             conn.commit()
-    #         return redirect(f"/{post_id}")
+        #     elif "UnLike" in request.form:
+        #         unlike=request.form.get("UnLike")
+        #         mycursor.execute("DELETE FROM Likes WHERE id = %s AND name = %s",(unlike,session["username"]))
+        #         conn.commit()
+        #     return redirect(f"/{post_id}")
 
 @app.route("/test" ,methods=["get","post"])
 def test():
@@ -824,28 +825,28 @@ def admin(username):
 
 
 
-@socketio.on('connect')
-def test_connect(auth):
-    # print("Connected 123456")
-    lsts=[]
-    mycursor.execute("SELECT * FROM Likes WHERE name = %s",session["username"])
-    # likes_lst=mycursor.fetchall()
-    for i in mycursor:
-        # print(i)
-        lsts.append(i)
-    # print(lsts)
-    emit('onConnect', lsts,broadcast=True)
+# @socketio.on('connect')
+# def test_connect(auth):
+#     # print("Connected 123456")
+#     lsts=[]
+#     mycursor.execute("SELECT * FROM Likes WHERE name = %s",session["username"])
+#     # likes_lst=mycursor.fetchall()
+#     for i in mycursor:
+#         # print(i)
+#         lsts.append(i)
+#     # print(lsts)
+#     emit('onConnect', lsts,broadcast=True)
 
 @socketio.on("message")
 def handle_message(post):
-    print(post)
+    print(post["type"])
+    room=post['type']
     current_post=[]
     # print(request.form)
     
     # print(file)
     post_date=time.ctime()
     # print(post_date)
-
     mycursor.execute("INSERT INTO Post_Table (author,post_date,post_time,post) VALUES (%s,%s,%s,%s)", (session["username"],split_compare_date(post_date),calculate_post_time(post_date),post["message"]))
     conn.commit()
 
@@ -854,8 +855,11 @@ def handle_message(post):
     # print(f"start: {current_post} :end")
     row_headers=[x[0] for x in mycursor.description] #this will extract row headers
     post=dict(zip(row_headers,current_post[-1]))
-    print(post)
-    emit("message",post,broadcast=True)
+    
+    join_room(room)
+    # print(post["type"])
+    emit("message",post,broadcast=True,to=room)
+
 
 @socketio.on("changeLike")
 def changeLikes(data):
@@ -874,7 +878,14 @@ def changeLikes(data):
 
 @socketio.on("makeComment")
 def comment(data):
-    print("new comment to post is: " + data)
+    print(data)
+    post_date=time.ctime()
+    room=data["type"]
+    join_room(room)
+
+    mycursor.execute("INSERT INTO Comments (author,post_date,post_time,comment,commentID) VALUES (%s,%s,%s,%s,%s)", (session["username"],split_compare_date(post_date),calculate_post_time(post_date),data["comment"],data["commentID"]))
+    conn.commit()
+    emit("message",data,broadcast=True,to=room)
 
 
 if __name__=="__main__":

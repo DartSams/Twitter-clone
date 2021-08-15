@@ -114,6 +114,10 @@ textarea{
     color:black
 }
 
+.form-buttons input {
+    color:white
+}
+
 h1,h2,h3{
     color:white
 }
@@ -136,9 +140,14 @@ button,button a{
     margin-bottom: 10px;
 }
 
-img{
-    width:450px;
+.current-post-file img{
+    width:350px;
     /* height:200px */
+}
+
+img,video{
+    width:150px;
+    height: auto;
 }
 
 .post-buttons{

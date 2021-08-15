@@ -11,6 +11,7 @@
     flex-direction: row;
     justify-content: space-around;
     /* margin-top: 5%; */
+    color:white
 }
 
 .container .navbar{
@@ -120,9 +121,15 @@ form {
     /* margin: 10px 10px; */
 }
 
-/* .form-buttons button{
-    color:black
+/* .form .create-post .form-buttons input,.form .create-post .form-buttons button{
+    color:white
 } */
+.form-buttons button,.form-buttons input {
+    color:black
+}
+.form-buttons input {
+    color:white
+}
 
 button,button a{
     /* color: white; */
