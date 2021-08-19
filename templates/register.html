@@ -23,40 +23,103 @@
     <div class="flex-container-body">
         <!-- <legend>Create Account</legend> -->
         <div class="flex-item-body">
-            <h1 class="flex-item-body">Create Account</h1>
-            {% with messages = get_flashed_messages()%}
-                {% if messages %}
-                    {% for message in messages%}
-                        <h3 style="color: red;">{{message}}</h3>
-                        <!-- <br>
-                        <br> -->
-                    {%endfor%}
-                {%endif%}
-            {%endwith%}
+            
+            <!-- <div class="form-list">
+                <h1 class="flex-item-body">Create Account</h1>
+                {% with messages = get_flashed_messages()%}
+                    {% if messages %}
+                        {% for message in messages%}
+                            <h3 style="color: red;">{{message}}</h3>
+                        {%endfor%}
+                    {%endif%}
+                {%endwith%}
                 <form action=""method="POST" autocomplete="on">
                     <label for="name">Full Name:</label><br>
-                    <input type="text" placeholder="Name" name="name" class="entry">
+                    <input type="text" placeholder="Name" name="name">
                     <br>
                     <br>
                     <label for="username">Username:</label><br>
-                    <input type="text" placeholder="username" name="username" class="entry">
+                    <input type="text" placeholder="username" name="username">
                     <br>
                     <br>
                     <label for="email">Email:</label><br>
-                    <input type="email" placeholder="Email" name="email" class="entry">
+                    <input type="text" placeholder="Email" name="email">
                     <br>
                     <br>
                     <label for="password">Password</label><br>
-                    <input type="password" placeholder="password" name="password" class="entry">
+                    <input type="password" placeholder="password" name="password">
                     <br>
                     <br>
                     <label for="password2">Re-enter Password</label><br>
-                    <input type="password" placeholder="password" name="compare-password" class="entry">
+                    <input type="password" placeholder="password" name="compare-password">
                     <br>
                     <br>
                     <br>
                     <input type="submit" class="submit">
                 </form>
+            </div> -->
+
+            <div class="form-list">
+                <!-- <h1 class="flex-item-body">Finish Profile</h1> -->
+                <form action=""method="POST" autocomplete="on">
+
+                    <div class="form-p1">
+                        <h1 class="flex-item-body">Create Account</h1>
+                        {% with messages = get_flashed_messages()%}
+                            {% if messages %}
+                                {% for message in messages%}
+                                    <h3 style="color: red;">{{message}}</h3>
+                                {%endfor%}
+                            {%endif%}
+                        {%endwith%}
+                        <label for="name">Full Name:</label><br>
+                        <input type="text" placeholder="Name" name="name">
+                        <br>
+                        <br>
+                        <label for="username">Username:</label><br>
+                        <input type="text" placeholder="username" name="username">
+                        <br>
+                        <br>
+                        <label for="email">Email:</label><br>
+                        <input type="text" placeholder="Email" name="email">
+                        <br>
+                        <br>
+                        <label for="password">Password</label><br>
+                        <input type="password" placeholder="password" name="password">
+                        <br>
+                        <br>
+                        <label for="password2">Re-enter Password</label><br>
+                        <input type="password" placeholder="password" name="compare-password">
+                        <br>
+                        <br>
+                        <br>
+                    </div>
+
+
+                    <div class="form-p2">
+                        <h1 class="flex-item-body">Finish Profile</h1>
+                        <input type="radio" name="gender" value="male">
+                        <label for="male">Male</label><br>
+                        <input type="radio" name="gender" value="female">
+                        <label for="female">Female</label><br>
+                        <br>
+                        <label for="age">Age:</label><br>
+                        <input type="age" placeholder="age" name="age">
+                        <br>
+                        <br>
+                        <label for="birthday">Birthday</label><br>
+                        <input type="date" name="birthday">
+                        <br>
+                        <br>
+                        <input type="checkbox" name="terms-of-service">
+                        <label for="terms-of-service" class="terms">By continuing, you agree to {Website Name} Conditions of Use and Privacy Notice.</label> <br>
+                        <br>
+                        <input type="submit" class="submit">
+                    </div>
+                    
+                </form>
+            </div>
+                
         </div>
         
         </div>

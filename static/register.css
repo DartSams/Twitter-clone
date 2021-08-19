@@ -35,18 +35,26 @@ body{
 
 .flex-container-body{
     display: flex;
-    margin-left:40%;
-    margin-top: 5%;
+    /* margin-left:40%; */
+    /* margin-top: 5%; */
+    margin:3% 10%;
     background-color: rgb(26,41,51);
-    width:25%;
+    /* width:600px; */
     justify-content: center;
     align-items: center;
 }
 
-.flex-item-body{
-    margin:10%;
+.form-list form{
+    /* padding:10%; */
+    display: flex;
+    flex-direction: row;
+    /* justify-content: space-between; */
 }
 
-form,.entry,.submit{
-    width: 100%;
+.form-p1,.form-p2{
+    margin:5% 5%;
+}
+
+input[type=text],input[type=username],input[type=password],input[type=age],input[type=date] {
+    width:300px
 }
