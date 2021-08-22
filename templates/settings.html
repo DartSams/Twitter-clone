@@ -11,6 +11,19 @@
     <main>
         <div class="setting-form">
             <h2>Settings</h2>
+
+            <p style="color:white">
+                {% with messages = get_flashed_messages()%}
+                    {% if messages %}
+                        {% for message in messages%}
+                            {{message}}
+                            <br>
+                            <br>
+                        {%endfor%}
+                    {%endif%}
+                {%endwith%}
+            </p>
+            
             {% for i in profile_stuff%}
             <form method=post enctype=multipart/form-data>
                 <div class="each">

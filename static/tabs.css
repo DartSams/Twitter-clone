@@ -177,6 +177,9 @@ form button{
     display: inline-flex;
 }
 
+.profile-tabs .active {
+    background-color: rgb(29, 161, 242);
+}
 .profile-edit{
     margin-top: 10px;
     float: right;

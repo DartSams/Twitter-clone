@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    {% for i in profile_stuff%}
+    {% for i in data["profile_details"] %}
         <title>{{i[0]}} (@{{i[1]}})</title>
     {%endfor%}
     <!-- <link rel="stylesheet" type= "text/css" href="\twitter clone\static\index.css"> -->
@@ -28,10 +28,10 @@
                 {% endif %}
             </div>
                 <div class="container-middle">
-                    {% if profile_stuff %}
+                    {% if data["profile_details"] %}
                         <div class="container-middle-top">
                             <!-- {% if profile_stuff %} -->
-                            {% for i in profile_stuff%}
+                            {% for i in data["profile_details"] %}
                                 <!-- {{i}} -->
                                     <!-- <img src="{{url_for('static',filename='preview_img/{{{i}}}')}}" alt="{{i}}" id="profile-banner"> -->
                                     <img src='/static/preview_img/{{i[11]}}' alt="{{i[11]}}" id="profile-banner">
@@ -46,8 +46,11 @@
                                             {% if username == session['username']%}
                                                 <button name="Settings"><a ref="/profile/{{session['username']}}/settings" class="profile-edit">Edit Account</a></button>
                                             {% else %}
-                                                {% if all_ready_followed[1] == session["username"] %}
-                                                    <button name="UnFollow" value="{{i[1]}}"><a href="/profile/{{session['username']}}/settings" class="profile-edit">Already Following</a></button>
+                                                {% if data["all ready followed"][0] == session["username"] %}
+                                                    <!-- <button name="UnFollow" value="{{session['username']}}"><a href="" class="profile-edit">Already Following</a></button>
+                                                    <input type="submit" name="UnFollow" value="{{session['username']}}" class="profile-edit"> -->
+                                                    <button name="UnFollow" value="{{session['username']}}"><p class="profile-edit">Already Following</p></button>
+
 
                                                 {% else %}
                                                     <button name="Follow" value="{{i[1]}}"><p class="profile-edit">Follow</p></button>
@@ -69,17 +72,31 @@
                                     <p style="color: white;">@{{i[1]}}</p>
                                     <p style="color: white;">{{i[10]}}</p>
                                     <div class="follow" style="color: white;">
-                                        <a href="/{{i[1]}}/followers">{{follower_num}} Followers |</a> 
+                                        <a href="/{{i[1]}}/followers">{{data["Amount of followers"]}} Followers |</a> 
                                         
-                                        <a href="/{{i[1]}}/following">| {{following_num}} Following</a>
+                                        <a href="/{{i[1]}}/following">| {{data["Following Amount"]}} Following</a>
                                     </div>
                                 </div>
 
                                 <div class="profile-tabs">
-                                    <a href="/{{i[1]}}" class="active">All Post</a>
-                                    <a href="/{{i[1]}}/Replies">Replies</a>
-                                    <a href="/">Media</a>
-                                    <a href="/{{i[1]}}/Likes">Likes</a>
+                                    <a href="/{{i[1]}}">All Post</a>
+                                    {% if data["tab"] == "Replies" %}
+                                        <a href="/{{i[1]}}/Replies" class="active">Replies</a>
+                                    {% else %}
+                                        <a href="/{{i[1]}}/Replies">Replies</a>
+                                    {%endif%}
+
+                                    {% if data["tab"] == "Media" %}
+                                        <a href="/" class="active">Media</a>
+                                    {% else %}
+                                        <a href="/">Media</a>
+                                    {%endif%}
+
+                                    {% if data["tab"] == "Likes" %}
+                                        <a href="/{{i[1]}}/Likes" class="active">Likes</a>
+                                    {% else %}
+                                        <a href="/{{i[1]}}/Likes">Likes</a>
+                                    {%endif%}
                                 </div>
                             {%endfor%}
                         </div>
@@ -89,20 +106,20 @@
                         <div class="post-board">
                             
                             
-                            {% if tab == "Likes"%}
+                            {% if data["tab"] == "Likes"%}
                                 {% block likes %}
                                 {% endblock %}
                                 
 
-                            {% elif tab == "Replies"%}
+                            {% elif data["tab"] == "Replies"%}
                                 {% block replies %}
                                 {% endblock%}
 
-                            {% elif tab == "followers" %}
+                            {% elif data["tab"] == "followers" %}
                                 {% block follower %}
                                 {% endblock %}
 
-                            {% elif tab == "following" %}
+                            {% elif data["tab"] == "following" %}
                                 {% block following %}
                                 {% endblock %}
 
@@ -124,7 +141,7 @@
                         </div>
 
 
-                    {% elif not user_post%}
+                    {% elif not data["post"] %}
                     <p style="color:white">
                         {% with messages = get_flashed_messages()%}
                             {% if messages %}
