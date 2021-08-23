@@ -1,221 +1,149 @@
-#active{
-    color:rgb(29, 161, 242);
-}
+/* responsive for any screen wider than 900px generally laptops */
+@media screen and (min-width:900px) {
+    #active{
+        color:rgb(29, 161, 242);
+    }
 
-#active:hover{
-    color:white
-}
+    #active:hover{
+        color:white
+    }
 
-.container{
-    display:flex;
-    flex-direction: row;
-    justify-content: space-around;
-    /* margin-top: 5%; */
-    color:white
-}
+    .container{
+        display:flex;
+        flex-direction: row;
+        justify-content: space-around;
+        color:white
+    }
 
-.container .navbar{
-    position: fixed;
-    left:0;
-    /* display: inline-flex; */
-}
+    .container .navbar{
+        position: fixed;
+        left:0;
+    }
 
-.container .navbar a{
-    display: flex;
-    flex-direction: column;
-    /* align-items: center; */
-    text-decoration: none;
-    color: white;
-    font-size: 25px;
-    margin-bottom: 10%;
-    /* background-color: blue;
-    border-radius: 30px; */
-    padding: 10px;
-}
+    .container .navbar a{
+        display: flex;
+        flex-direction: column;
+        text-decoration: none;
+        color: white;
+        font-size: 25px;
+        margin-bottom: 10%;
+        padding: 10px;
+    }
 
-.navbar .flex-item:hover{
-    background-color: rgb(29, 161, 242);
-    border-radius: 30px;
-    padding: 10px;
-    /* width:50%; */
-    display: inline-flex;
-}
+    .navbar .flex-item:hover{
+        background-color: rgb(29, 161, 242);
+        border-radius: 30px;
+        padding: 10px;
+        display: inline-flex;
+    }
 
-/* .navbar .profile-bar{
-    display:flex;
-    flex-direction: row;
-    background-color: blue;
-    border-radius: 30px;
-} */
+    .to-profile{
+        display: flex;
+        flex-direction: row;
+    }
 
-.to-profile{
-    display: flex;
-    flex-direction: row;
-}
+    .flex-item{
+        display: flex;
+        flex-direction: row;
+    }
 
-.flex-item{
-    display: flex;
-    flex-direction: row;
-}
+    body{
+        background-color: black;
+    }
 
-/* .title{
-    margin-left:40%;
-} */
+    a{
+        text-decoration: none;
+    }
 
-body{
-    /* background-color: rgb(36,51,61); */
-    background-color: black;
-}
+    .search-bar{
+        color: white;
+        display: flex;
+        justify-content: center;
+        flex-direction: row;
+    }
 
-a{
-    text-decoration: none;
-}
+    .search-bar input{
+        width:500px;
+    }
 
-.search-bar{
-    color: white;
-    display: flex;
-    justify-content: center;
-    flex-direction: row;
-}
+    .search-bar button img{
+        width:30px;
+        cursor: pointer;
+    }
 
-.search-bar input{
-    width:500px;
-}
-/* .search-bar button{
-    background-color: blue;
-    background: none;
-    opacity: 0;
-} */
-.search-bar button img{
-    width:30px;
-    /* background: none; */
-    cursor: pointer;
-}
+    .all-post{
+        width:500px;
+        border-style: solid;
+        border-color: white;
+        padding: 20px;
+        margin-bottom: 10px;
+    }
 
-.all-post{
-    width:500px;
-    border-style: solid;
-    border-color: white;
-    padding: 20px;
-    margin-bottom: 10px;
-}
+    .create-post textarea {
+        width:500px;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
 
-.create-post textarea {
-    width:500px;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-}
+    form {
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 10px;
 
-form {
-    display: flex;
-    flex-direction: column;
-    margin-bottom: 10px;
+    }
 
-}
+    .form-buttons{
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
 
-.form-buttons{
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    /* margin: 10px 10px; */
-}
+    .form-buttons button,.form-buttons input {
+        color:black
+    }
 
-/* .form .create-post .form-buttons input,.form .create-post .form-buttons button{
-    color:white
-} */
-.form-buttons button,.form-buttons input {
-    color:black
-}
-.form-buttons input {
-    color:white
-}
+    .form-buttons input {
+        color:white
+    }
 
-button,button a{
-    /* color: white; */
-    text-decoration: none;
-}
+    button,button a{
+        text-decoration: none;
+    }
 
-form input,button a{
-    color:black;
-    text-decoration: none;
-}
+    form input,button a{
+        color:black;
+        text-decoration: none;
+    }
 
-.post-board{
-    display: flex;
-    flex-direction: column-reverse;
-    /* border-style: solid;
-    border-color: white;
-    padding: 20px; */
-}
+    .post-board{
+        display: flex;
+        flex-direction: column-reverse;
+    }
 
-.post-board p{
-    color: white;
-    text-decoration: none;
-}
+    .post-board p{
+        color: white;
+        text-decoration: none;
+    }
 
-.post-detail{
-    /* width:500px; */
-    border-style: solid;
-    border-color: white;
-    padding: 20px;
-    margin-bottom: 10px;
-}
+    .post-detail{
+        border-style: solid;
+        border-color: white;
+        padding: 20px;
+        margin-bottom: 10px;
+    }
 
+    .likes{
+        display:flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
 
-
-
-/* h2,h3,h5,pre{
-    color:white;
-} */
-
-
-
-
-
-/* .login_create {
-    display: flex;
-    flex-direction: row;
-
-}
-
-.try{
-    margin-right: 100px;
-} */
-.likes{
-    display:flex;
-    flex-direction: row;
-    justify-content: space-between;
-}
-
-.likes label{
-    color:white
-}
-
-.likes button,.likes a,.likes button img,.likes a img{
-    width:30px;
-    border: none;
-    background: none;
-    cursor: pointer;
-}
-
-/* .likes a{
-    text-decoration: none;
-    color:black
-} */
-
-
-/* .Reply:hover{
-    background-color: rgb(29, 161, 242);
-} */
-
-.likes .likes,.likes button,.likes a{
-    color:white
-}
-
-.like .likes button,.like .likes button img,.like .likes input,.likes a{
-    width:30px;
-    border: none;
-    background: none;
-    cursor: pointer;
+    .likes button,.likes a,.likes button img,.likes a img,.likes button{
+        width:30px;
+        border: none;
+        background: none;
+        cursor: pointer;
+        color:white
+    }
 }
