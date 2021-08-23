@@ -1,0 +1,60 @@
+.flex-container-header{
+    display: flex;
+    /* background-color: rgb(26,41,51); */
+
+}
+
+
+.flex-container-header a{
+    text-decoration: none;
+    margin:10px;
+    color: white;
+    font-size: 20px;
+    justify-content: flex-end;    
+}
+
+.flex-container-header a:hover{
+    border-radius: 5px;
+    border: 2px solid white;
+}
+
+.flex-container-header a:nth-child(2){
+    margin-left:67%
+}
+
+
+
+h1,label{
+    color:white;
+}
+
+body{
+    background-color: rgb(36,51,61);
+
+}
+
+.flex-container-body{
+    display: flex;
+    /* margin-left:40%; */
+    /* margin-top: 5%; */
+    margin:3% 10%;
+    background-color: rgb(26,41,51);
+    /* width:600px; */
+    justify-content: center;
+    align-items: center;
+}
+
+.form-list form{
+    /* padding:10%; */
+    display: flex;
+    flex-direction: row;
+    /* justify-content: space-between; */
+}
+
+.form-p1,.form-p2{
+    margin:5% 5%;
+}
+
+input[type=text],input[type=username],input[type=password],input[type=age],input[type=date] {
+    width:300px
+}
