@@ -1,11 +1,5 @@
 when  user creates account also create folder to hold their images
 
-make a admin page that shows tables of users,can links to their post,and gives a activity log
-
-add a report button to post
-
-on individual post allow admin to delete post
-
-allow admins to give admin privileges
-
 make a report button
+
+under profile replies tab show the post the reply is attached to
