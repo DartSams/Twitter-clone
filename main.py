@@ -418,6 +418,10 @@ def profile(username):
         return render_template("profile.html",data=data,profile_stuff=data["profile_details"])
 
     elif request.method == "POST":
+        #if logged in and user clicks edit account button then sends a post request that redirects to the settings page
+        if "Settings" in request.form:
+            return redirect(f"/profile/{session['username']}/settings")
+            
         #if logged in user presses the follow button the creates a entry in the db saying logged in user now follows requested user
         if "Follow" in request.form:
             follow=request.form["Follow"]
