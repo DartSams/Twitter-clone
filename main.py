@@ -692,6 +692,10 @@ def admin(username):
             post=mycursor.fetchall()
             post_headers=[x[0] for x in mycursor.description] #this will extract row headers
 
+            mycursor.execute("SELECT * FROM Repost_Post")
+            reported_post=mycursor.fetchall()
+            report_headers=[x[0] for x in mycursor.description] #this will extract row headers
+
             #queries the mysqldb for all tables
             mycursor.execute("Show tables;")
             all_tables = mycursor.fetchall()
@@ -702,6 +706,8 @@ def admin(username):
                 "post headers":post_headers,
                 "post":post,
                 "all tables":all_tables,
+                "reported post":reported_post,
+                "reported headers":report_headers
             }
             return render_template("admin.html",data=data)
 
@@ -717,7 +723,6 @@ def admin(username):
         create_table_column_type=request.form.get("new-column-types")
         create_table_column_size=request.form.get("new-column-type-size")
 
-
         delete_column=request.form.get("delete-column")
         add_column=request.form.get("add-column")
         add_column_types=request.form.get("add-column-types")
@@ -727,6 +732,8 @@ def admin(username):
         delete_user=request.form.get("delete-user")
         make_admin=request.form.get("change-user-status-admin")
         make_user=request.form.get("change-user-status-user")
+
+        report=request.form.get("report")
 
         if selected_table is not None:
             if create_table:
@@ -779,6 +786,11 @@ def admin(username):
                 mycursor.execute(f"UPDATE {table_name} SET privilege = %s WHERE personID = %s",(new_user_privilege,user_id))
                 conn.commit()
                 # print(f"{username} has been demoted to {new_user_privilege}")
+
+            if report:
+                mycursor.execute("DELETE FROM Repost_Post WHERE postID = %s",report)
+                conn.commit()
+
         return redirect(f"/admin/{session['username']}")
 
 #when the client side sends a signal called 'message' to server side this function is called
@@ -833,6 +845,11 @@ def comment(data):
     emit("message",data,broadcast=True,to=room)#setting broadcast to True means if 2 users are currently on the sage page as the socket then both 
     #the 'to' attribute says send this data to the specific room this is needed because i reuse js functions
 
+#if logged in users report a post this will send a notification to admins by creating a entry in the db displaying who reported the post and what post it is
+@socketio.on("reportPost")
+def report(data):
+    mycursor.execute("INSERT INTO Repost_Post (reported_by,postID) VALUES (%s,%s)",(data["user"],data["id"]))
+    conn.commit()
 
 if __name__=="__main__":
     app.run(debug=True)

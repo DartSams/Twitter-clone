@@ -109,7 +109,7 @@
                                 {% if i[6] not in data["like lst id"] %}
                                     <button name="Like" class="Like" value="{{i[6]}}"><img src="/static/buttons/like.png" alt="" onclick="changeLike(id)" id="like:{{i[6]}}">Like</button>  
                                 {%endif%}
-                                <button name="Share" class="Share" value="{{i[6]}}"><img src="/static/buttons/black heart.png" alt="">Share</button>  
+                                <button name="Report" class="Report" value="{{i[6]}}"><img src="/static/buttons/flag-icon.png" alt="" onclick="reportPost(id)" id="{{i[6]}}">Report</button>  
                             </div>
                         </div>
                         {%endfor%}
@@ -212,6 +212,10 @@
                     let postMessage = splitButton[1]
                     let socketType = "retweetPost"
                     socket.emit("message",{message:postMessage,type:socketType})
+                }
+
+                function reportPost(id) {
+                    socket.emit("reportPost",{user:username,id:id})
                 }
             </script>
         </div>

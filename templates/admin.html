@@ -9,7 +9,7 @@
 </head>
 <body>
     <div class="all-tables">        
-        <div class="table">
+        <div class="table" id="Allusers">
             <div><h2>Users</h2></div>
             <table>                
                 <thead> 
@@ -23,7 +23,7 @@
                             {% for i in row %}
                                 <td>{{i}}</td>  
                             {%endfor%}
-                            <td><a href="/{{row[1]}}">Profile</a></td>
+                            <td><a href="/{{row[1]}}" target="__blank">Profile</a></td>
                             <form action="" method="POST">
                                <td><button name="delete-user" value="Twitter_Users,{{row[1]}},{{row[9]}}">Delete user</button></td>
                                <td><button name="change-user-status-admin" value="Twitter_Users,{{row[1]}},{{row[9]}},admin">Promote to Admin</button>
@@ -34,8 +34,8 @@
                 </tbody> 
             </table>
         </div>
-
-        <div class="table">
+ 
+        <div class="table" id="Allpost">
             <div><h2>Post</h2></div>
             <table> 
                 <thead> 
@@ -54,7 +54,32 @@
                     {% endfor %} 
                 </tbody> 
             </table>
-        </div>        
+        </div> 
+
+        <div class="table" id ="report">
+            <div><h2>Reported Post</h2></div>
+            <table>
+                <thead> 
+                    {% for i in data["reported headers"] %}
+                        <th>{{i}}</th>
+                    {%endfor%}
+                </thead> 
+                <tbody> 
+                    {% for row in data["reported post"] %}
+                        <tr>
+                            {% for i in row %}
+                                <td>{{i}}</td>  
+                            {%endfor%}
+                            <td><a href="/{{row[1]}}" target="__blank">Check Post</a>
+                            <form action="" method="POST">
+                                <button name="report" value="{{row[1]}}">Delete Report</button></td>
+                            </form>
+                        </tr>
+                    {% endfor %} 
+                </tbody> 
+            </table>
+        </div>
+              
     </div>
 
      <form action="" method="post">
