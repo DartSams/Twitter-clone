@@ -7,12 +7,9 @@
     {% for i in data["profile_details"] %}
         <title>{{i[0]}} (@{{i[1]}})</title>
     {%endfor%}
-    <!-- <link rel="stylesheet" type= "text/css" href="\twitter clone\static\index.css"> -->
-    <link rel="stylesheet" href="{{url_for('static',filename='tabs.css')}}">
+    <link rel="stylesheet" href="{{url_for('static',filename='stylesheets/tabs.css')}}">
 </head>
-
 <body>
-
     <main>
         <div class="container">
             <div class="navbar">
@@ -30,16 +27,9 @@
                 <div class="container-middle">
                     {% if data["profile_details"] %}
                         <div class="container-middle-top">
-                            <!-- {% if profile_stuff %} -->
                             {% for i in data["profile_details"] %}
-                                <!-- {{i}} -->
-                                    <!-- <img src="{{url_for('static',filename='preview_img/{{{i}}}')}}" alt="{{i}}" id="profile-banner"> -->
                                     <img src='/static/preview_img/{{i[11]}}' alt="{{i[11]}}" id="profile-banner">
-                                    <!-- <img src="{{url_for('static',filename='preview_img/{{i}}')}}" alt="{{i}}" id="profile-img"> -->
                                     <img src='/static/preview_img/{{i[12]}}' alt="{{i[12]}}" id="profile-img">
-                                    
-                                <!-- {%endfor%} -->
-                                <!-- {% for i in profile_stuff%} -->
                                 <div>
                                     <form action="" method="POST">
                                         {% if session["username"] %}
@@ -47,33 +37,21 @@
                                                 <button name="Settings"><a ref="/profile/{{session['username']}}/settings" class="profile-edit">Edit Account</a></button>
                                             {% else %}
                                                 {% if data["all ready followed"][0] == session["username"] %}
-                                                    <!-- <button name="UnFollow" value="{{session['username']}}"><a href="" class="profile-edit">Already Following</a></button>
-                                                    <input type="submit" name="UnFollow" value="{{session['username']}}" class="profile-edit"> -->
                                                     <button name="UnFollow" value="{{session['username']}}"><p class="profile-edit">Already Following</p></button>
-
-
                                                 {% else %}
                                                     <button name="Follow" value="{{i[1]}}"><p class="profile-edit">Follow</p></button>
-
                                                 {%endif%}
                                             {%endif%}
-                                        {% else %}
-                                            <br>
-                                            <br>
-                                            <br>
                                         {%endif%}
-                                        
                                     </form>
-                                    
                                 </div>
-                                <!-- <h3 style="color: white;">Name:{{i[0]}}</h3> -->
+
                                 <div class="profile-description">
                                     <h3 style="color: white;">{{i[0]}}</h3>
                                     <p style="color: white;">@{{i[1]}}</p>
                                     <p style="color: white;">{{i[10]}}</p>
                                     <div class="follow" style="color: white;">
                                         <a href="/{{i[1]}}/followers">{{data["Amount of followers"]}} Followers |</a> 
-                                        
                                         <a href="/{{i[1]}}/following">| {{data["Following Amount"]}} Following</a>
                                     </div>
                                 </div>
@@ -101,47 +79,42 @@
                             {%endfor%}
                         </div>
                     {%endif%}
-                    
                 
-                        <div class="post-board">
-                            
-                            
-                            {% if data["tab"] == "Likes"%}
-                                {% block likes %}
-                                {% endblock %}
-                                
-
-                            {% elif data["tab"] == "Replies"%}
-                                {% block replies %}
-                                {% endblock%}
-
-                            {% elif data["tab"] == "followers" %}
-                                {% block follower %}
-                                {% endblock %}
-
-                            {% elif data["tab"] == "following" %}
-                                {% block following %}
-                                {% endblock %}
-
-                            {% else %}
-                                <p style="color:white">
-                                    {% with messages = get_flashed_messages()%}
-                                        {% if messages %}
-                                            {% for message in messages%}
-                                                {{message}}
-                                            {%endfor%}
-                                        {%endif%}
-                                    {%endwith%}
-                                </p>
-                            {%endif%}
-                            
-
+                    <div class="post-board">
                         
+                        
+                        {% if data["tab"] == "Likes"%}
+                            {% block likes %}
+                            {% endblock %}
+                            
 
-                        </div>
+                        {% elif data["tab"] == "Replies"%}
+                            {% block replies %}
+                            {% endblock%}
+
+                        {% elif data["tab"] == "followers" %}
+                            {% block follower %}
+                            {% endblock %}
+
+                        {% elif data["tab"] == "following" %}
+                            {% block following %}
+                            {% endblock %}
+
+                        {% else %}
+                            <p style="color:white">
+                                {% with messages = get_flashed_messages()%}
+                                    {% if messages %}
+                                        {% for message in messages%}
+                                            {{message}}
+                                        {%endfor%}
+                                    {%endif%}
+                                {%endwith%}
+                            </p>
+                        {%endif%}
+                    </div>
 
 
-                    {% elif not data["post"] %}
+                    {% if not data["post"] %}
                     <p style="color:white">
                         {% with messages = get_flashed_messages()%}
                             {% if messages %}

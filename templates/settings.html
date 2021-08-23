@@ -5,13 +5,12 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Settings</title>
-    <link rel="stylesheet" href="{{url_for('static',filename='settings.css')}}">
+    <link rel="stylesheet" href="{{url_for('static',filename='stylesheets/settings.css')}}">
 </head>
 <body>
     <main>
         <div class="setting-form">
             <h2>Settings</h2>
-
             <p style="color:white">
                 {% with messages = get_flashed_messages()%}
                     {% if messages %}
@@ -44,11 +43,9 @@
                 <div style="float: right;">
                    <input type=submit value=Save class="submit"> 
                 </div>
-                
             </form>
             {%endfor%}
         </div>
-        
     </main>
 </body>
 </html>

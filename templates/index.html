@@ -6,27 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home</title>
 
-    <!-- <link rel="stylesheet" type= "text/css" href="\twitter clone\static\index.css"> -->
-    <link rel="stylesheet" href="{{url_for('static',filename='index.css')}}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='stylesheets/index.css') }}" />
 </head>
-
-<!-- <header class="flex-container-header">
-    <a href="/" class="flex-item">Website Name</a>
-    <a href="/" class="flex-item">Home</a>
-    <a href="/" class="flex-item">Shop</a>
-    <a href="" class="flex-item">About Us</a>
-    <a href="" class="flex-item">Contact</a>
-    {% if "username" in session %}
-    <a href="/profile" class="flex-item">{{session["username"]}}</a>
-    {% elif "username" not in session %}
-    <a href="">Login</a>
-    {% endif %}
-</header> -->
-
 <body>
-
     <main>
-        <!-- <h2 class="title" style="color: white;display: flex; justify-content: center;">Website Users</h2> -->
         <div>
             <form action="" method="post" class="search-bar">
                 <input type="text" name="search-bar" placeholder="Search..">
@@ -56,69 +39,32 @@
             
 
             <div class="all-post">
-                <!-- <h3>Post bar</h3> -->
                 {% if "username" in session%}
-                <!-- <form action=""  enctype=multipart/form-data> -->
-                    <!-- <div class="create-post"> -->
-                        
-                        <!-- <div class="form-buttons"> -->
-                        <!-- <form action="" method="post" enctype=multipart/form-data>
-                            <textarea name="post-field" id="myPost" cols="50" rows="5" style="resize: none;"></textarea>
-                            <input type="file" name="file" style="color: white;" id="file" onchange="getFileFunction()">
-                            <input type="submit">
-                            <button type="submit" onclick="myFunction()">Post</button>
-                        </form> -->
-                        
-                        <!-- <input type="submit" value="Post"> -->
-                        <!-- <button type="submit" onclick="myFunction()">Post</button> -->
-                        <!-- </div> -->
-                    <!-- </div> -->
 
                     <form action=""  method="POST" enctype=multipart/form-data>
                         <div class="create-post">
                             <textarea name="post-field" id="myPost" cols="50" rows="5" style="resize: none;"></textarea>
                             <div class="form-buttons">
                                 <input type="file" name="file" >
-                                <!-- <input type="submit" value="Post"> -->
                                 <button type="submit">Upload</button>
                             </div>
                         </div>
-                        
-                        
                     </form>
                     <button onclick="myFunction()" style="width: 500px;color:black">Post</button>
-                    
-                    
-                <!-- </form> -->
                 {%endif%}
 
                 <div class="post-board">
                     <div class="post" id="post">
-                        <!-- {{messages}} -->
-                        
                         {%for i in data["all post"] %}
-                            
-                            <!-- {{session["username"]}} -->
-                            <!-- <div style="color: blue;">Author:{{i[0]}}</div>
-                            <div style="color: blue;">Post Date:{{i[1]}}</div>
-                            <div style="color: blue;">Post Time:{{i[2]}}</div>
-                            <div style="color: blue;">{{i[3]}}</div>
-                            <div style="color: blue;">Post File:{{i[4]}}</div>
-                            <div style="color: blue;">Placeholder Date:{{i[5]}}</div>
-                            <div style="color: blue;">Post ID:{{i[6]}}</div> -->
-
                             <a href="/{{i[6]}}" >
                             <div class="post-detail">
-                                <!-- {{i}} -->
                                 {% if i[1] == data["post date"] %}
-                                <p class="post-name">By {{i[0]}} - {{i[2]}}</p>
+                                    <p class="post-name">By {{i[0]}} - {{i[2]}}</p>
 
                                 {% else %}
-                                <p class="post-name">By {{i[0]}} - {{i[5]}}</p>
-
+                                    <p class="post-name">By {{i[0]}} - {{i[5]}}</p>
                                 {%endif%}
 
-                                <!-- <p class="post-body">{{i[3]}}</p> -->
                                 {% if i[3] != None%}
                                     <p class="post-body" id="{{i[6]}}">{{i[3]}}</p>
                                 {%endif%}
@@ -148,28 +94,22 @@
                             </a> 
 
                             <div class="likes">
-                                <!-- {{like_lst}}  -->
-
-                                <!-- <form action="" class="post-buttons"> -->
-                                    <a name="Reply" class="Reply" value="{{i[6]}}" href="/{{i[6]}}"><img src="/static/buttons/reply1.png" alt="">Reply</a>  
-                                    <button name="Retweet" class="Retweet" value="{{i[6]}}"><img src="/static/buttons/retweet.png" alt="" onclick="retweet(id)" id="post:{{i[3]}}">Retweet</button> 
-                                    {% if data["like lst"] %}
-                                    <!-- {{like_lst}} -->
-                                        {% for j in data["like lst"] %}
-                                            {% if j[1] == i[6] %}
-                                                {% if session["username"] == j[0] %}
-                                                    <!-- {{j[0]}}-{{j[1]}} -->
-                                                    <button name="UnLike" class="Like" value="{{i[6]}}" ><img src="/static/buttons/unlike.png" alt="" onclick="changeLike(id)" id="unlike:{{i[6]}}">Like</button>  
-                                                {%endif%}
+                                <a name="Reply" class="Reply" value="{{i[6]}}" href="/{{i[6]}}"><img src="/static/buttons/reply1.png" alt="">Reply</a>  
+                                <button name="Retweet" class="Retweet" value="{{i[6]}}"><img src="/static/buttons/retweet.png" alt="" onclick="retweet(id)" id="post:{{i[3]}}">Retweet</button> 
+                                {% if data["like lst"] %}
+                                    {% for j in data["like lst"] %}
+                                        {% if j[1] == i[6] %}
+                                            {% if session["username"] == j[0] %}
+                                                <button name="UnLike" class="Like" value="{{i[6]}}" ><img src="/static/buttons/unlike.png" alt="" onclick="changeLike(id)" id="unlike:{{i[6]}}">Like</button>  
                                             {%endif%}
-                                        {%endfor%}
-                                    {%endif%}
+                                        {%endif%}
+                                    {%endfor%}
+                                {%endif%}
 
-                                    {% if i[6] not in data["like lst id"] %}
-                                        <button name="Like" class="Like" value="{{i[6]}}"><img src="/static/buttons/like.png" alt="" onclick="changeLike(id)" id="like:{{i[6]}}">Like</button>  
-                                    {%endif%}
-                                    <button name="Share" class="Share" value="{{i[6]}}"><img src="/static/buttons/black heart.png" alt="">Share</button>  
-                                <!-- </form>         -->
+                                {% if i[6] not in data["like lst id"] %}
+                                    <button name="Like" class="Like" value="{{i[6]}}"><img src="/static/buttons/like.png" alt="" onclick="changeLike(id)" id="like:{{i[6]}}">Like</button>  
+                                {%endif%}
+                                <button name="Share" class="Share" value="{{i[6]}}"><img src="/static/buttons/black heart.png" alt="">Share</button>  
                             </div>
                         </div>
                         {%endfor%}
@@ -178,51 +118,20 @@
                     </div>
                 </div>
             </div>
-            <!-- <button onclick="myFunction()">Test socket button</button> -->
             <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js" integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA==" crossorigin="anonymous"></script>
 
             <script type="text/javascript" charset="utf-8">
                 var socket = io();
                 var username = "{{session['username']}}"
-                var all_post = "{{data['all post']}}"
-
-                // while (true) {
-                //     var today=new Date();
-                //     console.log(today.getDay())
-                //     today[0] = "Sunday";
-                //     today[1] = "Monday";
-                //     today[2] = "Tuesday";
-                //     today[3] = "Wednesday";
-                //     today[4] = "Thursday";
-                //     today[5] = "Friday";
-                //     today[6] = "Saturday";
-
-                // }
-                
-                // socket.emit("load",{user:username})
-                // socket.on('onConnect', function(data) {
-                //     // console.log(`${data}`)
-                //     for (let i = 0;i<data.length;i++) {
-                //         // console.log(data[i])
-
-                //         let ass = document.getElementById(data[i][1]);
-                //         // console.log(ass.getElementsByTagName("*"))
-                //     }
-                // });
 
                 socket.on("message",function(msg){
-                    // console.log(`${msg}`)
-
-
                     var postDiv = document.createElement("div");
                     postDiv.setAttribute("class","post-detail");
-                    // postDiv.setAttribute("id",`${msg.postID}`)
                     postDiv.style.color = "white";
 
                     var postHeader = document.createElement("a");
                     postHeader.setAttribute("class","post-name");
                     postHeader.setAttribute("href",`/${msg.postID}`);
-                    // postDiv.setAttribute("id",`${msg.postID}`)
 
                     postHeader.innerHTML = `By ${msg.author} - ${msg.post_time}`;
                     postHeader.style.color = "white";
@@ -230,12 +139,10 @@
 
                     var post = document.createElement("p");
                     post.setAttribute("class","post-body")
-                    // post.setAttribute("id",`${msg.postID}`)
                     post.innerHTML = `${msg.post}`
                     postDiv.appendChild(post);
 
                     var postButtonDiv = document.createElement("div");
-                    // postButtonDiv.innerHTML = "still working"
                     var postButtons = document.createElement("div");
                     postButtons.setAttribute("class","likes")
 
@@ -244,7 +151,6 @@
                     var replyImage = document.createElement("img");
                     replyImage.setAttribute("src","/static/buttons/reply1.png")
                     reply.setAttribute("href",`/${msg.postID}`);
-                    // reply.style.width = "30px";
                     reply.appendChild(replyImage)
                     postButtons.appendChild(reply)
 
@@ -252,7 +158,6 @@
                     var retweetImage = document.createElement("img");
                     retweetImage.setAttribute("src","/static/buttons/retweet.png")
                     retweetImage.setAttribute("onclick","retweet(id)")
-                    // console.log(msg.postID)
                     retweetImage.setAttribute("id",`post:${msg.post}`)
                     retweet.appendChild(retweetImage)
                     postButtons.appendChild(retweet)
@@ -265,27 +170,17 @@
                     like.appendChild(likeImage)
                     postButtons.appendChild(like)
 
-                    // var unlike = document.createElement("button");
-                    // var unlikeImage = document.createElement("img");
-                    // unlikeImage.setAttribute("src","/static/buttons/unlike.png")
-                    // unlike.appendChild(unlikeImage)
-                    // postButtons.appendChild(unlike)
-
                     var share = document.createElement("button");
                     var shareImage = document.createElement("img");
                     shareImage.setAttribute("src","/static/buttons/black heart.png")
                     share.appendChild(shareImage)
                     postButtons.appendChild(share)
 
-
                     postButtonDiv.appendChild(postButtons)
                     postDiv.appendChild(postButtonDiv);
 
-
-
                     document.getElementById("post").prepend(postDiv); 
                     document.getElementById('myPost').value = ''
-        
                 });
 
                 function myFunction() {
@@ -296,33 +191,23 @@
 
                 function changeLike(id) {
                     let button = document.getElementById(id).id
-
-                    // console.log(button)
                     let splitButton = button.split(":");
-                    // console.log(splitButton);
                     var likeStatus = splitButton[0];
                     var likeID = splitButton[1];
-                    // console.log("-"+likeID)
 
                     if (likeStatus === "like") {
-                        // console.log("works")
                         document.getElementById(id).src = "/static/buttons/unlike.png";
                         socket.emit("changeLike",{user:username,status:likeStatus,id:likeID})
-                        // var likeStatus="unlike"
                         document.getElementById(id).id = `unlike:${likeID}`
-                        // console.log(button)
                     } else if (likeStatus === "unlike") {
                         document.getElementById(id).src = "/static/buttons/like.png";
                         socket.emit("changeLike",{user:username,status:likeStatus,id:likeID})
-                        // var likeStatus="like"
                         document.getElementById(id).id = `like:${likeID}`
-                        // console.log(button)
                     }
                 }
 
                 function retweet(id) {
                     let button = document.getElementById(`${id}`).id
-                    // console.log(buttond)
                     let splitButton = button.split(":");
                     let postMessage = splitButton[1]
                     let socketType = "retweetPost"
@@ -330,9 +215,6 @@
                 }
             </script>
         </div>
-
     </main>
-    
 </body>
-
 </html>

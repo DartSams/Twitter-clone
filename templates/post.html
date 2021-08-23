@@ -11,7 +11,7 @@
             <title>{{i[0]}}'s Post</title>
         {%endif%}
     {%endfor%}
-    <link rel="stylesheet" href="{{url_for('static',filename='post.css')}}">
+    <link rel="stylesheet" href="{{url_for('static',filename='stylesheets/post.css')}}">
 </head>
 <body>
     <main>
@@ -24,44 +24,27 @@
                 <a href="" class="flex-item">About Us</a>
                 <a href="" class="flex-item">Contact</a>
                 {% if "username" in session %}
-                <!-- <div class="flex-item">
-                    <img src="\static\w3lynx_200.png" alt="" style="width: 10%; height:10%;">
-                    <a href="/profile" >{{session["username"]}}</a>
-                    <a href="/logout">Logout</a>  
-                </div> -->
-                <a href="/{{session['username']}}" class="flex-item">{{session["username"]}}</a>
+                    <a href="/{{session['username']}}" class="flex-item">{{session["username"]}}</a>
                 {% elif "username" not in session %}
-                <a href="/login" class="flex-item">Login</a>
+                    <a href="/login" class="flex-item">Login</a>
                 {% endif %}
-
-                <!-- <div class="profile-bar">
-                    <img src="\static\w3lynx_200.png" alt="" style="width: 10%; height:10%;" >
-                    <a href="/profile" >{{session["username"]}}</a>
-                    <a href="/logout" >Logout</a>  
-                </div> -->
             </div>
 
-            <!-- {{user_post}} -->
-
             <div class="post">
-                {{user_post}}
                 {%for i in data["post"]%}
-                    <!-- {{session["username"]}} -->
                     <div class="post-detail">
-                        {{i}}
                         {% if i[1] == data["post date"] %}
                             <p class="post-name">By <a href="/{{i[0]}}">{{i[0]}}</a> - {{i[2]}}
                                 {% if session["username"] == i[0] or data["admin status"]%}
-                                <a href="/clear/{{i[6]}}" style="float: right; text-decoration: none; color:white">delete post</a>
+                                    <a href="/clear/{{i[6]}}" style="float: right; text-decoration: none; color:white">delete post</a>
                                 {% endif %}
                             </p>
                         {% else %}
                             <p class="post-name">By <a href="/{{i[0]}}">{{i[0]}}</a> - {{i[5]}}
                                 {% if session["username"] == i[0] or data["admin status"]%}
-                                <a href="/clear/{{i[6]}}" style="float: right; text-decoration: none; color:white">delete post</a>
+                                    <a href="/clear/{{i[6]}}" style="float: right; text-decoration: none; color:white">delete post</a>
                                 {% endif %}
                             </p>
-
                         {%endif%}
 
                         {% if i[3] != None%}
@@ -87,31 +70,22 @@
                                 {% for pic_type in data["Allowed Extensions"] %}
                                     {% if pic_type == i[4].split(".")[1] %}
                                         <img src="/static/preview_img/{{i[4]}}" alt="">
-                                        <!-- {{i[4]}} -->
                                     {%endif%}
-                                    <!-- {{pic_type}} -->
                                 {%endfor%}
-
                             {%endif%}
                         </div>
                         
-
-                        <!-- <br> -->
                         <div class="post-buttons">
-                           <!-- <form action=""  class="post-buttons"> -->
                             <a id="4" name="Reply" class="Reply" value="{{i[6]}}" href="{{i[6]}}"><img src="/static/buttons/reply1.png" alt="">Reply</a>  
                             <button id="4" name="Retweet" class="Retweet" value="{{i[6]}}"><img src="/static/buttons/retweet.png" alt="" onclick="retweet(id)" id="post:{{i[3]}}">Retweet</button> 
                             {% if like_lst %}
-                                <!-- {{like_lst}} -->
                                 {% if like_lst[1] == i[6] %}
-                                    <!-- {{like_lst[1]}} -->
                                     {% if like_lst[0] == session["username"] %}
-                                    <button id="4" name="UnLike" class="Like" value="{{i[6]}}"><img src="/static/buttons/unlike.png" alt="" onclick="changeLike(id)" id="unlike:{{i[6]}}">Like</button>  
+                                        <button id="4" name="UnLike" class="Like" value="{{i[6]}}"><img src="/static/buttons/unlike.png" alt="" onclick="changeLike(id)" id="unlike:{{i[6]}}">Like</button>  
                                         
                                     {% else %}
-                                        <!-- {{like_lst}} -->
                                         <button id="4" name="Like" class="Like" value="{{i[6]}}"><img src="/static/buttons/like.png" alt="" onclick="changeLike(id)" id="like:{{i[6]}}">Like</button>  
-                                        {%endif%}    
+                                    {%endif%}    
                                 {% else %}
                                     <button id="4" name="Like" class="Like" value="{{i[6]}}"><img src="/static/buttons/like.png" alt="" onclick="changeLike(id)" id="like:{{i[6]}}">Like</button>  
                                 {%endif%}
@@ -119,25 +93,18 @@
                                 <button id="4" name="Like" class="Like" value="{{i[6]}}"><img src="/static/buttons/like.png" alt="" onclick="changeLike(id)" id="like:{{i[6]}}">Like</button>  
                             {%endif%}
                             <button id="4" name="Share" class="Share" value="{{i[6]}}"><img src="/static/buttons/black heart.png" alt="">Share</button>  
-                        <!-- </form> --> 
                         </div>
 
-                        
                     </div>
-                    {%endfor%}
+                {%endfor%}
 
                     {% if "username" in session %}
-
                         <form action=""  method="POST" enctype=multipart/form-data>
-                            <!-- <div class="create-post"> -->
-                                <textarea name="comment-field" id="myComment" cols="50" rows="5" placeholder="Type Here"></textarea>
-                                <div class="form-buttons">
-                                    <input type="file" name="file" >
-                                    <!-- <input type="submit" value="Post"> -->
-                                    <button type="submit">Upload</button>
-                                </div>
-                            <!-- </div> -->
-
+                            <textarea name="comment-field" id="myComment" cols="50" rows="5" placeholder="Type Here"></textarea>
+                            <div class="form-buttons">
+                                <input type="file" name="file" >
+                                <button type="submit">Upload</button>
+                            </div>
                         </form>
                         <button onclick="onNewComment()" style="width: 500px;color:black">Post</button>
                     {%endif%}
@@ -146,14 +113,6 @@
                     <h1>Comments</h1>
                     <div class="comment-list" id="comment-list">
                             {%for i in data["comments"] %}
-                            <!-- {{session["username"]}} -->
-                            <!-- <div style="color: blue;">Author:{{i[0]}}</div>
-                            <div style="color: blue;">Post Date:{{i[1]}}</div>
-                            <div style="color: blue;">Post Time:{{i[2]}}</div>
-                            <div style="color: blue;">Post:{{i[3]}}</div>
-                            <div style="color: blue;">Post File:{{i[4]}}</div>
-                            <div style="color: blue;">Placeholder Date:{{i[5]}}</div>
-                            <div style="color: blue;">Post ID:{{i[6]}}</div> -->
                             <div class="post-detail">
                                 {% if i[1] == data["post date"] %}
                                     <p class="post-name">By <a href="/{{i[0]}}">{{i[0]}}</a> - {{i[2]}}</p>
@@ -213,60 +172,36 @@
         <script type="text/javascript" charset="utf-8">
             var socket = io();
             var username = "{{session['username']}}"
-            var all_post = "{{data['post']}}"
-            // socket.emit("changeLike",{user:username})
-            // socket.on('onConnect', function(data) {
-            //     // console.log(`${data}`)
-            //     for (let i = 0;i<data.length;i++) {
-            //         // console.log(data[i])
-
-            //         let ass = document.getElementById(data[i][1]);
-            //         // console.log(ass.getElementsByTagName("*"))
-            //     }
-            // });
 
             socket.on("message",function(msg){
-                // console.log(`${msg.comment}`)
                 try {
                     let removeComments = document.querySelector(".no-comments")
                     removeComments.parentNode.removeChild(removeComments)
                 } catch (error) {
                     console.error(error);
-                    // expected output: ReferenceError: nonExistentFunction is not defined
-                    // Note - error messages will vary depending on browser
                 }
                 
 
                 var postDiv = document.createElement("div");
                 postDiv.setAttribute("class","post-detail");
-                // postDiv.innerHTML = msg.comment;
                 postDiv.style.color = "white";
-
 
                 var postHeader = document.createElement("a");
                 postHeader.setAttribute("class","post-name");
                 postHeader.setAttribute("href",`/${msg.author}`);
-                // postDiv.setAttribute("id",`${msg.postID}`)
 
                 postHeader.innerHTML = `By ${msg.author} - ${msg.post_time}`;
                 postHeader.style.color = "white";
                 postDiv.appendChild(postHeader);
 
-
                 var post = document.createElement("p");
                 post.setAttribute("class","post-body")
-                // post.setAttribute("id",`${msg.postID}`)
                 post.innerHTML = `${msg.comment}`
                 postDiv.appendChild(post);
 
 
                 document.getElementById("comment-list").prepend(postDiv); 
                 document.getElementById('myComment').value = ''
-    
-            });
-
-            socket.on("makeComment", function(data) {
-                console.log(data)
             });
 
             function myFunction() {
@@ -276,33 +211,23 @@
 
             function changeLike(id) {
                 let button = document.getElementById(id).id
-
-                // console.log(button)
                 let splitButton = button.split(":");
-                // console.log(splitButton);
                 var likeStatus = splitButton[0];
                 var likeID = splitButton[1];
-                // console.log("-"+likeID)
 
                 if (likeStatus === "like") {
-                    // console.log("works")
                     document.getElementById(id).src = "/static/buttons/unlike.png";
                     socket.emit("changeLike",{user:username,status:likeStatus,id:likeID})
-                    // var likeStatus="unlike"
                     document.getElementById(id).id = `unlike:${likeID}`
-                    // console.log(button)
                 } else if (likeStatus === "unlike") {
                     document.getElementById(id).src = "/static/buttons/like.png";
                     socket.emit("changeLike",{user:username,status:likeStatus,id:likeID})
-                    // var likeStatus="like"
                     document.getElementById(id).id = `like:${likeID}`
-                    // console.log(button)
                 }
             }
 
             function retweet(id) {
                 let button = document.getElementById(`${id}`).id
-                // console.log(buttond)
                 let splitButton = button.split(":");
                 let postMessage = splitButton[1]
                 let socketType = "newComment"
@@ -314,14 +239,10 @@
                 let comment = document.getElementById("myComment").value
                 let commentID = document.querySelector(".post-body").id
                 let socketType = "newComment"
-                console.log(comment,commentID)
 
                 socket.emit("makeComment",{user:username,comment:comment,commentID:commentID,type:socketType})
-                // socket.emit("message",{message:comment})
-
             }
         </script>
     </main>
-
 </body>
 </html>

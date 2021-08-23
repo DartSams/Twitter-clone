@@ -7,12 +7,9 @@
     {% for i in data["profile_details"] %}
         <title>{{i[0]}} (@{{i[1]}})</title>
     {%endfor%}
-    <!-- <link rel="stylesheet" type= "text/css" href="\twitter clone\static\index.css"> -->
-    <link rel="stylesheet" href="{{url_for('static',filename='profile.css')}}">
+    <link rel="stylesheet" href="{{url_for('static',filename='stylesheets/profile.css')}}">
 </head>
-
 <body>
-
     <main>
         <div class="container">
             <div class="navbar">
@@ -22,9 +19,9 @@
                 <a href="" class="flex-item">About Us</a>
                 <a href="" class="flex-item">Contact</a>
                 {% if "username" in session %}
-                <a href="/{{session['username']}}" class="flex-item" id="active">{{session["username"]}}</a>
+                    <a href="/{{session['username']}}" class="flex-item" id="active">{{session["username"]}}</a>
                 {% elif "username" not in session %}
-                <a href="/login">Login</a>
+                    <a href="/login">Login</a>
                 {% endif %}
 
                 <hr>
@@ -37,19 +34,16 @@
                             {% for i in data["profile_details"] %}
                                 <img src='/static/preview_img/{{i[11]}}' alt="{{i[11]}}" id="profile-banner">
                                 <img src='/static/preview_img/{{i[12]}}' alt="{{i[12]}}" id="profile-img">
-
                                 <div>
                                     <form action="" method="POST">
                                         {% if session["username"] %}
                                             {% if data["username"] == session['username'] %}
-                                                <button name="Settings"><a ref="/profile/{{session['username']}}/settings" class="profile-edit">Edit Account</a></button>
+                                                <button name="Settings"><a class="profile-edit">Edit Account</a></button>
                                             {% else %}
                                                 {% if data["all ready followed"][0] == session["username"] %}
                                                     <button name="UnFollow" value="{{session['username']}}" ><a class="profile-edit">Already Following</a></button>
-
                                                 {% else %}
                                                     <button name="Follow" value="{{i[1]}}"><a class="profile-edit">Follow</a></button>
-
                                                 {%endif%}
                                             {%endif%}
                                         {% else %}
@@ -57,20 +51,17 @@
                                             <br>
                                             <br>
                                         {%endif%}
-                                        
                                     </form>
-
                                 </div>
+
                                 <div class="profile-description">
                                     <h3 style="color: white;">{{i[0]}}</h3>
                                     <p style="color: white;">@{{i[1]}}</p>
                                     <p style="color: white;">{{i[10]}}</p>
                                     <div class="follow" style="color: white;">
                                         <a href="/{{i[1]}}/followers">{{data["Amount of followers"]}} Followers |</a> 
-                                        
                                         <a href="/{{i[1]}}/following">| {{data["Following Amount"]}} Following</a>
                                     </div>
-                                    
                                 </div>
 
                                 <div class="profile-tabs">
@@ -82,31 +73,18 @@
                             {%endfor%}
                         </div>
                     {%endif%}
-                    
-                
                         {% if data["post"] %}
                         <div class="post-board">
                             
                             <div class="post">
                                 {%for i in data["post"] %}
-                                    <!-- {{session["username"]}} -->
-                                    <!-- <div style="color: blue;">Author:{{i[0]}}</div> -->
-                                    <!-- <div style="color: blue;">Post Date:{{i[1]}}</div> -->
-                                    <!-- <div style="color: blue;">Post Time:{{i[2]}}</div> -->
-                                    <!-- <div style="color: blue;">Post:{{i[3]}}</div> -->
-                                    <!-- <div style="color: blue;">Post File:{{i[4]}}</div> -->
-                                    <!-- <div style="color: blue;">Placeholder Date:{{i[5]}}</div> -->
-                                    <!-- <div style="color: blue;">Post ID:{{i[6]}}</div> -->
-
                                     <a href="/{{i[6]}}">
                                         <div>
                                             <div class="post-detail">
                                                 {% if i[1] == data["post date"] %}
                                                     <p class="post-name">By {{i[0]}} - {{i[2]}}</p>
-
                                                 {% else %}
                                                     <p class="post-name">By {{i[0]}} - {{i[5]}}</p>
-
                                                 {%endif%}
 
                                                 <p class="post-body">{{i[3]}}</p>
@@ -131,12 +109,10 @@
                                                             <img src="/static/preview_img/{{i[4]}}" alt="">
                                                         {%endif%}
                                                     {%endfor%}
-
                                                 {%endif%}
 
                                                 <div class="likes">
                                                     <br>
-                
                                                     <form action="" method="post" class="post-buttons">
                                                         <button id="4" name="Reply" class="Reply" value="{{i[6]}}"><img src="/static/buttons/reply1.png" alt="">Reply</button>  
                                                         <button id="4" name="Retweet" class="Retweet" value="{{i[6]}}"><img src="/static/buttons/retweet.png" alt="">Retweet</button> 
@@ -163,8 +139,6 @@
                             </div>
                         </div>
 
-
-
                     {% elif not data["post"] %}
                         <p style="color:white">
                             {% with messages = get_flashed_messages()%}
@@ -179,7 +153,6 @@
                         </p>
                     {%endif%}
                 </div>
-
             </div>
         </div>
     </main>
