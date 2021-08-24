@@ -521,8 +521,6 @@ def profile2(username,tab):
             "profile_details":profile_stuff,
             "Allowed Extensions":ALLOWED_EXTENSIONS,
             "post date":split_compare_date(post_date),
-            "like lst":like_lst,
-            "like id":like_lst_id,
             "Amount of followers":len(followers),
             "Following Amount":len(following),
             "all ready followed":all_ready_followed,
