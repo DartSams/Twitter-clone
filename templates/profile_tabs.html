@@ -43,6 +43,7 @@
 {% block replies %}
     <div class="post">
         {%for i in data["comments"] %}
+            {{i}}
             <div class="post-detail"> 
                 {% if i[1] == data["post date"] %}
                     <p class="post-name">By <a href="/{{i[0]}}">{{i[0]}}</a> - {{i[2]}}</p>
@@ -73,6 +74,18 @@
                         {%endif%}
                     {%endfor%}
                 {%endif%}
+                <div class="reply-to">
+                    <!-- <p>{{data["replied to"]}}</p> -->
+                    <!-- <p>{{data["comment id"]}}</p> -->
+                    <!-- {% for row in data["replied to"] %}
+                        {% if row == i[6] %}
+                            <p>{{data["comment id"]}}</p>
+                        {%endif%}
+                    {%endfor%} -->
+                    <!-- {% for i in data["replied to"] %}
+                        {{i}}
+                    {%endfor%} -->
+                </div>
             </div>
         {%endfor%}
     </div>

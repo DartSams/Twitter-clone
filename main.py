@@ -443,8 +443,10 @@ def profile2(username,tab):
     like_lst=[]
     like_lst_id=[]
     comment_lst=[]
+    comment_lst_id=[]
     followers=[]
     following=[]
+    replied_to=[]
     post_date=time.ctime()
     
     if request.method=="GET":    
@@ -471,7 +473,25 @@ def profile2(username,tab):
         #queries the db for all commets left by the requested user
         mycursor.execute("SELECT * FROM Comments WHERE author = %s",username)
         for j in mycursor:
+            # print(j[6])
             comment_lst.append(j)
+            # comment_lst_id.append(j[1])
+            if j[6] in comment_lst_id:
+                pass
+            else:
+                comment_lst_id.append(j[6])
+
+        print(comment_lst_id)
+        # for i in comment_lst_id:
+        #     if comment_lst_id.count(i) > 1:
+        #         comment_lst_id.remove(i)
+
+        for id in comment_lst_id:
+            print("start here")
+            mycursor.execute("SELECT * FROM Post_Table WHERE postID = %s AND author = %s",(id,username))
+            for row in mycursor:
+                print(row)
+                replied_to.append(row)
 
         #returns the list of all users the requested user follows
         mycursor.execute("SELECT * FROM Follow WHERE follower = %s ",username)
@@ -512,9 +532,11 @@ def profile2(username,tab):
             "Following Amount":len(following),
             "all ready followed":all_ready_followed,
             "comments":comment_lst[::-1],
+            "comment id":comment_lst_id,
             "followers":followers,
             "following":following,
-            "tab":tab
+            "tab":tab,
+            "replied to":replied_to
         }
 
         return render_template("profile_tabs.html",data=data,username=username,profile_stuff=data["profile_details"])
