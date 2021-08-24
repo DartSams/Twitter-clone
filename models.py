@@ -19,10 +19,10 @@ mycursor=db.cursor(buffered=True)
 def create_db(table_name):
     # mycursor.execute(f"CREATE TABLE {table_name} (name VARCHAR(100),username VARCHAR(100),password VARCHAR(100), email VARCHAR(100),privilege VARCHAR(100),gender VARCHAR(100),age INT,birthday VARCHAR(100),join_date VARCHAR(100), personID INT PRIMARY KEY AUTO_INCREMENT)")
     # mycursor.execute(f"CREATE TABLE {table_name} (author VARCHAR(100),post_date VARCHAR(100),post_time VARCHAR(100),post VARCHAR(100),post_file VARCHAR(100),placeholder_date VARCHAR(100),postID INT PRIMARY KEY AUTO_INCREMENT)")
-    # mycursor.execute(f"CREATE TABLE {table_name} (author VARCHAR(100),post_date VARCHAR(100),post_time VARCHAR(100),comment VARCHAR(100),post_file VARCHAR(100),placeholder_date VARCHAR(100),commentID INT)")
+    mycursor.execute(f"CREATE TABLE {table_name} (author VARCHAR(100),post_date VARCHAR(100),post_time VARCHAR(100),comment VARCHAR(100),post_file VARCHAR(100),placeholder_date VARCHAR(100),commentID INT)")
     # mycursor.execute(f"CREATE TABLE {table_name} (name VARCHAR(100),id INT(100))")
     # mycursor.execute(f"CREATE TABLE {table_name} (name VARCHAR(100),follower VARCHAR(100))")
-    mycursor.execute(f"CREATE TABLE {table_name} (reported_by VARCHAR(100),postID INT(100))")
+    # mycursor.execute(f"CREATE TABLE {table_name} (reported_by VARCHAR(100),postID INT(100))")
 
 # create_db('Twitter_Users')
 # create_db('Post_Table')
@@ -44,7 +44,7 @@ def show_entries(table_name):
     print(all_users)
 
 # show_entries('Twitter_Users')
-show_entries("Repost_Post")
+# show_entries("Repost_Post")
 
 def delete_user(data):
     # mycursor.execute(f"DELETE FROM Flask_Login WHERE username='{data}'")
@@ -69,6 +69,7 @@ def delete_db(table):
 # delete_db('Twitter_Users')
 # delete_db('Post_Table')
 # delete_db("Followers")
+# delete_db("Comments")
 
 
 def add_column(table,column):

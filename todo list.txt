@@ -1,5 +1,1 @@
 when  user creates account also create folder to hold their images
-
-make a report button
-
-under profile replies tab show the post the reply is attached to

@@ -122,12 +122,13 @@ def split_current_date(current_post_date):
 
 #compares the original date and the current post dates and returns how long ago it was posted Ex. 2 months ago
 def get_time_ago(date1):
+    # print(date1)
     full_date="Tue Jul 1 12:11:51 2021"
     current_post_date=time.ctime()
-    # compare_date=split_compare_date(date1)
     compare_date=date1.split(" ")
+    # print(compare_date)
     current_post_date=split_current_date(current_post_date)
-
+    # print(current_post_date)
 
     if compare_date[2] == current_post_date[2]:
         # print("Same year") 
@@ -161,7 +162,7 @@ def get_time_ago(date1):
 
 #if the current day differers from the post date in the db then this will change using data from the get_time_ago function
 def change_dates(table_name,date_lst):
-    mycursor.execute(f"SELECT * from Post_Table")
+    mycursor.execute(f"SELECT * from {table_name}")
     for i in mycursor:
         # print(i)
         author=i[0]
@@ -175,8 +176,9 @@ def change_dates(table_name,date_lst):
         # print(date,post_time)
 
     for date in date_lst:
-        mycursor.execute(f"UPDATE Post_Table SET placeholder_date = %s WHERE post_date = %s" ,(get_time_ago(date),date))
+        mycursor.execute(f"UPDATE {table_name} SET placeholder_date = %s WHERE post_date = %s" ,(get_time_ago(date),date))
         conn.commit()
+    date_lst.clear()
     return True
 
 #checks if a file is in the allowed list
@@ -447,24 +449,24 @@ def profile2(username,tab):
     followers=[]
     following=[]
     replied_to=[]
+    date_lst=[]
     post_date=time.ctime()
+    change_dates("Comments",date_lst) #updating the dates in the db for all comments
+
     
     if request.method=="GET":    
         #queries the db and finds the entry with username from the route
         mycursor.execute(f"SELECT * FROM Twitter_Users WHERE username = %s",username)
         for i in mycursor:
-            # print(i)
             profile_stuff.append(i)
 
         #query the db for all entries with the requested username and puts nameand postID into like lst
         mycursor.execute(f'SELECT * FROM Likes WHERE name = %s',username)
         for post in mycursor:
-            # print(post)
             like_lst.append(post) 
 
         #indexes the items in the like lst for the 2nd element for postID then queries the db for all post with that postID then puts them in another list called 'user_post'
         for id in like_lst:
-            # print(i)
             post_id=id[1]
             mycursor.execute("SELECT * FROM Post_Table WHERE postID=%s",post_id)
             for j in mycursor:
@@ -473,24 +475,17 @@ def profile2(username,tab):
         #queries the db for all commets left by the requested user
         mycursor.execute("SELECT * FROM Comments WHERE author = %s",username)
         for j in mycursor:
-            # print(j[6])
             comment_lst.append(j)
-            # comment_lst_id.append(j[1])
+            #if user has commented on a post more than once this is to stop duplicates and split them up
             if j[6] in comment_lst_id:
                 pass
             else:
                 comment_lst_id.append(j[6])
 
-        print(comment_lst_id)
-        # for i in comment_lst_id:
-        #     if comment_lst_id.count(i) > 1:
-        #         comment_lst_id.remove(i)
-
+        #to display what post the logged in user has replied to first i linked the comment to that post using their 'postID' and put them in a new list
         for id in comment_lst_id:
-            print("start here")
-            mycursor.execute("SELECT * FROM Post_Table WHERE postID = %s AND author = %s",(id,username))
+            mycursor.execute("SELECT * FROM Post_Table WHERE postID = %s",(id))
             for row in mycursor:
-                print(row)
                 replied_to.append(row)
 
         #returns the list of all users the requested user follows

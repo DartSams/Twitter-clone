@@ -43,13 +43,18 @@
 {% block replies %}
     <div class="post">
         {%for i in data["comments"] %}
-            {{i}}
             <div class="post-detail"> 
                 {% if i[1] == data["post date"] %}
                     <p class="post-name">By <a href="/{{i[0]}}">{{i[0]}}</a> - {{i[2]}}</p>
                 {% else %}
                     <p class="post-name">By <a href="/{{i[0]}}">{{i[0]}}</a> - {{i[5]}}</p>
                 {%endif%}
+
+                {% for s in data["replied to"] %}
+                    {% if i[6] == s[6] %}
+                        <p style="color: gray;">Replied to {{s[0]}}</p>
+                    {%endif%}
+                {%endfor%}
 
                 <p class="post-body">{{i[3].capitalize()}}</p>
                 
@@ -75,20 +80,50 @@
                     {%endfor%}
                 {%endif%}
                 <div class="reply-to">
-                    <!-- <p>{{data["replied to"]}}</p> -->
-                    <!-- <p>{{data["comment id"]}}</p> -->
-                    <!-- {% for row in data["replied to"] %}
-                        {% if row == i[6] %}
-                            <p>{{data["comment id"]}}</p>
+                    {% for m in data["replied to"] %}
+                        {% if i[6] == m[6] %}
+                            <!-- <p>{{m}}</p> -->
+                            <a href="/{{m[6]}}">
+                                {% if m[1] == data["post date"] %}
+                                    <p class="post-name">By {{m[0]}} - {{m[2]}}</p>
+
+                                {% else %}
+                                    <p class="post-name">By {{m[0]}} - {{m[5]}}</p>
+                                {%endif%}
+
+                                {% if m[3] != None%}
+                                    <p class="post-body" id="{{i[6]}}">{{m[3]}}</p>
+                                {%endif%}
+                                
+                                {% if m[4] != None %}
+                                    {% if 'mp4' == m[4].split(".")[1] %}
+                                        <video controls width="320" height="240">
+                                            <source src="/static/preview_img/{{m[4].split('.')[0]}}.{{m[4].split('.')[1]}}" type="video/{{m[4].split('.')[1]}}">
+                                        Your browser does not support the audio element.
+                                        </video>
+
+                                    {%elif 'mp3' == m[4].split(".")[1]%}
+                                        <audio controls width="320" height="240">
+                                            <source src="/static/preview_img/{{m[4].split('.')[0]}}.{{m[4].split('.')[1]}}" type="audio/{{m[4].split('.')[1]}}">
+                                        Your browser does not support the audio element.
+                                        </audio>
+
+                                    {%endif%}
+
+                                    {% for pic_type in data["Allowed Extensions"]%}
+                                        {% if pic_type == m[4].split(".")[1] %}
+                                            <img src="/static/preview_img/{{m[4]}}" alt="">
+                                        {%endif%}
+                                    {%endfor%}
+                                {%endif%}
+                            </a>
                         {%endif%}
-                    {%endfor%} -->
-                    <!-- {% for i in data["replied to"] %}
-                        {{i}}
-                    {%endfor%} -->
+                    {%endfor%}
                 </div>
             </div>
         {%endfor%}
     </div>
+    <h2 style="color: white;">Replies</h2>
 {% endblock%}
 
 {% block post_buttons %}
