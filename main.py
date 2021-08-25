@@ -203,6 +203,7 @@ def change_dates(table_name, date_lst):
         )
         conn.commit()
     date_lst.clear()
+    conn.close()
     return True
 
 
