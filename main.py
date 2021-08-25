@@ -239,6 +239,7 @@ def index():
         mycursor.execute(f"SELECT * FROM Post_Table")
         for post_data in mycursor:
             lst.append(post_data)
+        conn.close()
 
         # if signed in this will return all  currently liked post
         if "username" in session:
