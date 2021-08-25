@@ -7,19 +7,19 @@ import time
 load_dotenv()
 
 db=mysql.connector.connect(
-    host="localhost",
-    user="root",
-    passwd=os.getenv('password'),
-    database="testdatabase"
+    host="us-cdbr-east-04.cleardb.com",
+    user="bcc2ec4fcecbe5",
+    passwd="cfb6b512",
+    database="heroku_d10e4ce632a9633"
     )
 
 mycursor=db.cursor(buffered=True)
 
 
 def create_db(table_name):
-    # mycursor.execute(f"CREATE TABLE {table_name} (name VARCHAR(100),username VARCHAR(100),password VARCHAR(100), email VARCHAR(100),privilege VARCHAR(100),gender VARCHAR(100),age INT,birthday VARCHAR(100),join_date VARCHAR(100), personID INT PRIMARY KEY AUTO_INCREMENT)")
+    mycursor.execute(f"CREATE TABLE {table_name} (name VARCHAR(100),username VARCHAR(100),password VARCHAR(100), email VARCHAR(100),privilege VARCHAR(100),gender VARCHAR(100),age INT,birthday VARCHAR(100),join_date VARCHAR(100), personID INT PRIMARY KEY AUTO_INCREMENT,profile_description VARCHAR(100),profile_banner VARCHAR(100),profile_img VARCHAR(100))")
     # mycursor.execute(f"CREATE TABLE {table_name} (author VARCHAR(100),post_date VARCHAR(100),post_time VARCHAR(100),post VARCHAR(100),post_file VARCHAR(100),placeholder_date VARCHAR(100),postID INT PRIMARY KEY AUTO_INCREMENT)")
-    mycursor.execute(f"CREATE TABLE {table_name} (author VARCHAR(100),post_date VARCHAR(100),post_time VARCHAR(100),comment VARCHAR(100),post_file VARCHAR(100),placeholder_date VARCHAR(100),commentID INT)")
+    # mycursor.execute(f"CREATE TABLE {table_name} (author VARCHAR(100),post_date VARCHAR(100),post_time VARCHAR(100),comment VARCHAR(100),post_file VARCHAR(100),placeholder_date VARCHAR(100),commentID INT)")
     # mycursor.execute(f"CREATE TABLE {table_name} (name VARCHAR(100),id INT(100))")
     # mycursor.execute(f"CREATE TABLE {table_name} (name VARCHAR(100),follower VARCHAR(100))")
     # mycursor.execute(f"CREATE TABLE {table_name} (reported_by VARCHAR(100),postID INT(100))")
