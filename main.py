@@ -37,14 +37,14 @@ bcrypt = Bcrypt(app)  ##to encrypt passwd https://flask-bcrypt.readthedocs.io/en
 app.config["SECRET_KEY"] = "hello"  # use session to save personal data to so user doesnt have to log in over and over
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 
-mysql = MySQL()  # to connect flask to mysql
-app.config["MYSQL_DATABASE_HOST"] = "us-cdbr-east-04.cleardb.com"
-app.config["MYSQL_DATABASE_USER"] = "bcc2ec4fcecbe5"
-app.config["MYSQL_DATABASE_PASSWORD"] = os.getenv("password")
-app.config["MYSQL_DATABASE_DB"] = "heroku_d10e4ce632a9633"
-mysql.init_app(app)  # init the flask  to mysql connection
-conn = mysql.connect()
-mycursor = conn.cursor()
+# mysql = MySQL()  # to connect flask to mysql
+# app.config["MYSQL_DATABASE_HOST"] = "us-cdbr-east-04.cleardb.com"
+# app.config["MYSQL_DATABASE_USER"] = "bcc2ec4fcecbe5"
+# app.config["MYSQL_DATABASE_PASSWORD"] = os.getenv("password")
+# app.config["MYSQL_DATABASE_DB"] = "heroku_d10e4ce632a9633"
+# mysql.init_app(app)  # init the flask  to mysql connection
+# conn = mysql.connect()
+# mycursor = conn.cursor()
 
 socketio = SocketIO(app)  # init the socket connection
 
