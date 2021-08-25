@@ -202,8 +202,10 @@ def change_dates(table_name, date_lst):
             (get_time_ago(date), date),
         )
         conn.commit()
+        conn.close()
+
     date_lst.clear()
-    conn.close()
+    # conn.close()
     return True
 
 
@@ -243,6 +245,7 @@ def index():
             mycursor.execute(
                 f"SELECT * FROM Likes WHERE name = %s", session["username"]
             )
+            conn.close()
             for i in mycursor:
                 like_lst.append(i)
 
@@ -300,6 +303,7 @@ def index():
                     ),
                 )
                 conn.commit()
+                conn.close()
                 return redirect("/")
 
             elif "file" not in request.files:
@@ -315,6 +319,7 @@ def index():
                 ),
             )
             conn.commit()
+            conn.close()
             return redirect("/")
 
 
