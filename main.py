@@ -13,7 +13,7 @@ from flask_socketio import (
     send,
     join_room,
     leave_room,
-)  # replaces post request
+)  # replaces post requests
 
 load_dotenv()
 
