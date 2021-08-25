@@ -1,49 +1,47 @@
-@media screen and (min-width:900px) {
-    .navbar a:hover{
-        border-radius: 5px;
-        border: 2px solid white;
-    }
+.navbar a:hover{
+    border-radius: 5px;
+    border: 2px solid white;
+}
 
-    .title{
-        margin-left:40%;
-    }
+.title{
+    margin-left:40%;
+}
 
-    body{
-        background-color: rgb(36,51,61);
-    }
+body{
+    background-color: rgb(36,51,61);
+}
 
-    form input,button a{
-        width: 100%;
-        color:black;
-        text-decoration: none;
-    }
+form input,button a{
+    width: 100%;
+    color:black;
+    text-decoration: none;
+}
 
-    h2,h3,h5,p{
-        color:white;
-    }
+h2,h3,h5,p{
+    color:white;
+}
 
-    .container{
-        display:flex;
-        flex-direction: row;
-        margin-top: 5%;
-    }
+.container{
+    display:flex;
+    flex-direction: row;
+    margin-top: 5%;
+}
 
-    .container .navbar a{
-        display: flex;
-        flex-direction: column;
-        text-decoration: none;
-        color: white;
-        font-size: 25px;
-        margin-bottom: 25%;
-    }
+.container .navbar a{
+    display: flex;
+    flex-direction: column;
+    text-decoration: none;
+    color: white;
+    font-size: 25px;
+    margin-bottom: 25%;
+}
 
-    .login_create {
-        display: flex;
-        flex-direction: row;
-        margin-left: 20%;
-    }
+.login_create {
+    display: flex;
+    flex-direction: row;
+    margin-left: 20%;
+}
 
-    .try{
-        margin-right: 100px;
-    }
+.try{
+    margin-right: 100px;
 }

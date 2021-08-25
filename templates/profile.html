@@ -13,21 +13,14 @@
     <main>
         <div class="container">
             <div class="navbar">
-                <a href="/" class="flex-item">Website Name</a>
                 <a href="/" class="flex-item">Home</a>
-                <a href="/" class="flex-item">Shop</a>
-                <a href="" class="flex-item">About Us</a>
-                <a href="" class="flex-item">Contact</a>
                 {% if "username" in session %}
                     <a href="/{{session['username']}}" class="flex-item" id="active">{{session["username"]}}</a>
                 {% elif "username" not in session %}
                     <a href="/login">Login</a>
                 {% endif %}
-
-                <hr>
-                <a href="/switch/dartsams" class="flex-item">Switch to dartsams</a>
-                <a href="/switch/michael" class="flex-item">Switch to michael</a>
             </div>
+            
                 <div class="container-middle">
                     {% if data["profile_details"] %}
                         <div class="container-middle-top">
@@ -67,7 +60,6 @@
                                 <div class="profile-tabs">
                                     <a href="/{{i[1]}}" class="active">All Post</a>
                                     <a href="/{{i[1]}}/Replies">Replies</a>
-                                    <a href="/">Media</a>
                                     <a href="/{{i[1]}}/Likes">Likes</a>
                                 </div>
                             {%endfor%}

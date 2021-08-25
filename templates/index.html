@@ -19,25 +19,14 @@
 
         <div class="container">
             <div class="navbar" >
-                <a href="/" class="flex-item"><span>Website Name</span></a>
                 <a href="/" class="flex-item" id="active"><span>Home</span></a>
-                <a href="/" class="flex-item">Shop</a>
-                <a href="" class="flex-item">About Us</a>
-                <a href="" class="flex-item">Contact</a>
                 {% if "username" in session %}
                     <a href="/{{session['username']}}" class="flex-item">{{session["username"]}}</a>
                 {% elif "username" not in session %}
                     <a href="/login" class="flex-item">Login</a>
                 {% endif %}
-
-                <hr>
-                <a href="/switch/dartsams" class="flex-item">to dartsams</a>
-                <a href="/switch/michael" class="flex-item">to michael</a>
-
             </div>
                 
-            
-
             <div class="all-post">
                 {% if "username" in session%}
 
@@ -50,7 +39,7 @@
                             </div>
                         </div>
                     </form>
-                    <button onclick="myFunction()" style="width: 500px;color:black">Post</button>
+                    <button onclick="myFunction()" style="color:black;width:500px" id="socket-post">Post</button>
                 {%endif%}
 
                 <div class="post-board">
@@ -93,7 +82,7 @@
                                 {%endif%}
                             </a> 
 
-                            <div class="likes">
+                            <div class="likes" style="display: none;">
                                 <a name="Reply" class="Reply" value="{{i[6]}}" href="/{{i[6]}}"><img src="/static/buttons/reply1.png" alt="">Reply</a>  
                                 <button name="Retweet" class="Retweet" value="{{i[6]}}"><img src="/static/buttons/retweet.png" alt="" onclick="retweet(id)" id="post:{{i[3]}}">Retweet</button> 
                                 {% if data["like lst"] %}

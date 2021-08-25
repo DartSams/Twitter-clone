@@ -1,149 +1,147 @@
-/* responsive for any screen wider than 900px generally laptops */
-@media screen and (min-width:900px) {
-    #active{
-        color:rgb(29, 161, 242);
-    }
 
-    #active:hover{
-        color:white
-    }
+#active{
+    color:rgb(29, 161, 242);
+}
 
-    .container{
-        display:flex;
-        flex-direction: row;
-        justify-content: space-around;
-        color:white
-    }
+#active:hover{
+    color:white
+}
 
-    .container .navbar{
-        position: fixed;
-        left:0;
-    }
+.container{
+    display:flex;
+    flex-direction: row;
+    justify-content: space-around;
+    color:white
+}
 
-    .container .navbar a{
-        display: flex;
-        flex-direction: column;
-        text-decoration: none;
-        color: white;
-        font-size: 25px;
-        margin-bottom: 10%;
-        padding: 10px;
-    }
+.container .navbar{
+    position: fixed;
+    left:0;
+    bottom:0;
+}
 
-    .navbar .flex-item:hover{
-        background-color: rgb(29, 161, 242);
-        border-radius: 30px;
-        padding: 10px;
-        display: inline-flex;
-    }
+.container .navbar a{
+    display: flex;
+    flex-direction: column;
+    text-decoration: none;
+    color: white;
+    font-size: 25px;
+    margin-bottom: 10%;
+    padding: 10px;
+}
 
-    .to-profile{
-        display: flex;
-        flex-direction: row;
-    }
+.navbar .flex-item:hover{
+    background-color: rgb(29, 161, 242);
+    border-radius: 30px;
+    padding: 10px;
+    display: inline-flex;
+}
 
-    .flex-item{
-        display: flex;
-        flex-direction: row;
-    }
+.to-profile{
+    display: flex;
+    flex-direction: row;
+}
 
-    body{
-        background-color: black;
-    }
+.flex-item{
+    display: flex;
+    flex-direction: row;
+}
 
-    a{
-        text-decoration: none;
-    }
+body{
+    background-color: black;
+}
 
-    .search-bar{
-        color: white;
-        display: flex;
-        justify-content: center;
-        flex-direction: row;
-    }
+a{
+    text-decoration: none;
+}
 
-    .search-bar input{
-        width:500px;
-    }
+.search-bar{
+    color: white;
+    display: flex;
+    justify-content: center;
+    flex-direction: row;
+}
 
-    .search-bar button img{
-        width:30px;
-        cursor: pointer;
-    }
+.search-bar input{
+    width:500px;
+}
 
-    .all-post{
-        width:500px;
-        border-style: solid;
-        border-color: white;
-        padding: 20px;
-        margin-bottom: 10px;
-    }
+.search-bar button img{
+    width:30px;
+    cursor: pointer;
+}
 
-    .create-post textarea {
-        width:500px;
-        display: flex;
-        flex-direction: row;
-        justify-content: space-between;
-    }
+.all-post{
+    width:500px;
+    border-style: solid;
+    border-color: white;
+    padding: 20px;
+    margin-bottom: 10px;
+}
 
-    form {
-        display: flex;
-        flex-direction: column;
-        margin-bottom: 10px;
+.create-post textarea {
+    width:500px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
 
-    }
+form {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 10px;
+}
 
-    .form-buttons{
-        display: flex;
-        flex-direction: row;
-        justify-content: space-between;
-    }
+.form-buttons{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
 
-    .form-buttons button,.form-buttons input {
-        color:black
-    }
+.form-buttons button,.form-buttons input {
+    color:black
+}
 
-    .form-buttons input {
-        color:white
-    }
+.form-buttons input {
+    color:white
+}
 
-    button,button a{
-        text-decoration: none;
-    }
+button,button a{
+    text-decoration: none;
+}
 
-    form input,button a{
-        color:black;
-        text-decoration: none;
-    }
+form input,button a{
+    color:black;
+    text-decoration: none;
+}
 
-    .post-board{
-        display: flex;
-        flex-direction: column-reverse;
-    }
+.post-board{
+    display: flex;
+    flex-direction: column-reverse;
+}
 
-    .post-board p{
-        color: white;
-        text-decoration: none;
-    }
+.post-board p{
+    color: white;
+    text-decoration: none;
+}
 
-    .post-detail{
-        border-style: solid;
-        border-color: white;
-        padding: 20px;
-        margin-bottom: 10px;
-    }
+.post-detail{
+    border-style: solid;
+    border-color: white;
+    padding: 20px;
+    margin-bottom: 10px;
+}
 
-    .likes{
-        display:flex;
-        flex-direction: row;
-        justify-content: space-between;
-    }
+.likes{
+    display:flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
 
-    .likes button,.likes a,.likes button img,.likes a img,.likes button{
-        width:30px;
-        border: none;
-        background: none;
-        cursor: pointer;
-        color:white
-    }
+.likes button,.likes a,.likes button img,.likes a img,.likes button{
+    width:30px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    color:white
 }

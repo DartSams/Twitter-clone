@@ -1,39 +1,37 @@
-@media screen and (min-width:900px) {
-    body{
-        background-color: black;
-    }
+body{
+    background-color: black;
+}
 
-    h2{
-        color:white
-    }
+h2{
+    color:white
+}
 
-    .setting-form{
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        margin-top: 7%;
-    }
+.setting-form{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-top: 7%;
+}
 
-    form{
-        display: flex;
-        flex-direction: column;
-        border-style: solid;
-        border-color: white;
-        padding: 20px;
-        width: 500px;
-    }
+form{
+    display: flex;
+    flex-direction: column;
+    border-style: solid;
+    border-color: white;
+    padding: 20px;
+    width: 500px;
+}
 
 
-    form .each{
-        display: flex;
-        flex-direction: row;
-        justify-content: space-between;
-        color:white;
-        margin-bottom: 10px;
-    }
+form .each{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    color:white;
+    margin-bottom: 10px;
+}
 
-    form .submit{
-        width:100px;
-    }
+form .submit{
+    width:100px;
 }
