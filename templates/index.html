@@ -45,6 +45,8 @@
                 <div class="post-board">
                     <div class="post" id="post">
                         {%for i in data["all post"] %}
+                            {{i}}
+                            {{data["time"]}}
                             <a href="/{{i[6]}}" >
                             <div class="post-detail">
                                 {% if i[1] == data["post date"] %}
