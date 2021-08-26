@@ -358,15 +358,16 @@ def login():
             # compares all matching usernames and checks the password stored in the db to the requested password entered
             for i in result:
                 passwd_check = bcrypt.check_password_hash(i[2], password)
-            mycursor.close()
 
             # if username and password are found in db then sets the session id to the requested username and logins the user in then redirects to home page
             if passwd_check == True:
                 session["username"] = username
+                mycursor.close()
                 return redirect(f"/")
 
             # if requested password doesnt match and password in db then flashes message and reloads the page
             elif passwd_check == False:
+                mycursor.close()
                 flash("No password found")
                 return redirect("/login")
 
