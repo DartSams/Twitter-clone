@@ -80,6 +80,7 @@ def calculate_post_time(post_date):
         split_date.remove("")
     split_hours = split_date[3].split(":")
     current_hour = int(split_hours[0])
+    current_hour-=4
     # print(current_hour)
     if current_hour > 12:
         finished_post_time = current_hour - 12
