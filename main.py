@@ -19,7 +19,7 @@ from flask_socketio import (
 load_dotenv()
 
 
-DIRNAME = os.path.dirname(__file__) + "\static\preview_img"
+DIRNAME = os.path.dirname(__file__) + "/static/preview_img"
 # print(dirname)
 UPLOAD_FOLDER = DIRNAME
 ALLOWED_EXTENSIONS = [
