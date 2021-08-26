@@ -252,9 +252,9 @@ def index():
             mycursor.execute(
                 f"SELECT * FROM Likes WHERE name = %s", session["username"]
             )
-            mycursor.close()
             for i in mycursor:
                 like_lst.append(i)
+            mycursor.close()
 
             for i in like_lst:
                 like_lst_id.append(i[1])
