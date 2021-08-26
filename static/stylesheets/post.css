@@ -76,8 +76,12 @@ form {
 textarea{
     resize: none;
     background-color: black;
-    border:none;
+    border:solid 3px #ccc; 
     color:white;
+}
+
+textarea:active {
+    border:none
 }
 
 .form-buttons{

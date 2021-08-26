@@ -45,8 +45,6 @@
                 <div class="post-board">
                     <div class="post" id="post">
                         {%for i in data["all post"] %}
-                            {{i}}
-                            {{data["time"]}}
                             <a href="/{{i[6]}}" >
                             <div class="post-detail">
                                 {% if i[1] == data["post date"] %}
@@ -116,6 +114,10 @@
                 var username = "{{session['username']}}"
 
                 socket.on("message",function(msg){
+                    var toPost = document.createElement("a");
+                    toPost.setAttribute("href",`/${msg.postID}`)
+
+
                     var postDiv = document.createElement("div");
                     postDiv.setAttribute("class","post-detail");
                     postDiv.style.color = "white";
@@ -161,16 +163,17 @@
                     like.appendChild(likeImage)
                     postButtons.appendChild(like)
 
-                    var share = document.createElement("button");
-                    var shareImage = document.createElement("img");
-                    shareImage.setAttribute("src","/static/buttons/black heart.png")
-                    share.appendChild(shareImage)
-                    postButtons.appendChild(share)
+                    var report = document.createElement("button");
+                    var reportImage = document.createElement("img");
+                    reportImage.setAttribute("src","/static/buttons/flag-icon.png")
+                    report.appendChild(reportImage)
+                    postButtons.appendChild(report)
 
                     postButtonDiv.appendChild(postButtons)
                     postDiv.appendChild(postButtonDiv);
+                    toPost.appendChild(postDiv)
 
-                    document.getElementById("post").prepend(postDiv); 
+                    document.getElementById("post").prepend(toPost); 
                     document.getElementById('myPost').value = ''
                 });
 

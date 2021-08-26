@@ -39,16 +39,16 @@ app.config["SECRET_KEY"] = "hello"  # use session to save personal data to so us
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 
 mysql = MySQL()  # to connect flask to mysql
-app.config["MYSQL_DATABASE_HOST"] = "us-cdbr-east-04.cleardb.com"
-app.config["MYSQL_DATABASE_USER"] = "bcc2ec4fcecbe5"
-app.config["MYSQL_DATABASE_PASSWORD"] = os.environ.get("password")
-app.config["MYSQL_DATABASE_DB"] = "heroku_d10e4ce632a9633"
+# app.config["MYSQL_DATABASE_HOST"] = "us-cdbr-east-04.cleardb.com"
+# app.config["MYSQL_DATABASE_USER"] = "bcc2ec4fcecbe5"
+# app.config["MYSQL_DATABASE_PASSWORD"] = os.environ.get("password")
+# app.config["MYSQL_DATABASE_DB"] = "heroku_d10e4ce632a9633"
 
-# app.config["MYSQL_DATABASE_HOST"] = "localhost"
-# app.config["MYSQL_DATABASE_USER"] = "root"
-# # app.config["MYSQL_DATABASE_PASSWORD"] = os.environ.get("password")
-# app.config["MYSQL_DATABASE_PASSWORD"] = "Dartagnan19@"
-# app.config["MYSQL_DATABASE_DB"] = "testdatabase"
+app.config["MYSQL_DATABASE_HOST"] = "localhost"
+app.config["MYSQL_DATABASE_USER"] = "root"
+# app.config["MYSQL_DATABASE_PASSWORD"] = os.environ.get("password")
+app.config["MYSQL_DATABASE_PASSWORD"] = "Dartagnan19@"
+app.config["MYSQL_DATABASE_DB"] = "testdatabase"
 mysql.init_app(app)  # init the flask  to mysql connection
 # conn = mysql.connect()
 # mycursor = conn.cursor()
@@ -908,6 +908,46 @@ def post(post_id):
         elif not like_lst:
             # return render_template("post.html",user_post=user_post,ALLOWED_EXTENSIONS=ALLOWED_EXTENSIONS,post_date=split_compare_date(post_date),comments=comments[::-1])
             return render_template("post.html", data=data)
+    
+    elif request.method=="POST":
+        comment=request.form.get("comment-field")
+        comment=comment.capitalize()
+        print(request.form)
+        print(request.files)
+        if 'file' in request.files:
+
+            file = request.files['file']
+            # print(file)
+
+            if file and allowed_file(file.filename):
+                filename = secure_filename(file.filename)
+                file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+
+                try:
+                    im = Image.open(fr"{DIRNAME}\{filename}")
+                    newsize = (100,100)
+                    im1 = im.resize(newsize)
+                    im1.save(fr"{DIRNAME}\{filename}")
+
+                except:
+                    pass
+
+                conn = mysql.connect()
+                mycursor = conn.cursor()
+                mycursor.execute("INSERT INTO Comments (author,post_date,post_time,comment,post_file,commentID) VALUES (%s,%s,%s,%s,%s,%s)", (session["username"],split_compare_date(post_date),calculate_post_time(post_date),comment,filename,post_id))
+                conn.commit()
+                mycursor.close()
+                return redirect(f"/{post_id}")
+
+            elif "file" not in request.files :
+                return redirect(f"/{post_id}")
+
+            conn = mysql.connect()
+            mycursor = conn.cursor()
+            mycursor.execute("INSERT INTO Comments (author,post_date,post_time,comment,commentID) VALUES (%s,%s,%s,%s,%s)", (session["username"],split_compare_date(post_date),calculate_post_time(post_date),comment,post_id))
+            conn.commit()
+            mycursor.close()
+            return redirect(f"/{post_id}")
 
 
 # quick way for admins to switch users to test bugs/ideas like testing if the 
@@ -1147,13 +1187,8 @@ def handle_message(post):
         mycursor = conn.cursor()
         mycursor.execute("SELECT * FROM Post_Table WHERE post = %s", (post["message"]))
         current_post = mycursor.fetchall()
-        mycursor.close()
 
-        conn = mysql.connect()
-        mycursor = conn.cursor()
-        row_headers = [
-            x[0] for x in mycursor.description
-        ]  # this will extract row headers
+        row_headers = [x[0] for x in mycursor.description]  # this will extract row headers
         mycursor.close()
         post = dict(zip(row_headers, current_post[-1]))
 
@@ -1216,10 +1251,7 @@ def comment(data):
     mycursor = conn.cursor()
     mycursor.execute("SELECT * FROM Comments WHERE comment = %s", (data["comment"]))
     current_post = mycursor.fetchall()
-    mycursor.close()
 
-    conn = mysql.connect()
-    mycursor = conn.cursor()
     row_headers = [x[0] for x in mycursor.description]  # this will extract row headers
     mycursor.close()
     data = dict(
