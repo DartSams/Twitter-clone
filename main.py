@@ -43,6 +43,12 @@ app.config["MYSQL_DATABASE_HOST"] = "us-cdbr-east-04.cleardb.com"
 app.config["MYSQL_DATABASE_USER"] = "bcc2ec4fcecbe5"
 app.config["MYSQL_DATABASE_PASSWORD"] = os.environ.get("password")
 app.config["MYSQL_DATABASE_DB"] = "heroku_d10e4ce632a9633"
+
+# app.config["MYSQL_DATABASE_HOST"] = "localhost"
+# app.config["MYSQL_DATABASE_USER"] = "root"
+# # app.config["MYSQL_DATABASE_PASSWORD"] = os.environ.get("password")
+# app.config["MYSQL_DATABASE_PASSWORD"] = "Dartagnan19@"
+# app.config["MYSQL_DATABASE_DB"] = "testdatabase"
 mysql.init_app(app)  # init the flask  to mysql connection
 # conn = mysql.connect()
 # mycursor = conn.cursor()
@@ -70,7 +76,7 @@ def calculate_post_time(post_date):
     post_date = time.ctime()
 
     split_date = post_date.split(" ")
-    if ("" in split_date):  # this is for single digit days like 5,6,7 are different than 10,12,13
+    if "" in split_date:  # this is for single digit days like 5,6,7 are different than 10,12,13
         split_date.remove("")
     split_hours = split_date[3].split(":")
     current_hour = int(split_hours[0])
