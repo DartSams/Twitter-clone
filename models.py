@@ -44,6 +44,7 @@ def show_entries(table_name):
     print(all_users)
 
 # show_entries('Twitter_Users')
+# show_entries('Post_Table')
 # show_entries("Repost_Post")
 
 def delete_user(data):
@@ -91,4 +92,3 @@ def join_tables():
         print(i)
 
 # join_tables()
-

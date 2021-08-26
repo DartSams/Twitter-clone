@@ -70,9 +70,7 @@ def calculate_post_time(post_date):
     post_date = time.ctime()
 
     split_date = post_date.split(" ")
-    if (
-        "" in split_date
-    ):  # this is for single digit days like 5,6,7 are different than 10,12,13
+    if ("" in split_date):  # this is for single digit days like 5,6,7 are different than 10,12,13
         split_date.remove("")
     split_hours = split_date[3].split(":")
     current_hour = int(split_hours[0])
@@ -265,7 +263,9 @@ def index():
             "post date": split_compare_date(post_date),
             "like lst": like_lst,
             "like lst id": like_lst_id,
+            "time":post_date
         }
+        print(post_date)
 
         return render_template(
             "index.html", data=data
