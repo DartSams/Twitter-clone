@@ -354,11 +354,11 @@ def login():
                 f"SELECT * FROM Twitter_Users WHERE username = '{username}'"
             )
             result = mycursor.fetchall()
-            mycursor.close()
 
             # compares all matching usernames and checks the password stored in the db to the requested password entered
             for i in result:
                 passwd_check = bcrypt.check_password_hash(i[2], password)
+            mycursor.close()
 
             # if username and password are found in db then sets the session id to the requested username and logins the user in then redirects to home page
             if passwd_check == True:
@@ -405,10 +405,10 @@ def create_account():
                 f"SELECT * FROM Twitter_Users where username = %s", (username)
             )
             myresult = mycursor.fetchone()
-            mycursor.close()
 
             # if there is no user in the db with the requsted password creates a new entry using all requested data from html form and sets the session id to requested username
             if myresult == None:
+                mycursor.close()
                 conn = mysql.connect()
                 mycursor = conn.cursor()
                 mycursor.execute(
