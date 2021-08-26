@@ -231,7 +231,7 @@ def index():
     like_lst_id = (
         []
     )  # list that holds all post id that the currently signed user has liked
-    # change_dates("Post_Table", date_lst)
+    change_dates("Post_Table", date_lst)
     date_lst.clear()  # have to clear the list so it doesnt overwrite the post date
     if request.method == "GET":
         lst.clear()  # have to clear post list so it doesnt display post more than once
