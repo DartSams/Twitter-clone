@@ -1,1 +1,3 @@
 when  user creates account also create folder to hold their images
+
+file upload isnt working on heroku
