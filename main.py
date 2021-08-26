@@ -1,3 +1,4 @@
+from re import M
 from flask import Flask, render_template, redirect, request, flash, session, url_for
 from flask_bcrypt import Bcrypt  # encrypt passwords
 from flaskext.mysql import MySQL  # allows flask and mysql connection
@@ -43,8 +44,8 @@ app.config["MYSQL_DATABASE_USER"] = "bcc2ec4fcecbe5"
 app.config["MYSQL_DATABASE_PASSWORD"] = os.environ.get("password")
 app.config["MYSQL_DATABASE_DB"] = "heroku_d10e4ce632a9633"
 mysql.init_app(app)  # init the flask  to mysql connection
-conn = mysql.connect()
-mycursor = conn.cursor()
+# conn = mysql.connect()
+# mycursor = conn.cursor()
 
 socketio = SocketIO(app)  # init the socket connection
 
@@ -183,6 +184,8 @@ def get_time_ago(date1):
 
 # if the current day differers from the post date in the db then this will change using data from the get_time_ago function
 def change_dates(table_name, date_lst):
+    conn = mysql.connect()
+    mycursor = conn.cursor()
     mycursor.execute(f"SELECT * from {table_name}")
     for i in mycursor:
         # print(i)
@@ -202,10 +205,9 @@ def change_dates(table_name, date_lst):
             (get_time_ago(date), date),
         )
         conn.commit()
-        conn.close()
+    mycursor.close()
 
     date_lst.clear()
-    # conn.close()
     return True
 
 
@@ -236,17 +238,21 @@ def index():
         post_date = time.ctime()
 
         # gets all post from Post_Table db and puts them into a list to send to frontend
+        conn = mysql.connect()
+        mycursor = conn.cursor()
         mycursor.execute(f"SELECT * FROM Post_Table")
         for post_data in mycursor:
             lst.append(post_data)
-        conn.close()
+        mycursor.close()
 
         # if signed in this will return all  currently liked post
         if "username" in session:
+            conn = mysql.connect()
+            mycursor = conn.cursor()
             mycursor.execute(
                 f"SELECT * FROM Likes WHERE name = %s", session["username"]
             )
-            conn.close()
+            mycursor.close()
             for i in mycursor:
                 like_lst.append(i)
 
@@ -293,6 +299,8 @@ def index():
                     pass
 
                 # inserts new post and file into db
+                conn = mysql.connect()
+                mycursor = conn.cursor()
                 mycursor.execute(
                     "INSERT INTO Post_Table (author,post_date,post_time,post,post_file) VALUES (%s,%s,%s,%s,%s)",
                     (
@@ -304,12 +312,14 @@ def index():
                     ),
                 )
                 conn.commit()
-                conn.close()
+                mycursor.close()
                 return redirect("/")
 
             elif "file" not in request.files:
                 return redirect("/")
 
+            conn = mysql.connect()
+            mycursor = conn.cursor()
             mycursor.execute(
                 "INSERT INTO Post_Table (author,post_date,post_time,post) VALUES (%s,%s,%s,%s)",
                 (
@@ -320,7 +330,7 @@ def index():
                 ),
             )
             conn.commit()
-            conn.close()
+            mycursor.close()
             return redirect("/")
 
 
@@ -339,10 +349,13 @@ def login():
 
         # queries the db for any users with the requested username
         if username and password != "":
+            conn = mysql.connect()
+            mycursor = conn.cursor()
             mycursor.execute(
                 f"SELECT * FROM Twitter_Users WHERE username = '{username}'"
             )
             result = mycursor.fetchall()
+            mycursor.close()
 
             # compares all matching usernames and checks the password stored in the db to the requested password entered
             for i in result:
@@ -387,13 +400,18 @@ def create_account():
 
         # checks if both requested passwords in html form match then checks db if there is already a user with the requested username
         if password == compare_password:
+            conn = mysql.connect()
+            mycursor = conn.cursor()
             mycursor.execute(
                 f"SELECT * FROM Twitter_Users where username = %s", (username)
             )
             myresult = mycursor.fetchone()
+            mycursor.close()
 
             # if there is no user in the db with the requsted password creates a new entry using all requested data from html form and sets the session id to requested username
             if myresult == None:
+                conn = mysql.connect()
+                mycursor = conn.cursor()
                 mycursor.execute(
                     "INSERT INTO Twitter_Users (name,username,password, email,privilege,gender,age,birthday,join_date) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)",
                     (
@@ -409,6 +427,7 @@ def create_account():
                     ),
                 )
                 conn.commit()
+                mycursor.close()
                 session["username"] = username
                 return redirect(f"/profile/{session['username']}/settings")
 
@@ -436,48 +455,69 @@ def profile(username):
 
     if request.method == "GET":
         # queries the db for all post with the username from the route and sends it to the user_post list
+        conn = mysql.connect()
+        mycursor = conn.cursor()
         mycursor.execute(f"SELECT * FROM Post_Table WHERE author=%s", username)
         for i in mycursor:
             user_post.append(i)
+        mycursor.close()
 
         # queries the db and finds the entry with username from the route
+        conn = mysql.connect()
+        mycursor = conn.cursor()
         mycursor.execute(f"SELECT * FROM Twitter_Users WHERE username = %s", username)
         for i in mycursor:
             profile_stuff.append(i)
+        mycursor.close()
 
         # user is logged in then returns allpost from requested user that logged user has liked
         if "username" in session:
+            conn = mysql.connect()
+            mycursor = conn.cursor()
             mycursor.execute(
                 f"SELECT * FROM Likes WHERE name = %s", session["username"]
             )
             for i in mycursor:
                 like_lst.append(i)
+            mycursor.close()
 
             for i in like_lst:
                 like_lst_id.append(i[1])
 
         # returns the list of all users the requested user follows
+        conn = mysql.connect()
+        mycursor = conn.cursor()
         mycursor.execute(f"SELECT * FROM Follow WHERE follower = %s ", username)
         for j in mycursor:
             followers.append(j[0])
+        mycursor.close()
 
         # returns the list of all users that the requested user is following
+        conn = mysql.connect()
+        mycursor = conn.cursor()
         mycursor.execute(f"SELECT * FROM Follow WHERE name = %s ", username)
         for j in mycursor:
             following.append(j)
+        mycursor.close()
 
         # if user if logged in then creates a variable for the html to display if logged in user is following the requested user
+        conn = mysql.connect()
+        mycursor = conn.cursor()
         if "username" in session:
             mycursor.execute(
                 f"SELECT * FROM Follow WHERE name = %s ", session["username"]
             )
             all_ready_followed = mycursor.fetchone()
+            mycursor.close()
         else:
             all_ready_followed = " "
 
         # checks the db for the requested user if not found flashes message 'This user does not exist'
+        conn = mysql.connect()
+        mycursor = conn.cursor()
         mycursor.execute(f"SELECT * FROM Twitter_Users where username = %s", (username))
         myresult = mycursor.fetchone()
+        mycursor.close()
 
         if myresult == None:
             flash("This user does not exist")
@@ -511,17 +551,23 @@ def profile(username):
         # if logged in user presses the follow button the creates a entry in the db saying logged in user now follows requested user
         if "Follow" in request.form:
             follow = request.form["Follow"]
+            conn = mysql.connect()
+            mycursor = conn.cursor()
             mycursor.execute(
                 "INSERT INTO Follow (name,follower) VALUES (%s,%s)",
                 (session["username"], follow),
             )
             conn.commit()
+            mycursor.close()
 
         # else if loggedin user clicks the unfollow button then queries the db and finds the entry where name is logged in user
         elif "UnFollow" in request.form:
             unfollow = request.form["UnFollow"]
+            conn = mysql.connect()
+            mycursor = conn.cursor()
             mycursor.execute("DELETE FROM Follow WHERE name = %s", unfollow)
             conn.commit()
+            mycursor.close()
 
         return redirect(f"/{username}")
 
@@ -543,23 +589,34 @@ def profile2(username, tab):
 
     if request.method == "GET":
         # queries the db and finds the entry with username from the route
+        conn = mysql.connect()
+        mycursor = conn.cursor()
         mycursor.execute(f"SELECT * FROM Twitter_Users WHERE username = %s", username)
         for i in mycursor:
             profile_stuff.append(i)
+        mycursor.close()
 
         # query the db for all entries with the requested username and puts nameand postID into like lst
+        conn = mysql.connect()
+        mycursor = conn.cursor()
         mycursor.execute(f"SELECT * FROM Likes WHERE name = %s", username)
         for post in mycursor:
             like_lst.append(post)
+        mycursor.close()
 
         # indexes the items in the like lst for the 2nd element for postID then queries the db for all post with that postID then puts them in another list called 'user_post'
         for id in like_lst:
             post_id = id[1]
+            conn = mysql.connect()
+            mycursor = conn.cursor()
             mycursor.execute("SELECT * FROM Post_Table WHERE postID=%s", post_id)
             for j in mycursor:
                 user_post.append(j)
+            mycursor.close()
 
         # queries the db for all commets left by the requested user
+        conn = mysql.connect()
+        mycursor = conn.cursor()
         mycursor.execute("SELECT * FROM Comments WHERE author = %s", username)
         for j in mycursor:
             comment_lst.append(j)
@@ -568,35 +625,51 @@ def profile2(username, tab):
                 pass
             else:
                 comment_lst_id.append(j[6])
+        mycursor.close()
 
         # to display what post the logged in user has replied to first i linked the comment to that post using their 'postID' and put them in a new list
         for id in comment_lst_id:
+            conn = mysql.connect()
+            mycursor = conn.cursor()
             mycursor.execute("SELECT * FROM Post_Table WHERE postID = %s", (id))
             for row in mycursor:
                 replied_to.append(row)
+            mycursor.close()
 
         # returns the list of all users the requested user follows
+        conn = mysql.connect()
+        mycursor = conn.cursor()
         mycursor.execute("SELECT * FROM Follow WHERE follower = %s ", username)
         for j in mycursor:
             followers.append(j)
+        mycursor.close()
 
         # returns the list of all users that the requested user is following
+        conn = mysql.connect()
+        mycursor = conn.cursor()
         mycursor.execute("SELECT * FROM Follow WHERE name = %s ", username)
         for j in mycursor:
             following.append(j)
+        mycursor.close()
 
         # if user if logged in then creates a variable for the html to display if logged in user is following the requested user
         if "username" in session:
+            conn = mysql.connect()
+            mycursor = conn.cursor()
             mycursor.execute(
                 "SELECT * FROM Follow WHERE name = %s ", session["username"]
             )
             all_ready_followed = mycursor.fetchone()
+            mycursor.close()
         else:
             all_ready_followed = " "
 
         # checks the db for the requested user if not found flashes message 'This user does not exist'
+        conn = mysql.connect()
+        mycursor = conn.cursor()
         mycursor.execute("SELECT * FROM Twitter_Users where username = %s", (username))
         myresult = mycursor.fetchone()
+        mycursor.close()
         if myresult == None:
             flash("This user does not exist")
 
@@ -634,17 +707,23 @@ def profile2(username, tab):
         # if logged in user presses the follow button the creates a entry in the db saying logged in user now follows requested user
         if "Follow" in request.form:
             follow = request.form["Follow"]
+            conn = mysql.connect()
+            mycursor = conn.cursor()
             mycursor.execute(
                 "INSERT INTO Follow (name,follower) VALUES (%s,%s)",
                 (session["username"], follow),
             )
             conn.commit()
+            mycursor.close()
 
         # else if loggedin user clicks the unfollow button then queries the db and finds the entry where name is logged in user
         elif "UnFollow" in request.form:
             unfollow = request.form["UnFollow"]
+            conn = mysql.connect()
+            mycursor = conn.cursor()
             mycursor.execute("DELETE FROM Follow WHERE name = %s", unfollow)
             conn.commit()
+            mycursor.close()
 
         return redirect(f"/{username}")
 
@@ -663,8 +742,11 @@ def logout():
 # function to let users or admins delete a post
 @app.route("/clear/<int:post_id>")
 def clear(post_id):
+    conn = mysql.connect()
+    mycursor = conn.cursor()
     mycursor.execute(f"DELETE FROM Post_Table WHERE postID=%s", (post_id))
     conn.commit()
+    mycursor.close()
     return redirect("/")
 
 
@@ -676,12 +758,15 @@ def profile_settings(username):
     if session["username"] == username:
         if request.method == "GET":
             # returns a list of info containing data about the logged in user such as profile image,banner,and description
+            conn = mysql.connect()
+            mycursor = conn.cursor()
             mycursor.execute(
                 f"SELECT * FROM Twitter_Users WHERE username = %s", username
             )
             for i in mycursor:
                 # print(i)
                 profile_stuff.append(i)
+            mycursor.close()
 
             return render_template("settings.html", profile_stuff=profile_stuff)
 
@@ -693,10 +778,13 @@ def profile_settings(username):
             profile_img = request.files["profile_img"]
 
             # updates the profile descrition recieved from client side in the db where username is the requested username
+            conn = mysql.connect()
+            mycursor = conn.cursor()
             mycursor.execute(
                 "UPDATE Twitter_Users SET profile_description = %s WHERE username = %s",
                 (profile_description, username),
             )
+            mycursor.close()
 
             # if changing the profile banner this checks if the file is valid then updates it in db
             if profile_banner and allowed_file(profile_banner.filename):
@@ -710,10 +798,13 @@ def profile_settings(username):
                 im1 = im.resize(newsize)
                 im1.save(fr"{DIRNAME}\{filename1}")
 
+                conn = mysql.connect()
+                mycursor = conn.cursor()
                 mycursor.execute(
                     "UPDATE Twitter_Users SET profile_description = %s,profile_banner = %s WHERE username = %s",
                     (profile_description, filename1, username),
                 )
+                mycursor.close()
 
             # if changing the profile image this checks if the file is valid then updates it in db
             if profile_img and allowed_file(profile_img.filename):
@@ -725,11 +816,14 @@ def profile_settings(username):
                 im1 = im.resize(newsize)
                 im1.save(fr"{DIRNAME}\{filename2}")
 
+                conn = mysql.connect()
+                mycursor = conn.cursor()
                 mycursor.execute(
                     "UPDATE Twitter_Users SET profile_description = %s,profile_img = %s WHERE username = %s",
                     (profile_description, filename2, username),
                 )
             conn.commit()
+            mycursor.close()
             return redirect(f"/{session['username']}")
     else:
         flash("Please login using the correct username and password")
@@ -746,25 +840,36 @@ def post(post_id):
     post_date = time.ctime()
     if request.method == "GET":
         # queries the db for a post with a requested post id
+        conn = mysql.connect()
+        mycursor = conn.cursor()
         mycursor.execute(f"SELECT * FROM Post_Table WHERE postID=%s", post_id)
         for i in mycursor:
             user_post.append(i)
+        mycursor.close()
 
         # queries the db for all comments with a post id matching the post
+        conn = mysql.connect()
+        mycursor = conn.cursor()
         mycursor.execute(f"SELECT * FROM Comments WHERE commentID=%s", post_id)
         for i in mycursor:
             comments.append(i)
+        mycursor.close()
 
         # if user is logged in queries the db for a entry containing logged in user and if they have liked the post with requested post id
         if "username" in session:
+            conn = mysql.connect()
+            mycursor = conn.cursor()
             mycursor.execute(
                 f"SELECT * FROM Likes WHERE id=%s AND name=%s",
                 (post_id, session["username"]),
             )
             for i in mycursor:
                 like_lst.append(i)
-
+            mycursor.close()
+            
         # queries the db checking if logged in user is a admin if True sets a variable allowing admins to delete post
+        conn = mysql.connect()
+        mycursor = conn.cursor()
         mycursor.execute(
             "SELECT * FROM Twitter_Users WHERE username = %s", session["username"]
         )
@@ -773,6 +878,7 @@ def post(post_id):
             admin_status = True
         else:
             admin_status = False
+        mycursor.close()
 
         # if post has no comments flashes a message 'No comments yet'
         if not comments:
@@ -812,36 +918,63 @@ def switch(username):
 def admin(username):
     if request.method == "GET":
         # checks if the requested username is a admin and if requested username is the logged in user
+        conn = mysql.connect()
+        mycursor = conn.cursor()
         mycursor.execute("SELECT * FROM Twitter_Users WHERE username = %s", username)
         maybe_admin = mycursor.fetchone()
         if maybe_admin[4] == "admin" and session["username"] == username:
             users = []
             lst = []
+            mycursor.close()
 
             # queries the db for all users and profile data to display on admin page so admins can moderate
+            conn = mysql.connect()
+            mycursor = conn.cursor()
             mycursor.execute("SELECT * FROM Twitter_Users")
             user = mycursor.fetchall()
             for i in user:
                 users.append(i)
+            mycursor.close()
+
+            conn = mysql.connect()
+            mycursor = conn.cursor()
             user_headers = [
                 x[0] for x in mycursor.description
             ]  # this will extract row headers
+            mycursor.close()
 
+            conn = mysql.connect()
+            mycursor = conn.cursor()
             mycursor.execute("SELECT * FROM Post_Table")
             post = mycursor.fetchall()
+            mycursor.close()
+
+            conn = mysql.connect()
+            mycursor = conn.cursor()
             post_headers = [
                 x[0] for x in mycursor.description
             ]  # this will extract row headers
+            mycursor.close()
 
+            conn = mysql.connect()
+            mycursor = conn.cursor()
             mycursor.execute("SELECT * FROM Repost_Post")
             reported_post = mycursor.fetchall()
+            mycursor.close()
+
+            conn = mysql.connect()
+            mycursor = conn.cursor()
             report_headers = [
                 x[0] for x in mycursor.description
             ]  # this will extract row headers
+            mycursor.close()
 
             # queries the mysqldb for all tables
+            conn = mysql.connect()
+            mycursor = conn.cursor()
             mycursor.execute("Show tables;")
             all_tables = mycursor.fetchall()
+            mycursor.close()
 
             data = {
                 "user headers": user_headers,
@@ -883,34 +1016,46 @@ def admin(username):
                 print(
                     f"({create_table_column} {create_table_column_type}({create_table_column_size})"
                 )
+                conn = mysql.connect()
+                mycursor = conn.cursor()
                 mycursor.execute(
                     f"CREATE TABLE {create_table} ({create_table_column} {create_table_column_type}({create_table_column_size}))"
                 )
                 conn.commit()
+                mycursor.close()
                 print(f"{create_table} has been created")
 
             if delete_column != "":
                 print(f"going to delete '{delete_column}' from '{selected_table}'")
+                conn = mysql.connect()
+                mycursor = conn.cursor()
                 mycursor.execute(f"ALTER TABLE {selected_table} DROP {delete_column}")
                 conn.commit()
+                mycursor.close()
 
             if add_column != "":
                 print(
                     f"adding column '{add_column}' to '{selected_table}' type '{add_column_types}' with a size of '{add_column_type_size}'"
                 )
+                conn = mysql.connect()
+                mycursor = conn.cursor()
                 mycursor.execute(
                     f"ALTER TABLE {selected_table} ADD {add_column} {add_column_types}({add_column_type_size}) NOT NULL"
                 )
                 conn.commit()
+                mycursor.close()
 
             if old_column_name != "" and new_column_name != "":
                 print(
                     f"changing column '{old_column_name}' to '{new_column_name}' in table '{selected_table}'"
                 )
+                conn = mysql.connect()
+                mycursor = conn.cursor()
                 mycursor.execute(
                     f"ALTER TABLE {selected_table} RENAME COLUMN {old_column_name} TO {new_column_name}"
                 )
                 conn.commit()
+                mycursor.close()
 
         else:
             if delete_user:
@@ -918,11 +1063,13 @@ def admin(username):
                 table_name = delete_user[0]
                 delete_user = delete_user[1]
                 delete_user_id = delete_user[2]
+                conn = mysql.connect()
+                mycursor = conn.cursor()
                 mycursor.execute(
                     f"DELETE FROM {table_name} WHERE personID = %s", delete_user_id
                 )
                 conn.commit()
-                # print(f"{delete_user} deleted")
+                mycursor.close()
 
             if make_admin:
                 make_admin = make_admin.split(",")
@@ -930,12 +1077,14 @@ def admin(username):
                 new_admin_username = make_admin[1]
                 new_admin_id = make_admin[2]
                 new_user_privilege = make_admin[3]
+                conn = mysql.connect()
+                mycursor = conn.cursor()
                 mycursor.execute(
                     f"UPDATE {table_name} SET privilege = %s WHERE personID = %s",
                     (new_user_privilege, new_admin_id),
                 )
                 conn.commit()
-                # print(f"{new_admin_username} has been promoted to {new_user_privilege}")
+                mycursor.close()
 
             if make_user:
                 make_user = make_user.split(",")
@@ -943,16 +1092,22 @@ def admin(username):
                 username = make_user[1]
                 user_id = make_user[2]
                 new_user_privilege = make_user[3]
+                conn = mysql.connect()
+                mycursor = conn.cursor()
                 mycursor.execute(
                     f"UPDATE {table_name} SET privilege = %s WHERE personID = %s",
                     (new_user_privilege, user_id),
                 )
                 conn.commit()
+                mycursor.close()
                 # print(f"{username} has been demoted to {new_user_privilege}")
 
             if report:
+                conn = mysql.connect()
+                mycursor = conn.cursor()
                 mycursor.execute("DELETE FROM Repost_Post WHERE postID = %s", report)
                 conn.commit()
+                mycursor.close()
 
         return redirect(f"/admin/{session['username']}")
 
@@ -967,6 +1122,8 @@ def handle_message(post):
 
     # if the js function to create a new post or retweet a post is called then this if statement is ran
     if post["type"] == "newPost" or post["type"] == "retweetPost":
+        conn = mysql.connect()
+        mycursor = conn.cursor()
         mycursor.execute(
             "INSERT INTO Post_Table (author,post_date,post_time,post) VALUES (%s,%s,%s,%s)",
             (
@@ -977,12 +1134,20 @@ def handle_message(post):
             ),
         )
         conn.commit()
+        mycursor.close()
 
+        conn = mysql.connect()
+        mycursor = conn.cursor()
         mycursor.execute("SELECT * FROM Post_Table WHERE post = %s", (post["message"]))
         current_post = mycursor.fetchall()
+        mycursor.close()
+
+        conn = mysql.connect()
+        mycursor = conn.cursor()
         row_headers = [
             x[0] for x in mycursor.description
         ]  # this will extract row headers
+        mycursor.close()
         post = dict(zip(row_headers, current_post[-1]))
 
         join_room(room)  # joins the room to emit a signal
@@ -998,16 +1163,22 @@ def handle_message(post):
 @socketio.on("changeLike")
 def changeLikes(data):
     if data["status"] == "like":
+        conn = mysql.connect()
+        mycursor = conn.cursor()
         mycursor.execute(
             "INSERT INTO Likes (name,id) VALUES (%s,%s) ", (data["user"], data["id"])
         )
         conn.commit()
+        mycursor.close()
 
     elif data["status"] == "unlike":
+        conn = mysql.connect()
+        mycursor = conn.cursor()
         mycursor.execute(
             "DELETE FROM likes WHERE name = %s AND id = %s", (data["user"], data["id"])
         )
         conn.commit()
+        mycursor.close()
 
 
 # when the client side sends a signal called 'makeComment' to server side this function is called
@@ -1019,6 +1190,8 @@ def comment(data):
     ]  # because i reused js functions i need to seperate them into rooms so it doesnt create entries in more than 1 db table
     join_room(room)  # joins the room to emit a signal
 
+    conn = mysql.connect()
+    mycursor = conn.cursor()
     mycursor.execute(
         "INSERT INTO Comments (author,post_date,post_time,comment,commentID) VALUES (%s,%s,%s,%s,%s)",
         (
@@ -1030,10 +1203,18 @@ def comment(data):
         ),
     )
     conn.commit()
+    mycursor.close()
 
+    conn = mysql.connect()
+    mycursor = conn.cursor()
     mycursor.execute("SELECT * FROM Comments WHERE comment = %s", (data["comment"]))
     current_post = mycursor.fetchall()
+    mycursor.close()
+
+    conn = mysql.connect()
+    mycursor = conn.cursor()
     row_headers = [x[0] for x in mycursor.description]  # this will extract row headers
+    mycursor.close()
     data = dict(
         zip(row_headers, current_post[-1])
     )  # after inserting a new entry in the db this will query that entry and the column headers to send to client side
@@ -1049,11 +1230,14 @@ def comment(data):
 # creating a entry in the db displaying who reported the post and what post it is
 @socketio.on("reportPost")
 def report(data):
+    conn = mysql.connect()
+    mycursor = conn.cursor()
     mycursor.execute(
         "INSERT INTO Repost_Post (reported_by,postID) VALUES (%s,%s)",
         (data["user"], data["id"]),
     )
     conn.commit()
+    mycursor.close()
 
 
 if __name__ == "__main__":
