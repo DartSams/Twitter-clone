@@ -7,29 +7,35 @@ import time
 load_dotenv()
 
 db=mysql.connector.connect(
-    host="us-cdbr-east-04.cleardb.com",
-    user="bcc2ec4fcecbe5",
-    passwd="cfb6b512",
-    database="heroku_d10e4ce632a9633"
+    host="localhost",
+    user="dartsams",
+    passwd="Dartagnan19@",
+    database="Twitter"
     )
 
 mycursor=db.cursor(buffered=True)
 
 
-def create_db(table_name):
-    mycursor.execute(f"CREATE TABLE {table_name} (name VARCHAR(100),username VARCHAR(100),password VARCHAR(100), email VARCHAR(100),privilege VARCHAR(100),gender VARCHAR(100),age INT,birthday VARCHAR(100),join_date VARCHAR(100), personID INT PRIMARY KEY AUTO_INCREMENT,profile_description VARCHAR(100),profile_banner VARCHAR(100),profile_img VARCHAR(100))")
+def create_db(db_name):
+    mycursor.execute(f"CREATE DATABASE {db_name}")
+
+# create_db("Twitter")
+
+
+def create_table(table_name):
+    # mycursor.execute(f"CREATE TABLE {table_name} (name VARCHAR(100),username VARCHAR(100),password VARCHAR(100), email VARCHAR(100),privilege VARCHAR(100),gender VARCHAR(100),age INT,birthday VARCHAR(100),join_date VARCHAR(100), personID INT PRIMARY KEY AUTO_INCREMENT,profile_description VARCHAR(100),profile_banner VARCHAR(100),profile_img VARCHAR(100))")
     # mycursor.execute(f"CREATE TABLE {table_name} (author VARCHAR(100),post_date VARCHAR(100),post_time VARCHAR(100),post VARCHAR(100),post_file VARCHAR(100),placeholder_date VARCHAR(100),postID INT PRIMARY KEY AUTO_INCREMENT)")
     # mycursor.execute(f"CREATE TABLE {table_name} (author VARCHAR(100),post_date VARCHAR(100),post_time VARCHAR(100),comment VARCHAR(100),post_file VARCHAR(100),placeholder_date VARCHAR(100),commentID INT)")
     # mycursor.execute(f"CREATE TABLE {table_name} (name VARCHAR(100),id INT(100))")
     # mycursor.execute(f"CREATE TABLE {table_name} (name VARCHAR(100),follower VARCHAR(100))")
-    # mycursor.execute(f"CREATE TABLE {table_name} (reported_by VARCHAR(100),postID INT(100))")
+    mycursor.execute(f"CREATE TABLE {table_name} (reported_by VARCHAR(100),postID INT(100))")
 
-# create_db('Twitter_Users')
-# create_db('Post_Table')
-# create_db("Comments")
-# create_db("Likes")
-# create_db("Follow")
-# create_db("Repost_Post")
+# create_table('Twitter_Users')
+# create_table('Post_Table')
+# create_table("Comments")
+# create_table("Likes")
+# create_table("Follow")
+# create_table("Repost_Post")
 
 def insert_user():
     # mycursor.execute("INSERT INTO Twitter_Users (name,username,password, email,privilege,gender,age,birthday,join_date) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)", (name,username,hash_passwd,email,'user',gender,age,birthday,join_date))

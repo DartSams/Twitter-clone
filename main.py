@@ -39,10 +39,10 @@ app.config["SECRET_KEY"] = "hello"  # use session to save personal data to so us
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 
 mysql = MySQL()  # to connect flask to mysql
-app.config["MYSQL_DATABASE_HOST"] = "us-cdbr-east-04.cleardb.com"
-app.config["MYSQL_DATABASE_USER"] = "bcc2ec4fcecbe5"
+app.config["MYSQL_DATABASE_HOST"] = "localhost"
+app.config["MYSQL_DATABASE_USER"] = "dartsams"
 app.config["MYSQL_DATABASE_PASSWORD"] = os.environ.get("password")
-app.config["MYSQL_DATABASE_DB"] = "heroku_d10e4ce632a9633"
+app.config["MYSQL_DATABASE_DB"] = "Twitter"
 mysql.init_app(app)  # init the flask  to mysql connection
 
 socketio = SocketIO(app)  # init the socket connection
